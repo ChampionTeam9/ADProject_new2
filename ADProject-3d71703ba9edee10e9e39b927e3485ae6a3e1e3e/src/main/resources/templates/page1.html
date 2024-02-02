@@ -8,4 +8,11 @@
 <body>
 	<div>created!</div>
 	<p th:text="${step}"></p>
+	<h1>Welcome, <span th:text="${username}">User</span>!</h1>
+
+    <form action="/recipe/search" method="post"> 
+        <input type="text" name="query" placeholder="Please enter the recipe" required>
+        <button type="submit">Search</button>
+    </form>
 </body>
+</html>
