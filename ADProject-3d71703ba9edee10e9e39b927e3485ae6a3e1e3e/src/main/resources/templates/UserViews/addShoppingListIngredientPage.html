@@ -14,12 +14,12 @@
 		</div>
 		<form th:action="@{/user/shoppingList/add}" th:object="${addIngredientForm}" method="post">
 			<table>
-				<tr th:each="ingredient : *{ingredients}">
+				<tr th:each="ingredientName, index : *{ingredientNames}">
 					<td>
-						<input type="checkbox" th:field="*{selectedIngredients}" th:value="${ingredient.id}" />
+						<input type="checkbox" th:field="*{selectedIngredients}" th:value="${index}" />
 					</td>
-					<td th:text="${ingredient.foodText}">
-						Ingredient
+					<td>
+						<input type="text" th:field="${ingredientNames[__${index.index}__]}"/>
 					</td>
 				</tr>
 			</table>

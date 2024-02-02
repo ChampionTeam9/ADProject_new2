@@ -1,5 +1,6 @@
 package com.ad.teamnine.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -41,8 +42,12 @@ public class UserController {
 		Recipe recipe = recipeService.getRecipeById(1);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
-		addIngredientForm.setIngredients(recipe.getIngredients());
-		addIngredientForm.setSelectedIngredients(new HashSet<>());
+		List<String> ingredientNames = new ArrayList<>();
+		for (Ingredient ingredient : recipe.getIngredients()) {
+			ingredientNames.add(ingredient.getFoodText());
+		}
+		addIngredientForm.setIngredientsNames(ingredientNames);
+		addIngredientForm.setSelectedIngredients(new ArrayList<>());
 		model.addAttribute("addIngredientForm", addIngredientForm);
 		return "UserViews/addShoppingListIngredientPage";
 	}
@@ -61,13 +66,15 @@ public class UserController {
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
-		Set<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
-		for (Integer id : selectedIngredients) {
-			Ingredient ingredient = ingredientService.getIngredientById(id);
-			ShoppingListItem shoppingListItem = new ShoppingListItem(member, ingredient);
+		List<String> ingredientNames = addIngredientForm.getIngredientNames();
+		List<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
+		for (int i = 0; i < selectedIngredients.size(); i++) {
+			int pos = selectedIngredients.get(i);
+			String ingredientName = ingredientNames.get(pos);
+			ShoppingListItem shoppingListItem = new ShoppingListItem(member, ingredientName);
 			shoppingListItemService.saveShoppingListItem(shoppingListItem);
 			shoppingList.add(shoppingListItem);
-			System.out.println(ingredient);
+			System.out.println("ingredientName: " + ingredientName);
 		}
 		userService.saveMember(member);
 		// Add ingredients to member's shopping list
@@ -126,7 +133,7 @@ public class UserController {
 		Iterator<ShoppingListItem> iterator = shoppingList.iterator();
 		while (iterator.hasNext()) {
 			ShoppingListItem item = iterator.next();
-			System.out.println(item.getIngredient());
+			System.out.println(item.getIngredientName());
 			if ((message.equals("clearChecked") && item.isChecked()) || message.equals("clearAll")) {
 				iterator.remove();
 				shoppingListItemService.deleteShoppingListItem(item);

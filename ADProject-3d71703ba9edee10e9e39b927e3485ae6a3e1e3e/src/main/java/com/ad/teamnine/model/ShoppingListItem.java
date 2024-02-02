@@ -1,5 +1,6 @@
 package com.ad.teamnine.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,15 +14,15 @@ public class ShoppingListItem {
 	private Integer id;
 	@ManyToOne
 	private Member member;
-	@ManyToOne
-	private Ingredient ingredient;
+	@Column
+	private String ingredientName;
 	private boolean isChecked;
 	
 	public ShoppingListItem() {}
 	
-	public ShoppingListItem(Member member, Ingredient ingredient) {
+	public ShoppingListItem(Member member, String ingredientName) {
 		this.member = member;
-		this.ingredient = ingredient;
+		this.ingredientName = ingredientName;
 		isChecked = false;
 	}
 	
@@ -37,11 +38,11 @@ public class ShoppingListItem {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Ingredient getIngredient() {
-		return ingredient;
+	public String getIngredientName() {
+		return ingredientName;
 	}
-	public void setIngredient(Ingredient ingredient) {
-		this.ingredient = ingredient;
+	public void setIngredientName(String ingredientName) {
+		this.ingredientName = ingredientName;
 	}
 	public boolean isChecked() {
 		return isChecked;
