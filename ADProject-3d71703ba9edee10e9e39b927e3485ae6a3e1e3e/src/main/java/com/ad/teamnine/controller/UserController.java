@@ -17,15 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.ad.teamnine.model.AddIngredientForm;
-import com.ad.teamnine.model.Ingredient;
-import com.ad.teamnine.model.Member;
-import com.ad.teamnine.model.Recipe;
-import com.ad.teamnine.model.ShoppingListItem;
-import com.ad.teamnine.service.IngredientService;
-import com.ad.teamnine.service.RecipeService;
-import com.ad.teamnine.service.ShoppingListItemService;
-import com.ad.teamnine.service.MemberService;
+import com.ad.teamnine.model.*;
+import com.ad.teamnine.service.*;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -35,17 +28,14 @@ import jakarta.validation.Valid;
 public class UserController {
 	@Autowired
 	private RecipeService recipeService;
-	
-	@Autowired
-	private MemberService memberService;
-	
 	@Autowired
 	private IngredientService ingredientService;
-	
+	@Autowired
+	private UserService userService;
 	@Autowired
 	private ShoppingListItemService shoppingListItemService;
-	
-	//Show page for adding ingredients to shopping list
+
+	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add")
 	public String addShoppingListIngredient(Model model) {
 		Recipe recipe = recipeService.getRecipeById(1);
@@ -56,18 +46,20 @@ public class UserController {
 		model.addAttribute("addIngredientForm", addIngredientForm);
 		return "UserViews/addShoppingListIngredientPage";
 	}
-	
-	//Save the ingredients selected as ShoppingListItem
+
+	// Save the ingredients selected as ShoppingListItem
 	@PostMapping("/shoppingList/add")
-	public String addShoppingListIngredient(@ModelAttribute("addIngredientForm") 
-	@Valid AddIngredientForm addIngredientForm, BindingResult bindingResult, Model model, HttpSession sessionObj) {
+	public String addShoppingListIngredient(
+			@ModelAttribute("addIngredientForm") @Valid AddIngredientForm addIngredientForm,
+			BindingResult bindingResult, Model model, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			return "UserViews/addShoppingListIngredientPage";
 		}
-		//Get member's shopping list
-		//Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		//Hardcode first
-		Member member = memberService.getMemberById(1);
+		// Get member's shopping list
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Hardcode first
+		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		Set<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
 		for (Integer id : selectedIngredients) {
@@ -77,24 +69,25 @@ public class UserController {
 			shoppingList.add(shoppingListItem);
 			System.out.println(ingredient);
 		}
-		memberService.saveMember(member);
-		//Add ingredients to member's shopping list
+		userService.saveMember(member);
+		// Add ingredients to member's shopping list
 		return "redirect:/user/shoppingList/view";
 	}
-	
-	//View the shopping list
+
+	// View the shopping list
 	@GetMapping("shoppingList/view")
 	public String viewShoppingListIngredient(Model model) {
-		//Get member's shopping list
-		//Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		//Hardcode first
-		Member member = memberService.getMemberById(1);
+		// Get member's shopping list
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Hardcode first
+		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		model.addAttribute("shoppingList", shoppingList);
 		return "/UserViews/viewShoppingListPage";
 	}
-	
-	//Update database if shoppingListItem was checked off or not
+
+	// Update database if shoppingListItem was checked off or not
 	@PostMapping("shoppingList/updateCheckedStatus")
 	public ResponseEntity<Void> updateCheckedStatus(@RequestBody Map<String, Object> payload) {
 		int id = (int) payload.get("id");
@@ -104,34 +97,36 @@ public class UserController {
 		shoppingListItemService.saveShoppingListItem(shoppingListItem);
 		return ResponseEntity.ok().build();
 	}
-	
-	//Edit the shopping list
+
+	// Edit the shopping list
 	@GetMapping("shoppingList/edit")
 	public String editShoppingList(Model model) {
-		//Get member's shopping list
-		//Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		//Hardcode first
-		Member member = memberService.getMemberById(1);
+		// Get member's shopping list
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Hardcode first
+		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		model.addAttribute("shoppingList", shoppingList);
 		return "/UserViews/editShoppingListPage";
 	}
-	
-	//Clear off ShoppingListItems
+
+	// Clear off ShoppingListItems
 	@PostMapping("shoppingList/clearItems")
 	public ResponseEntity<Void> clearItems(@RequestBody Map<String, Object> payload) {
 		String message = (String) payload.get("message");
 		System.out.println(message);
-		//Get member's shopping list
-		//Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		//Hardcode first
-		Member member = memberService.getMemberById(1);
+		// Get member's shopping list
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Hardcode first
+		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
-		//Use iterator to prevent ConcurrentModificationException
+		// Use iterator to prevent ConcurrentModificationException
 		Iterator<ShoppingListItem> iterator = shoppingList.iterator();
 		while (iterator.hasNext()) {
-	        ShoppingListItem item = iterator.next();
-	        System.out.println(item.getIngredient());
+			ShoppingListItem item = iterator.next();
+			System.out.println(item.getIngredient());
 			if ((message.equals("clearChecked") && item.isChecked()) || message.equals("clearAll")) {
 				iterator.remove();
 				shoppingListItemService.deleteShoppingListItem(item);
