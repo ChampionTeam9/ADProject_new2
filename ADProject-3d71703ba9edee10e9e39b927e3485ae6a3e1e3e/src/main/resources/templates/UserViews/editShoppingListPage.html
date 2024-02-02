@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Edit Shopping List
+		</title>
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				const clearSelectedBtn = document.getElementById('clearSelectedBtn');
+				clearSelectedBtn.addEventListener('click', (event) => {
+					clearItems("clearChecked");
+					removeCheckedRows();
+				})
+				
+				const clearAllBtn = document.getElementById('clearAllBtn');
+				clearAllBtn.addEventListener('click', (event) => {
+					clearItems("clearAll");
+					removeAllRows();
+				})
+			});
+			
+			function clearItems(message) {
+			    let xhr = new XMLHttpRequest();
+			    xhr.open("POST", "/user/shoppingList/clearItems");
+			    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			    xhr.onreadystatechange = function () {
+			        if (xhr.readyState == 4 && xhr.status == 200) {
+			            console.log("response ok");
+			        }
+			    }
+			    let data = {
+			        "message": message,
+			    }
+			    xhr.send(JSON.stringify(data));    
+			}
+			
+			function removeCheckedRows(){
+				const checkboxes = document.getElementsByClassName('shoppingListItem');
+				const checkboxesArray = Array.from(checkboxes);
+				for (const checkbox of checkboxesArray) {
+					if (checkbox.checked){
+						checkbox.parentElement.parentElement.remove();
+					}
+				}
+			}
+			
+			function removeAllRows(){
+				const checkboxes = document.getElementsByClassName('shoppingListItem');
+				const checkboxesArray = Array.from(checkboxes);
+				for (const checkbox of checkboxesArray) {
+					checkbox.parentElement.parentElement.remove();
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<h2>Edit Shopping List</h2>
+		</div>
+		<table>
+			<tr th:each="item : ${shoppingList}">
+				<td>
+					<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}"/>
+				</td>
+				<td th:text="${item.ingredient.foodText}" >
+					Shopping List Item
+				</td>
+			</tr>
+		</table>
+		<button type="button" id="clearSelectedBtn">Clear Selected</button>
+		<button type="button" id="clearAllBtn">Clear All</button>
+	</body>
+</html>
