@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 @Table(name="Users")
 public abstract class User {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@Column
 	@Size(min = 3, message = "username must be at least 3 characters")

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body>
+    <table>
+        <tr th:each="tag : ${tags}">
+            <td th:text="${tag}"></td> <!-- 显示标签名称 -->
+        </tr>
+    </table>
+</body>
+</html>

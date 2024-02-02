@@ -1,5 +1,6 @@
 package com.ad.teamnine.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +84,11 @@ public class RecipeService {
 			System.out.println("Recipe with ID " + id + " not found");
 		}
 	}
+	
+	public List<Recipe> searchByName(String query){
+	List<Recipe> results = recipeRepo.findByNameContaining(query);
+	return results;
+	}
+	
 }
 

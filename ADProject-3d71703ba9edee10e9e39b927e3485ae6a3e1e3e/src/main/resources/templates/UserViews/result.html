@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索结果</title>
+</head>
+<body>
+    <h1>搜索结果</h1>
+    <div>
+        <ul>
+            <!-- 使用th:each遍历results列表 -->
+            <li th:each="result : ${results}">
+                <!-- 显示列表中每个元素的name属性 -->
+                <span th:text="${result.name}">Recipe Name</span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
