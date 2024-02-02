@@ -1,5 +1,7 @@
 package com.ad.teamnine.controller;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ad.teamnine.model.*;
 import com.ad.teamnine.service.*;
@@ -141,4 +144,69 @@ public class UserController {
 		}
 		return ResponseEntity.ok().build();
 	}
+	//set preference
+	@GetMapping("/setPreference")
+	public String setPreference(Model model) {
+		Set<String> tags = userService.getRandomUniqueTags(7);
+		model.addAttribute("tags", tags);
+		return "/UserViews/setPreference";
+	}
+	
+	@PostMapping("/setPreference")
+	public String receivePreference(@RequestParam(value = "tags", required = false) List<String> tags,HttpSession session) {
+		List<String> oldTags = (List<String>) session.getAttribute("tags");
+		Member member=new Member();
+		if (oldTags == null) {
+			member.setPrefenceList(tags);
+			userService.saveMember(member);
+		} else {
+			Set<String> selectedTags = new HashSet<>(oldTags);
+			selectedTags.addAll(tags);
+			List<String> combinedTags = new ArrayList<>(selectedTags);
+			member.setPrefenceList(combinedTags);
+			userService.saveMember(member);
+		}	
+		return "test";
+	}
+//refresh tags on the website
+	@PostMapping("/refresh")
+	public String refreshTags(Model model, @RequestParam("tags") List<String> tags, HttpSession session) {
+		List<String> oldTags = (List<String>) session.getAttribute("tags");
+		if (oldTags == null) {
+			session.setAttribute("tags", tags);
+		} else {
+			Set<String> selectedTags = new HashSet<>(oldTags);
+			selectedTags.addAll(tags);
+			List<String> combinedTags = new ArrayList<>(selectedTags);
+			session.setAttribute("tags", combinedTags);
+			Set<String> newTags = userService.getRandomUniqueTags(7);
+			model.addAttribute("tags", newTags);
+		}
+		Set<String> newTags = userService.getRandomUniqueTags(7);
+		model.addAttribute("tags", newTags);
+		return "redirect:/user/setPreference";
+	}
+
+	@GetMapping("/register")
+	public String register(Model model) {
+		model.addAttribute("member", new Member());
+		return "/UserViews/register";
+	}
+
+	@PostMapping("/register")
+	public String registermember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult,
+			Model model) {
+		if (bindingResult.hasErrors()) {
+			return "/UserViews/register";
+		}
+		LocalDate birthdate = inMember.getBirthdate();
+		LocalDate currentDate = LocalDate.now();
+		if (birthdate != null) {
+			int age = Period.between(birthdate, currentDate).getYears();
+			inMember.setAge(age);
+		}
+		userService.saveMember(inMember);
+		return "page1";
+	}
+
 }

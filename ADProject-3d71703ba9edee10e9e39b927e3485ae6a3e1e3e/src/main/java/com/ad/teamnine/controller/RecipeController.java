@@ -1,5 +1,7 @@
 package com.ad.teamnine.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,5 +45,13 @@ public class RecipeController {
 		model.addAttribute("recipe", recipe);
 		model.addAttribute("member", member);
 		return "/ReviewViews/createReviewPage";
+	}
+	//search by title name
+	@PostMapping("/search")
+	public String searchRecipe(@RequestParam(name = "query")String query,Model model) {
+		
+		
+        model.addAttribute("results", recipeService.searchByName(query));
+		return "/UserViews/result";
 	}
 }

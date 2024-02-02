@@ -21,6 +21,16 @@ public class Member extends User{
 	private String gender;
 	@Column
 	private Double calorieIntake;
+	@ElementCollection
+	private List<String> prefenceList;
+	
+	public List<String> getPerfenceList() {
+		return prefenceList;
+	}
+
+	public void setPrefenceList(List<String> prefenceList) {
+		this.prefenceList = prefenceList;
+	}
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ShoppingListItem> shoppingList;
