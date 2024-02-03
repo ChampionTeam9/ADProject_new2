@@ -48,10 +48,31 @@ public class RecipeController {
 	}
 	//search by title name
 	@PostMapping("/search")
-	public String searchRecipe(@RequestParam(name = "query")String query,Model model) {
-		
-		
-        model.addAttribute("results", recipeService.searchByName(query));
-		return "/UserViews/result";
+	public String searchRecipe(@RequestParam("query") String query,
+	                           @RequestParam("type") String type,
+	                           Model model) {
+	    List<Recipe> results;
+	    switch (type) {
+	        case "tag":
+
+	            results = recipeService.searchByTag(query);
+	            break;
+	        case "name":
+
+	            results = recipeService.searchByName(query);
+	            break;
+	        case "description":
+
+	            results = recipeService.searchByDescription(query);
+	            break;
+	        default:
+	            results = recipeService.searchAll(query);
+	            break;
+	    }
+	    model.addAttribute("results", results);
+	    return "page1";
+	   
+
 	}
+
 }

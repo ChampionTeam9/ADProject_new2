@@ -211,6 +211,7 @@ public class UserController {
 		if (bindingResult.hasErrors()) {
 			return "/UserViews/register";
 		}
+		inMember.setStatus(Status.CREATED);
 		LocalDate birthdate = inMember.getBirthdate();
 		LocalDate currentDate = LocalDate.now();
 		if (birthdate != null) {
@@ -218,7 +219,7 @@ public class UserController {
 			inMember.setAge(age);
 		}
 		userService.saveMember(inMember);
-		return "page1";
+		return "redirect:/page1";
 	}
 
 }

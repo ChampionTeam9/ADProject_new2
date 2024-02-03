@@ -1,18 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en">
 <head>
-	<title>Page1</title>
+    <meta charset="UTF-8">
+    <title>Recipe Search with Debounce</title>
 </head>
-
 <body>
-	<div>created!</div>
-	<p th:text="${step}"></p>
-	<h1>Welcome, <span th:text="${username}">User</span>!</h1>
-
-    <form action="/recipe/search" method="post"> 
-        <input type="text" name="query" placeholder="Please enter the recipe" required>
+    <form id="searchForm" action="/recipe/search" method="post">
+        <input type="text" id="searchInput" name="query" placeholder="Please enter the recipe" required>
+        <!-- 隐藏字段用于存储搜索类型 -->
+        <input type="hidden" id="searchType" name="type" value="all">
         <button type="submit">Search</button>
     </form>
+    <!-- 搜索类型按钮 -->
+    <button onclick="setSearchType('tag')">Tag</button>
+    <button onclick="setSearchType('name')">Name</button>
+    <button onclick="setSearchType('description')">Description</button>
+
+    <script>
+        function setSearchType(type) {
+            document.getElementById('searchType').value = type; // 更新隐藏字段的值
+            document.getElementById('searchForm').submit(); // 提交表单
+        }
+    </script>
+    <div>
+		<ul>
+			<!-- 使用th:each遍历results列表 -->
+			<li th:each="result : ${results}">
+				<!-- 创建一个可以点击的链接，点击后会跳转到 '/recipe/view/{id}'，其中 {id} 是配方的ID -->
+				<a th:href="@{/recipe/view/{id}(id=${result.id})}">
+					<!-- 显示列表中每个元素的name属性 -->
+					<div th:text="${result.name}">Recipe Name</div>
+					<div th:text="${result.description}">Recipe Description</div>
+					<!-- 假设tags是一个列表，这里将其转换为字符串进行显示 -->
+					<div th:text="${#strings.listJoin(result.tags, ', ')}">Recipe Tags</div>
+				</a>
+			</li>
+		</ul>
+	</div>
 </body>
 </html>

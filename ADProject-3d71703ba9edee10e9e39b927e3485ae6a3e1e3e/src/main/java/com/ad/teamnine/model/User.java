@@ -18,7 +18,16 @@ public abstract class User {
 			+ "password must have at least one number," + "password must have at least one letter,"
 			+ "password must have at least one punctuation.")
 	private String password;
-	
+	@Enumerated(EnumType.STRING)
+	private Status status;
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
 	public User() {}
 	
 	public User(int id, String username, String password) {
