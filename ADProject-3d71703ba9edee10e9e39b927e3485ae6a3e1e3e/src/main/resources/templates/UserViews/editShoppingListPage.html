@@ -25,6 +25,13 @@
 					var id = addItem(newIngredient);
 					addRow(id, newIngredient);
 				})
+				
+				const checkboxes = document.getElementsByClassName('shoppingListItem')
+				for (const checkbox of checkboxes) {
+					checkbox.addEventListener('change', (event) => {
+						updateRowStyle(checkbox);
+					})
+				}
 			});
 			
 			function clearItems(message) {
@@ -89,9 +96,22 @@
 				checkbox.type = "checkbox";
 				checkbox.className = "shoppingListItem";
             	checkbox.id = id;
+            	checkbox.addEventListener('change', function() {
+					updateRowStyle(checkbox);
+				});
 				cell1.appendChild(checkbox);
 				var cell2 = newRow.insertCell(1);
+				cell2.className = "itemText";
 				cell2.innerHTML = ingredientName;
+			}
+			
+			function updateRowStyle(checkbox){
+				var row = checkbox.closest('tr');
+				if (checkbox.checked) {
+					row.querySelector('.itemText').style.color = 'grey';
+				} else {
+					row.querySelector('.itemText').style.color = '';
+				}
 			}
 		</script>
 	</head>
@@ -106,13 +126,14 @@
 		<table id="itemTable">
 			<tr th:each="item : ${shoppingList}">
 				<td>
-					<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}"/>
+					<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}" />
 				</td>
-				<td th:text="${item.ingredientName}" >
+				<td th:text="${item.ingredientName}" th:style="${item.isChecked ? 'color: grey;' : ''}" class="itemText" >
 					Shopping List Item
 				</td>
 			</tr>
 		</table>
+		<br />
 		<button type="button" id="clearSelectedBtn">Clear Selected</button>
 		<button type="button" id="clearAllBtn">Clear All</button>
 	</body>
