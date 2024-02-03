@@ -7,15 +7,23 @@
 		<script>
 			document.addEventListener("DOMContentLoaded", function(event) {
 				const clearSelectedBtn = document.getElementById('clearSelectedBtn');
-				clearSelectedBtn.addEventListener('click', (event) => {
+				clearSelectedBtn.addEventListener("click", (event) => {
 					clearItems("clearChecked");
 					removeCheckedRows();
 				})
 				
 				const clearAllBtn = document.getElementById('clearAllBtn');
-				clearAllBtn.addEventListener('click', (event) => {
+				clearAllBtn.addEventListener("click", (event) => {
 					clearItems("clearAll");
 					removeAllRows();
+				})
+				
+				const addIngredientInput = document.getElementById("addIngredientInput");
+				const addBtn = document.getElementById("addBtn");
+				addBtn.addEventListener("click", (event) => {
+					var newIngredient = addIngredientInput.value;
+					var id = addItem(newIngredient);
+					addRow(id, newIngredient);
 				})
 			});
 			
@@ -35,7 +43,7 @@
 			}
 			
 			function removeCheckedRows(){
-				const checkboxes = document.getElementsByClassName('shoppingListItem');
+				const checkboxes = document.getElementsByClassName("shoppingListItem");
 				const checkboxesArray = Array.from(checkboxes);
 				for (const checkbox of checkboxesArray) {
 					if (checkbox.checked){
@@ -45,11 +53,45 @@
 			}
 			
 			function removeAllRows(){
-				const checkboxes = document.getElementsByClassName('shoppingListItem');
+				const checkboxes = document.getElementsByClassName("shoppingListItem");
 				const checkboxesArray = Array.from(checkboxes);
 				for (const checkbox of checkboxesArray) {
 					checkbox.parentElement.parentElement.remove();
 				}
+			}
+			
+			function addItem(newIngredient){
+				console.log("add item function");
+				let xhr = new XMLHttpRequest();
+			    xhr.open("POST", "/user/shoppingList/addItem");
+			    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			    xhr.onreadystatechange = function () {
+			        if (xhr.readyState == 4 && xhr.status == 200) {
+			            console.log("response ok");
+			            let data = JSON.parse(xhr.responseText);
+			            let newIngredientId = data.id;
+			            return newIngredientId;
+			        }
+			    }
+			    let data = {
+			        "ingredientName": newIngredient,
+			    }
+			    xhr.send(JSON.stringify(data));
+			}
+			
+			function addRow(id, ingredientName){
+				console.log("add row function");
+				console.log("ingredientName: " + ingredientName);
+				const itemTable = document.getElementById("itemTable");
+				var newRow = itemTable.insertRow(-1);
+				var cell1 = newRow.insertCell(0);
+				var checkbox = document.createElement("input");
+				checkbox.type = "checkbox";
+				checkbox.className = "shoppingListItem";
+            	checkbox.id = id;
+				cell1.appendChild(checkbox);
+				var cell2 = newRow.insertCell(1);
+				cell2.innerHTML = ingredientName;
 			}
 		</script>
 	</head>
@@ -57,12 +99,16 @@
 		<div>
 			<h2>Edit Shopping List</h2>
 		</div>
-		<table>
+		<div>
+			<input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
+			<button type="button" id="addBtn">Add</button>
+		</div>
+		<table id="itemTable">
 			<tr th:each="item : ${shoppingList}">
 				<td>
 					<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}"/>
 				</td>
-				<td th:text="${item.ingredient.foodText}" >
+				<td th:text="${item.ingredientName}" >
 					Shopping List Item
 				</td>
 			</tr>

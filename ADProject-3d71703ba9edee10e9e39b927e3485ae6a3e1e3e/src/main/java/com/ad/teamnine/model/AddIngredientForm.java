@@ -1,27 +1,30 @@
 package com.ad.teamnine.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class AddIngredientForm {
-	private List<Ingredient> ingredients;
-	private Set<Integer> selectedIngredients;
+	private List<String> ingredientNames;
+	private List<Integer> selectedIngredients;
 	
-	public AddIngredientForm() {}
-
-	public List<Ingredient> getIngredients() {
-		return ingredients;
+	public AddIngredientForm() {
+		ingredientNames = new ArrayList<>();
+		selectedIngredients = new ArrayList<>();
 	}
 
-	public void setIngredients(List<Ingredient> ingredients) {
-		this.ingredients = ingredients;
+	public List<String> getIngredientNames() {
+		return ingredientNames;
 	}
 
-	public Set<Integer> getSelectedIngredients() {
+	public void setIngredientNames(List<String> ingredientNames) {
+		this.ingredientNames = ingredientNames;
+	}
+
+	public List<Integer> getSelectedIngredients() {
 		return selectedIngredients;
 	}
 
-	public void setSelectedIngredients(Set<Integer> selectedIngredients) {
+	public void setSelectedIngredients(List<Integer> selectedIngredients) {
 		this.selectedIngredients = selectedIngredients;
 	}
 }

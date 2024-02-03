@@ -16,8 +16,8 @@ public class ShoppingListItemService {
 	@Autowired
 	ShoppingListItemRepository shoppingListItemRepo;
 	
-	public void saveShoppingListItem(ShoppingListItem item) {
-		shoppingListItemRepo.save(item);
+	public ShoppingListItem saveShoppingListItem(ShoppingListItem item) {
+		return shoppingListItemRepo.save(item);
 	}
 	
 	// get specific shoppingListItem by id

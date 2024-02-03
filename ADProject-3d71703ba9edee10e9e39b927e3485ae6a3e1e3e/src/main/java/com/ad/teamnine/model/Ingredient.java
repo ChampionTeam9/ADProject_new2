@@ -27,8 +27,6 @@ public class Ingredient {
 	private Double saturatedFat;
 	@ManyToMany
 	private List<Recipe> recipes;
-	@OneToMany(mappedBy = "ingredient")
-	private List<ShoppingListItem> shoppingListItems;
 	
 	public Ingredient() {
 		recipes = new ArrayList<>();

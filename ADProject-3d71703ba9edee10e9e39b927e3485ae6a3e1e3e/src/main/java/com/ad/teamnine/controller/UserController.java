@@ -3,6 +3,7 @@ package com.ad.teamnine.controller;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -45,8 +46,11 @@ public class UserController {
 		Recipe recipe = recipeService.getRecipeById(1);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
-		addIngredientForm.setIngredients(recipe.getIngredients());
-		addIngredientForm.setSelectedIngredients(new HashSet<>());
+		List<String> ingredientNames = new ArrayList<>();
+		for (Ingredient ingredient : recipe.getIngredients()) {
+			ingredientNames.add(ingredient.getFoodText());
+		}
+		addIngredientForm.setIngredientNames(ingredientNames);
 		model.addAttribute("addIngredientForm", addIngredientForm);
 		return "UserViews/addShoppingListIngredientPage";
 	}
@@ -60,21 +64,21 @@ public class UserController {
 			return "UserViews/addShoppingListIngredientPage";
 		}
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
-		Set<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
-		for (Integer id : selectedIngredients) {
-			Ingredient ingredient = ingredientService.getIngredientById(id);
-			ShoppingListItem shoppingListItem = new ShoppingListItem(member, ingredient);
+		List<String> ingredientNames = addIngredientForm.getIngredientNames();
+		List<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
+		for (int i = 0; i < selectedIngredients.size(); i++) {
+			int pos = selectedIngredients.get(i);
+			String ingredientName = ingredientNames.get(pos);
+			ShoppingListItem shoppingListItem = new ShoppingListItem(member, ingredientName);
 			shoppingListItemService.saveShoppingListItem(shoppingListItem);
 			shoppingList.add(shoppingListItem);
-			System.out.println(ingredient);
+			System.out.println("ingredientName: " + ingredientName);
 		}
 		userService.saveMember(member);
-		// Add ingredients to member's shopping list
 		return "redirect:/user/shoppingList/view";
 	}
 
@@ -82,8 +86,7 @@ public class UserController {
 	@GetMapping("shoppingList/view")
 	public String viewShoppingListIngredient(Model model) {
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
@@ -121,8 +124,7 @@ public class UserController {
 		String message = (String) payload.get("message");
 		System.out.println(message);
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
@@ -130,7 +132,7 @@ public class UserController {
 		Iterator<ShoppingListItem> iterator = shoppingList.iterator();
 		while (iterator.hasNext()) {
 			ShoppingListItem item = iterator.next();
-			System.out.println(item.getIngredient());
+			System.out.println(item.getIngredientName());
 			if ((message.equals("clearChecked") && item.isChecked()) || message.equals("clearAll")) {
 				iterator.remove();
 				shoppingListItemService.deleteShoppingListItem(item);
@@ -138,6 +140,22 @@ public class UserController {
 		}
 		return ResponseEntity.ok().build();
 	}
+	
+	// Add ShoppingListItem at editShoppingListPage
+	@PostMapping("shoppingList/addItem")
+	public ResponseEntity<Map<String, Object>> addItem (@RequestBody Map<String, Object> payload){
+		String ingredientName = (String) payload.get("ingredientName");
+		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Hardcode first
+		Member member = userService.getMemberById(1);
+		ShoppingListItem newItem = new ShoppingListItem(member, ingredientName);
+		ShoppingListItem savedItem = shoppingListItemService.saveShoppingListItem(newItem);
+		int id = savedItem.getId();
+		Map<String, Object> response = new HashMap<>();
+	    response.put("id", id);
+		return ResponseEntity.ok(response);
+	}
+	
 	//set preference
 	@GetMapping("/setPreference")
 	public String setPreference(Model model) {
@@ -162,7 +180,7 @@ public class UserController {
 		}	
 		return "test";
 	}
-//refresh tags on the website
+	//refresh tags on the website
 	@PostMapping("/refresh")
 	public String refreshTags(Model model, @RequestParam("tags") List<String> tags, HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
