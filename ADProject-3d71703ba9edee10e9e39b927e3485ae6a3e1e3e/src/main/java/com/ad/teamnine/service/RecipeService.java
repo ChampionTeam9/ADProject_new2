@@ -2,6 +2,8 @@ package com.ad.teamnine.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -84,11 +86,35 @@ public class RecipeService {
 			System.out.println("Recipe with ID " + id + " not found");
 		}
 	}
-	
-	public List<Recipe> searchByName(String query){
-	List<Recipe> results = recipeRepo.findByNameContaining(query);
-	return results;
-	}
-	
-}
 
+	public List<Recipe> searchByName(String query) {
+		List<Recipe> results = recipeRepo.findByNameContaining(query);
+		return results;
+	}
+	public List<Recipe> searchByTag(String tag){
+		List<Recipe> results=recipeRepo.findByTagsContaining(tag);
+		return results;
+	
+	}
+
+	public List<Recipe> searchByDescription(String query) {
+		List<Recipe> results=recipeRepo.findByDescriptionContaining(query);
+		return results;
+	}
+
+	public List<Recipe> searchAll(String query) {
+	    List<Recipe> results1 = recipeRepo.findByNameContaining(query);
+	    List<Recipe> results2 = recipeRepo.findByTagsContaining(query);
+	    List<Recipe> results3 = recipeRepo.findByDescriptionContaining(query);
+	    return mergeLists(results1, results2, results3);
+	}
+
+	//merge
+	public List<Recipe> mergeLists(List<Recipe> listByName, List<Recipe> listByTag, List<Recipe> listByDescription) {
+	    return Stream.of(listByName, listByTag, listByDescription) 
+	            .flatMap(List::stream) 
+	            .distinct() 
+	            .collect(Collectors.toList()); 
+	}
+
+}

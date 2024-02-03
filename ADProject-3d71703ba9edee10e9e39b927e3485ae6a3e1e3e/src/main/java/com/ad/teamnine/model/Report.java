@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public abstract class Report {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@ManyToOne
 	private Member member;

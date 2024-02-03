@@ -13,5 +13,8 @@ public interface RecipeRepository extends JpaRepository<Recipe,Integer>{
     List<String> findAllDistinctTags();
 	@Query("SELECT r FROM Recipe r WHERE r.name LIKE %?1%")
     List<Recipe> findByNameContaining(String name);
-
+	@Query("SELECT r FROM Recipe r JOIN r.tags t WHERE t LIKE %?1%")
+	List<Recipe> findByTagsContaining(String tag);
+	@Query("SELECT r FROM Recipe r WHERE r.description LIKE %?1%")
+    List<Recipe> findByDescriptionContaining(String description);
 }
