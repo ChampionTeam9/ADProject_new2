@@ -16,10 +16,10 @@
 			<table>
 				<tr th:each="ingredientName, index : *{ingredientNames}">
 					<td>
-						<input type="checkbox" th:field="*{selectedIngredients}" th:value="${index}" />
+						<input type="checkbox" th:field="*{selectedIngredients}" th:value="${index.index}" />
 					</td>
 					<td>
-						<input type="text" th:field="${ingredientNames[__${index.index}__]}"/>
+						<input type="text" th:field="*{ingredientNames[__${index.index}__]}"/>
 					</td>
 				</tr>
 			</table>
