@@ -3,11 +3,14 @@ package com.ad.teamnine.controller;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import java.util.Random;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +44,7 @@ public class APIController {
 	@GetMapping("/readCsv")
 	public List<String[]> readCsv() {
 		try {
-			URI uri = ClassLoader.getSystemResource("test.csv").toURI();
+			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
 			saveEntities(results);
@@ -53,25 +56,56 @@ public class APIController {
 	}
 
 	@GetMapping("/nutrition")
-	public IngredientInfo getNutritionInfo() {
+	public Ingredient getNutritionInfo(String foodText) {
 		String appId = "a0eca928";
 		String appKey = "2791c4e7ff627b1a94a4a8e41a6e0a14";
 		String url = "https://api.edamam.com/api/nutrition-data?app_id=" + appId + "&app_key=" + appKey
-				+ "&nutrition-type=cooking&ingr=1banana";
+				+ "&nutrition-type=cooking&ingr=" + foodText;
 		RestTemplate restTemplate = new RestTemplate();
-		IngredientInfo ingredient = restTemplate.getForObject(url, IngredientInfo.class);
+		IngredientInfo ingredientInfo = restTemplate.getForObject(url, IngredientInfo.class);
+		IngredientInfo.Nutrients nutrients = ingredientInfo.getIngredients().get(0).getParsed().get(0).getNutrients();
+		double protein = getDefaultIfNull(nutrients.getPROCNT().getQuantity());
+		double calories = getDefaultIfNull(nutrients.getENERC_KCAL().getQuantity());
+		double carbohydrate = getDefaultIfNull(nutrients.getCHOCDF().getQuantity());
+		double sugar = getDefaultIfNull(nutrients.getSUGAR().getQuantity());
+		double sodium = getDefaultIfNull(nutrients.getNA().getQuantity());
+		double fat = getDefaultIfNull(nutrients.getFAT().getQuantity());
+		double saturatedFat = getDefaultIfNull(nutrients.getFASAT().getQuantity());
+		Ingredient ingredient = new Ingredient(foodText, protein, calories, carbohydrate, sugar, sodium, fat, saturatedFat);
 		return ingredient;
+	}
+	
+	private static double getDefaultIfNull(Double value) {
+		// If any of the nutrients is null as info not available on API, set default to zero
+	    return value != null ? value : 0.0;
 	}
 
 	public void saveEntities(List<String[]> recipes) {
 		for (int i = 1; i < recipes.size(); i++) {
 			String[] currRecipe = recipes.get(i);
+			System.out.println(currRecipe[0]);
 			// Create member
 			int memberId = Integer.parseInt(currRecipe[3]);
 			Member member = userService.getMemberById(memberId);
 			if (member == null) {
-				member = new Member();
-				member.setId(memberId);
+				// Randomise their attributes as not provided in dataset
+				String username = "member" + memberId;
+				String password = "member" + memberId + "Password!";
+				Random rnd = new Random();
+				Double height = 140 + (190 - 140) * rnd.nextDouble();
+				Double weight = 45 + (90 - 50) * rnd.nextDouble();
+				LocalDate startDate = LocalDate.of(1950, 1, 1);
+		        LocalDate endDate = LocalDate.of(2005, 12, 31);
+		        long startEpochDay = startDate.toEpochDay();
+		        long endEpochDay = endDate.toEpochDay();
+		        long randomEpochDay = startEpochDay + (long) (Math.random() * (endEpochDay - startEpochDay + 1));
+		        LocalDate birthdate = LocalDate.ofEpochDay(randomEpochDay);
+		        String gender;
+		        if (Math.random() > 0.5) 
+		        	gender  = "Male";
+		        else 
+		        	gender = "Female";
+				member = new Member(memberId, username, password, height, weight, birthdate, gender);
 				userService.saveMember(member);
 			}
 			// Create recipe ingredients
@@ -85,12 +119,17 @@ public class APIController {
 				if (existingIngredient != null) {
 					ingredientsToAdd.add(existingIngredient);
 				} else {
+					// Not able to use api for dataset as need to pay $$$ if we use > 20/min
+					// Ingredient ingredient = getNutritionInfo(ingredientText);
 					Ingredient ingredient = new Ingredient();
 					ingredient.setFoodText(ingredientText);
 					Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
 					ingredientsToAdd.add(savedIngredient);
 				}
 			}
+			// Create tagsList for the recipe
+			String tagsString = currRecipe[5];
+			List<String> tagsList = Arrays.asList(extractItems(tagsString));
 			// Create recipe
 			int recipeId = Integer.parseInt(currRecipe[1]);
 			String recipeName = currRecipe[0];
@@ -106,9 +145,10 @@ public class APIController {
 			double sodium = Double.parseDouble(currRecipe[21]);
 			double fat = Double.parseDouble(currRecipe[19]);
 			double saturatedFat = Double.parseDouble(currRecipe[23]);
-			List<String> steps = Arrays.asList(extractSteps(currRecipe[8]));
+			List<String> steps = Arrays.asList(extractItems(currRecipe[8]));
 			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
+			recipe.setTags(tagsList);
 			recipeService.createRecipe(recipe);
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
@@ -129,15 +169,15 @@ public class APIController {
 		return ingredientsArr;
 	}
 
-	public static String[] extractSteps(String stepsString) {
+	public static String[] extractItems(String stepsString) {
 		// Split the string based on commas followed by a space outside single quotes
-		String[] stepsArr = stepsString.substring(1, stepsString.length() - 1).split("', '");
+		String[] itemsArr = stepsString.substring(1, stepsString.length() - 1).split("', '");
 		// Remove surrounding single quotes from each step
-		for (int i = 0; i < stepsArr.length; i++) {
-			stepsArr[i] = stepsArr[i].replaceAll("'", "");
-			stepsArr[i] = stepsArr[i].replaceAll("\"", "");
+		for (int i = 0; i < itemsArr.length; i++) {
+			itemsArr[i] = itemsArr[i].replaceAll("'", "");
+			itemsArr[i] = itemsArr[i].replaceAll("\"", "");
 		}
-		return stepsArr;
+		return itemsArr;
 	}
 }
 

@@ -8,10 +8,15 @@
 		<script>
 			document.addEventListener("DOMContentLoaded", function(event) {
 				const checkboxes = document.getElementsByClassName('shoppingListItem')
-				console.log(checkboxes)
 				for (const checkbox of checkboxes) {
 					checkbox.addEventListener('change', (event) => {
 						updateCheckedStatus(checkbox, event.currentTarget.checked);
+						var row = checkbox.closest('tr');
+						if (checkbox.checked) {
+							row.querySelector('.itemText').style.color = 'grey';
+						} else {
+							row.querySelector('.itemText').style.color = '';
+						}
 					})
 				}
 			});
@@ -45,11 +50,12 @@
 				<td>
 					<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}"/>
 				</td>
-				<td th:text="${item.ingredientName}" >
+				<td th:text="${item.ingredientName}" class="itemText" >
 					Shopping List Item
 				</td>
 			</tr>
 		</table>
+		<br />
 		<button type="button" onclick="window.location.href='/user/shoppingList/edit';">Edit</button>
 	</body>
 </html>

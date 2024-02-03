@@ -32,8 +32,7 @@ public class Ingredient {
 		recipes = new ArrayList<>();
 	}
 	
-	public Ingredient(int id, String foodText, double protein, double calories, double carbohydrate, double sugar, double sodium, double fat, double saturatedFat) {
-		this.id = id;
+	public Ingredient(String foodText, double protein, double calories, double carbohydrate, double sugar, double sodium, double fat, double saturatedFat) {
 		this.foodText = foodText;
 		this.protein = protein;
 		this.calories = calories;
