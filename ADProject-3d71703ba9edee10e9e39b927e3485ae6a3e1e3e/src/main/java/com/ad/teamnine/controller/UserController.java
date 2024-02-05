@@ -43,6 +43,7 @@ public class UserController {
 	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add")
 	public String addShoppingListIngredient(Model model) {
+		// To get from query string after integretion, hard code first
 		Recipe recipe = recipeService.getRecipeById(1);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
