@@ -156,4 +156,8 @@ public class RecipeService {
 
 	        return matchingTags;
 	    }
+		
+		public List<Recipe> getAllRecipesByMember(Member member) {
+	        return recipeRepo.findByMember(member);
+	    }
 }

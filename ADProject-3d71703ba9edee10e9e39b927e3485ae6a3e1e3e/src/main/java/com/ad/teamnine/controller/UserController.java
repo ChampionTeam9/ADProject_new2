@@ -227,6 +227,18 @@ public class UserController {
 	}
 	
 
+	@GetMapping("/{id}")
+    public String viewUserProfile(@PathVariable int id, Model model) {
+        Member member = userService.getMemberById(id);
+        model.addAttribute("member", member);
+
+        // Get all recipes for the user
+        model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
+
+        return "userProfile";
+    }
+
+
 	
 	@GetMapping("/admin/dashboard")
 	public String getDashboard(Model model) {
@@ -332,5 +344,6 @@ public class UserController {
 	 
 	
 	
+
 
 }
