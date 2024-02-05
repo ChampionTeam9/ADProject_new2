@@ -42,14 +42,15 @@ public class RecipeController {
 		return ""; // 改成redirection
 	}
 
-	@PostMapping("/review/{id}")
+	@GetMapping("/review/{id}")
 	public String reviewRecipe(@PathVariable Integer id, HttpSession sessionObj, Model model) {
 		Recipe recipe = recipeService.getRecipeById(id);
-		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
+		//Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
+		Member member = userService.getMemberById(1);
 		Review review = new Review();
-		model.addAttribute("review", review);// 没有设置Id
-		model.addAttribute("recipe", recipe);
-		model.addAttribute("member", member);
+		review.setmember(member);
+		review.setRecipe(recipe);
+		model.addAttribute("review", review);
 		return "/ReviewViews/createReviewPage";
 	}
 	//search by title name

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Edit Shopping List
+		</title>
+		<link href="/style.css" rel="stylesheet"/>
+		<script>
+			document.addEventListener("DOMContentLoaded", function(event) {
+				const clearSelectedBtn = document.getElementById('clearSelectedBtn');
+				clearSelectedBtn.addEventListener("click", (event) => {
+					clearItems("clearChecked");
+					removeCheckedRows();
+				})
+				
+				const clearAllBtn = document.getElementById('clearAllBtn');
+				clearAllBtn.addEventListener("click", (event) => {
+					clearItems("clearAll");
+					removeAllRows();
+				})
+				
+				const addIngredientInput = document.getElementById("addIngredientInput");
+				const addBtn = document.getElementById("addBtn");
+				addBtn.addEventListener("click", (event) => {
+					var newIngredient = addIngredientInput.value;
+					var id = addItem(newIngredient);
+					addRow(id, newIngredient);
+				})
+				
+				const checkboxes = document.getElementsByClassName('shoppingListItem')
+				for (const checkbox of checkboxes) {
+					checkbox.addEventListener('change', (event) => {
+						updateRowStyle(checkbox);
+					})
+				}
+			});
+			
+			function clearItems(message) {
+			    let xhr = new XMLHttpRequest();
+			    xhr.open("POST", "/user/shoppingList/clearItems");
+			    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			    xhr.onreadystatechange = function () {
+			        if (xhr.readyState == 4 && xhr.status == 200) {
+			            console.log("response ok");
+			        }
+			    }
+			    let data = {
+			        "message": message,
+			    }
+			    xhr.send(JSON.stringify(data));    
+			}
+			
+			function removeCheckedRows(){
+				const checkboxes = document.getElementsByClassName("shoppingListItem");
+				const checkboxesArray = Array.from(checkboxes);
+				for (const checkbox of checkboxesArray) {
+					if (checkbox.checked){
+						checkbox.parentElement.parentElement.remove();
+					}
+				}
+			}
+			
+			function removeAllRows(){
+				const checkboxes = document.getElementsByClassName("shoppingListItem");
+				const checkboxesArray = Array.from(checkboxes);
+				for (const checkbox of checkboxesArray) {
+					checkbox.parentElement.parentElement.remove();
+				}
+			}
+			
+			function addItem(newIngredient){
+				console.log("add item function");
+				let xhr = new XMLHttpRequest();
+			    xhr.open("POST", "/user/shoppingList/addItem");
+			    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			    xhr.onreadystatechange = function () {
+			        if (xhr.readyState == 4 && xhr.status == 200) {
+			            console.log("response ok");
+			            let data = JSON.parse(xhr.responseText);
+			            let newIngredientId = data.id;
+			            return newIngredientId;
+			        }
+			    }
+			    let data = {
+			        "ingredientName": newIngredient,
+			    }
+			    xhr.send(JSON.stringify(data));
+			}
+			
+			function addRow(id, ingredientName){
+				console.log("add row function");
+				console.log("ingredientName: " + ingredientName);
+				const itemTable = document.getElementById("itemTable");
+				var newRow = itemTable.insertRow(-1);
+				var cell1 = newRow.insertCell(0);
+				var checkbox = document.createElement("input");
+				checkbox.type = "checkbox";
+				checkbox.className = "shoppingListItem";
+            	checkbox.id = id;
+            	checkbox.addEventListener('change', function() {
+					updateRowStyle(checkbox);
+				});
+				cell1.appendChild(checkbox);
+				var cell2 = newRow.insertCell(1);
+				cell2.className = "itemText";
+				cell2.innerHTML = ingredientName;
+			}
+			
+			function updateRowStyle(checkbox){
+				var row = checkbox.closest('tr');
+				if (checkbox.checked) {
+					row.querySelector('.itemText').style.color = 'grey';
+					row.querySelector('.itemText').style.textDecoration = 'line-through';
+				} else {
+					row.querySelector('.itemText').style.color = '';
+					row.querySelector('.itemText').style.textDecoration = 'none';
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div>
+				<h2>Edit Shopping List</h2>
+			</div>
+			<div>
+				<input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
+				<button type="button" id="addBtn">Add</button>
+			</div>
+			<br />
+			<table id="itemTable">
+				<tr th:each="item : ${shoppingList}">
+					<td>
+						<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}" />
+					</td>
+					<td th:text="${item.ingredientName}" th:style="${item.isChecked ? 'color: grey; text-decoration: line-through;' : ''}" class="itemText" >
+						Shopping List Item
+					</td>
+				</tr>
+			</table>
+			<br />
+			<button type="button" id="clearSelectedBtn">Clear Selected</button>
+			<button type="button" id="clearAllBtn">Clear All</button>
+			<button type="button" id="backBtn" onclick="window.location.href='/user/shoppingList/view'">Back to Shopping List</button>
+		</div>
+	</body>
+</html>
