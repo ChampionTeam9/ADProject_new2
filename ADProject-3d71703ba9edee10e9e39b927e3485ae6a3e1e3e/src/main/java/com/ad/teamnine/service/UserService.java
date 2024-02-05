@@ -18,12 +18,21 @@ import org.springframework.stereotype.Service;
 
 import com.ad.teamnine.model.Admin;
 import com.ad.teamnine.model.Member;
-
+import com.ad.teamnine.model.MemberReport;
+import com.ad.teamnine.model.Recipe;
+import com.ad.teamnine.model.RecipeReport;
+import com.ad.teamnine.model.Status;
 import com.ad.teamnine.model.User;
+import com.ad.teamnine.repository.MemberReportRepository;
 import com.ad.teamnine.repository.MemberRepository;
+import com.ad.teamnine.repository.RecipeReportRepository;
 import com.ad.teamnine.repository.RecipeRepository;
 import com.ad.teamnine.repository.UserRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+
 
 @Service
 @Transactional
@@ -34,6 +43,21 @@ public class UserService {
 	MemberRepository memberRepo;
 	@Autowired
 	RecipeRepository recipeRepo;
+	
+	@Autowired
+	private MemberRepository memberRepository; 
+	
+	@Autowired
+	private RecipeRepository recipeRepository;
+	
+	@Autowired
+	private RecipeReportRepository recipeReportRepository;
+	
+	@Autowired
+	private MemberReportRepository memberReportRepository;
+	
+	@Autowired
+	private EntityManager entityManager;
 
 	// check for login
 	public boolean login(User user) {
@@ -89,11 +113,7 @@ public class UserService {
 		}
 	}
 
-	// get specific member by id
-	public Member getMemberById(Integer id) {
-		Optional<Member> member = memberRepo.findById(id);
-		return member.orElse(null);
-	}
+	
 
 	// Save member
 	public void saveMember(Member member) {
@@ -118,6 +138,99 @@ public class UserService {
 		return allTags.stream().limit(count).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 	
+	//Searching and Filtering methods	
+		public Member getMemberById(Integer id) {
+			Optional<Member> member = memberRepository.findById(id);
+			return member.orElse(null);
+		}
+		public RecipeReport getRecipeReportById(Integer id) {
+			Optional<RecipeReport> report = recipeReportRepository.findById(id);
+			return report.orElse(null);
+			
+		}
+		public MemberReport getMemberReportById(Integer id) {
+			Optional<MemberReport> report = memberReportRepository.findById(id);
+			return report.orElse(null);
+		}
+		
+		 public List<Member> getAllMembers() {
+		        return memberRepository.findByMemberStatusNot(Status.DELETED);
+		    }
+		 public List<MemberReport> getReportsByMember(Member member) {
+		        return memberReportRepository.findByMemberReportedAndStatus(member, Status.APPROVED);
+		    }
+		
+		
+		
+		//Pending RecipeReportList Operation	
+		public List<RecipeReport> getPendingRecipeReport() {
+			List<RecipeReport> pendingReport= recipeReportRepository.findByStatus(Status.PENDING);
+			return pendingReport;	
+		}
+		
+		public void approveRecipeReport(Integer reportId) {
+			RecipeReport recipeReport = recipeReportRepository.findById(reportId).orElse(null);
+			recipeReport.setStatus(Status.APPROVED);		
+		}
+		
+		public void rejectRecipeReport(Integer reportId) {
+			RecipeReport recipeReport = recipeReportRepository.findById(reportId).orElse(null);
+			recipeReport.setStatus(Status.REJECTED);		
+		}
+		
+		
+		
+		
+		//Pending MemberReportList Operation
+		public List<MemberReport> getPendingMemberReport() {
+			List<MemberReport> pendingReport= memberReportRepository.findByStatus(Status.PENDING);
+			return pendingReport;	
+		}
+		
+		public void approveMemberReport(Integer reportId) {
+			MemberReport memberReport = memberReportRepository.findById(reportId).orElse(null);
+			memberReport.setStatus(Status.APPROVED);		
+		}
+		
+		public void rejectMemberReport(Integer reportId) {
+			MemberReport memberReport = memberReportRepository.findById(reportId).orElse(null);
+			memberReport.setStatus(Status.REJECTED);		
+		}
+		
+		//delete member and invalid the recipes he or she uploaded
+		 public void deleteMember(Integer memberId) {
+		        Optional<Member> optionalMember = memberRepository.findById(memberId);
+		        if (optionalMember.isPresent()) {
+		            Member member = optionalMember.get();
+		            member.setMemberStatus(Status.DELETED);
+		            memberRepository.save(member);
+		            List<Recipe> recipes = member.getAddedRecipes();
+		            for (Recipe recipe : recipes) {
+		                recipe.setStatus(Status.DELETED);
+		                recipeRepository.save(recipe);
+		            }
+		        }
+		    }
+		
+		
+		
+		
+		//get daily created data
+//		public List<Object[]> getDailyMemberData() {
+//		    String sql = "SELECT CAST(registrationDate AS DATE) AS date, COUNT(*) AS new_users " +
+//		                 "FROM user " +
+//		                 "WHERE registrationDate >= CURRENT_DATE " +
+//		                 "GROUP BY CAST(registrationDate AS DATE)";	    
+//		    TypedQuery<Object[]> query = entityManager.createQuery(sql, Object[].class);
+//		    List<Object[]> resultList = query.getResultList();
+//		    return resultList;
+		}
+
+
 	
 	
-}
+	
+	
+	
+	
+

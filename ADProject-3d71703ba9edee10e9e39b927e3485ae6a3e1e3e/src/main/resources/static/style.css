@@ -6,8 +6,12 @@ body {
   margin: 0 auto;
   padding: 20px;
 }
+.custom-container {
+  width: 50%;
+  margin: 0 auto;
+}
 button {
-  padding: 10px 15px;
+  padding: 5px 10px;
   background-color: #5cb85c;
   color: white;
   border: none;

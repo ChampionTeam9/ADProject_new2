@@ -1,5 +1,6 @@
 package com.ad.teamnine.controller;
 
+import java.nio.channels.SeekableByteChannel;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class UserController {
 	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add")
 	public String addShoppingListIngredient(Model model) {
+		// To get from query string after integretion, hard code first
 		Recipe recipe = recipeService.getRecipeById(1);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
@@ -208,7 +210,7 @@ public class UserController {
 
 	@PostMapping("/register")
 	public String registermember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult,
-			Model model) {
+			Model model, HttpSession httpSession) {
 		if (bindingResult.hasErrors()) {
 			return "/UserViews/register";
 		}
@@ -219,10 +221,12 @@ public class UserController {
 			int age = Period.between(birthdate, currentDate).getYears();
 			inMember.setAge(age);
 		}
+		httpSession.setAttribute("UserID", inMember.getId());
 		userService.saveMember(inMember);
 		return "redirect:/page1";
 	}
 	
+
 	@GetMapping("/{id}")
     public String viewUserProfile(@PathVariable int id, Model model) {
         Member member = userService.getMemberById(id);
@@ -233,5 +237,113 @@ public class UserController {
 
         return "userProfile";
     }
+
+
+	
+	@GetMapping("/admin/dashboard")
+	public String getDashboard(Model model) {
+//	    List<Object[]> dailyData = userService.getDailyMemberData();
+//	    List<String> dates = new ArrayList<>();
+//	    List<Integer> newUsers = new ArrayList<>();
+//
+//	    for (Object[] data : dailyData) {
+//	        dates.add(data[0].toString());
+//	        newUsers.add(Integer.parseInt(data[1].toString()));
+//	    }
+//
+//	    model.addAttribute("dates", dates);
+//	    model.addAttribute("newUsers", newUsers);
+
+	    return "UserViews/dashboard";
+	}
+	
+	
+	//Member Management
+	//show all members
+    @GetMapping("/admin/memberManage")
+    public String showMemberList(Model model) {
+        List<Member> members = userService.getAllMembers();
+        model.addAttribute("members", members);
+        return "UserViews/memberList";
+    }
+
+    // show member's history of being reported
+    @GetMapping("/admin/memberManage/{id}/reports")
+    public String showMemberReports(@PathVariable("id") Integer memberId, Model model) {
+        Member member =userService.getMemberById(memberId);
+        List<MemberReport> memberReports = userService.getReportsByMember(member);
+        model.addAttribute("member", member);
+        model.addAttribute("memberReports", memberReports);
+        return "UserViews/memberReports"; 
+    }
+
+  //delete members
+    @GetMapping("/admin/memberManage/delete/{id}")
+    public String deleteMember(@PathVariable("id") Integer memberId) {
+        userService.deleteMember(memberId);
+        return "redirect:/user/admin/memberManage";
+    }
+
+	//show all reported recipes
+	@GetMapping("/admin/recipeReport")
+    public String showPendingRecipeReports(Model model) {
+       List<RecipeReport> pendingReports = userService.getPendingRecipeReport();
+        model.addAttribute("pendingReports", pendingReports);
+        return "ReportViews/recipeReports"; 
+    }
+	
+	//approve or reject recipe report
+	 @GetMapping("/admin/recipeReport/{id}")
+	 public String showRecipeReportDetails(@PathVariable(value = "id") Integer id, Model model) {
+	        RecipeReport report = userService.getRecipeReportById(id);
+	        model.addAttribute("report", report);
+	        return "ReportViews/recipeReportDetails";
+	    }
+
+	 @PostMapping("/admin/recipeReport/{id}/approve")
+	 public String approveRecipeReport(@PathVariable(value = "id") Integer id) {
+	        userService.approveRecipeReport(id);
+	        return "redirect:/admin/recipeReport";
+	    }
+
+	 @PostMapping("/admin/recipeReport/{id}/reject")
+	 public String rejectRecipeReport(@PathVariable(value = "id") Integer id) {
+	        userService.rejectRecipeReport(id);
+	        return "redirect:/admin/recipeReport";
+	    }	
+
+	 
+	//show all reported members
+	 @GetMapping("/admin/memberReport")
+	    public String showPendingMemberReports(Model model) {
+	       List<MemberReport> pendingReports = userService.getPendingMemberReport();
+	        model.addAttribute("pendingReports", pendingReports);
+	        return "ReportViews/memberReports"; 
+	    }
+	 
+	 //approve or reject member report
+	 @PostMapping("/admin/memberReport/{id}/approve")
+	 @GetMapping("/admin/recipeReport/{id}")
+	 public String showMemberReportDetails(@PathVariable(value = "id") Integer id, Model model) {
+	        MemberReport report= userService.getMemberReportById(id);
+	        model.addAttribute("report", report);
+	        return "ReportViews/memberReportDetails";
+	    }
+
+	 public String approveMemberReport(@PathVariable(value = "id") Integer id) {
+	        userService.approveMemberReport(id);
+	        return "redirect:/admin/memberReport";
+	    }
+
+	 @PostMapping("/admin/memberReport/{id}/reject")
+	 public String rejectMemberReport(@PathVariable(value = "id") Integer id) {
+	        userService.rejectMemberReport(id);
+	        return "redirect:/admin/memberReport";
+	    }	
+	 
+	 
+	
+	
+
 
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Report Form</title>
+</head>
+
+<body>
+	<h1>Report Form</h1>
+	<form action="/report/reportRecipe" method="post" th:object="${report}">
+		<label for="reason">Reason:</label>
+		<textarea id="reason" name="reason" th:field="*{reason}" rows="4" cols="50" required></textarea>
+		
+
+		<input type="hidden" th:field="*{id}" th:value="${report.id}">
+		<input type="hidden" th:field="*{member}" th:value="${member}" readonly>
+		<input type="hidden" th:field="*{recipeReported}" th:value="${recipe}" readonly>
+		<input type="submit" value="Submit Report">
+	</form>
+</body>
+</html>

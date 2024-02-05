@@ -6,18 +6,11 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
 import java.util.Random;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,7 +37,7 @@ public class APIController {
 	@GetMapping("/readCsv")
 	public List<String[]> readCsv() {
 		try {
-			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
+			URI uri = ClassLoader.getSystemResource("test.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
 			saveEntities(results);
