@@ -43,7 +43,7 @@ public class Review {
 	public Member getMember() {
 		return member;
 	}
-	public void setMember(Member member) {
+	public void setmember(Member member) {
 		this.member = member;
 	}
 	public Recipe getRecipe() {
