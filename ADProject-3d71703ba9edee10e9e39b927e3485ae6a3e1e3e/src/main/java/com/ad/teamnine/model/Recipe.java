@@ -105,7 +105,7 @@ public class Recipe {
 		this.saturatedFat = saturatedFat;
 		this.steps = steps;
 		this.healthScore = calculateHealthScore();
-		this.status = Status.Public;
+		this.status = Status.PUBLIC;
 	}
 
 	// getter and setter

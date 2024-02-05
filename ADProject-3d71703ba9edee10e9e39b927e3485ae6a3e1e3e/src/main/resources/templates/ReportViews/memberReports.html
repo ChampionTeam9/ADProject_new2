@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Member Reports</title>
+</head>
+<body>
+    <h1>Pending Member Reports</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Reported Member Name</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="report : ${pendingReports}">
+            <td th:text="${report.id}"></td>
+            <td th:text="${report.memberReported.username}"></td>
+            <td>
+                <a th:href="@{/admin/memberReport/{id}(id=${report.id})}">View Details</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
