@@ -1,7 +1,14 @@
 package com.ad.teamnine.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -117,4 +124,36 @@ public class RecipeService {
 	            .collect(Collectors.toList()); 
 	}
 
+	public List<Recipe> getAllRecipes() {
+        return recipeRepo.findAll();
+    }
+	
+	// get all unique tags
+		public Set<String> getAllUniqueTags() {
+			List<String> tagLists = recipeRepo.findAllDistinctTags();
+			Set<String> uniqueTags = new HashSet<>();
+
+			for (String tags : tagLists) {
+				uniqueTags.addAll(Arrays.asList(tags.split(",")));
+			}
+
+			return uniqueTags;
+		}
+
+		public Set<String> getRandomUniqueTags(int count) {
+			List<String> allTags = new ArrayList<>(getAllUniqueTags());
+			Collections.shuffle(allTags, new Random());
+			return allTags.stream().limit(count).collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		
+		public List<String> findMatchingTags(String keyword) {
+	        Set<String> allUniqueTags = getAllUniqueTags();
+
+	        
+	        List<String> matchingTags = allUniqueTags.stream()
+	                .filter(tag -> tag.toLowerCase().contains(keyword.toLowerCase()))
+	                .collect(Collectors.toList());
+
+	        return matchingTags;
+	    }
 }
