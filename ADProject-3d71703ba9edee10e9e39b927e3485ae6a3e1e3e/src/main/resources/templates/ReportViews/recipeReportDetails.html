@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipe Report Details</title>
+</head>
+<body>
+    <h1>Recipe Report Details</h1>
+    <p>ID: <span th:text="${report.id}"></span></p>
+    <p>Reported Recipe Name: <span th:text="${report.reportedRecipe.name}"></span></p>
+    <p>Member: <span th:text="${report.member.username}"></span></p>
+    <p>Reason: <span th:text="${report.reason}"></span></p>
+    
+    <form th:action="@{/admin/recipeReport/{id}/approve(id=${report.id})}" method="post">
+        <input type="submit" value="Approve">
+    </form>
+    
+    <form th:action="@{/admin/recipeReport/{id}/reject(id=${report.id})}" method="post">
+        <input type="submit" value="Reject">
+    </form>
+</body>
+</html>
