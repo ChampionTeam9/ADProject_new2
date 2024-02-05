@@ -4,6 +4,7 @@
 		<title>
 			Edit Shopping List
 		</title>
+		<link href="/style.css" rel="stylesheet"/>
 		<script>
 			document.addEventListener("DOMContentLoaded", function(event) {
 				const clearSelectedBtn = document.getElementById('clearSelectedBtn');
@@ -109,32 +110,38 @@
 				var row = checkbox.closest('tr');
 				if (checkbox.checked) {
 					row.querySelector('.itemText').style.color = 'grey';
+					row.querySelector('.itemText').style.textDecoration = 'line-through';
 				} else {
 					row.querySelector('.itemText').style.color = '';
+					row.querySelector('.itemText').style.textDecoration = 'none';
 				}
 			}
 		</script>
 	</head>
 	<body>
-		<div>
-			<h2>Edit Shopping List</h2>
+		<div class="container">
+			<div>
+				<h2>Edit Shopping List</h2>
+			</div>
+			<div>
+				<input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
+				<button type="button" id="addBtn">Add</button>
+			</div>
+			<br />
+			<table id="itemTable">
+				<tr th:each="item : ${shoppingList}">
+					<td>
+						<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}" />
+					</td>
+					<td th:text="${item.ingredientName}" th:style="${item.isChecked ? 'color: grey; text-decoration: line-through;' : ''}" class="itemText" >
+						Shopping List Item
+					</td>
+				</tr>
+			</table>
+			<br />
+			<button type="button" id="clearSelectedBtn">Clear Selected</button>
+			<button type="button" id="clearAllBtn">Clear All</button>
+			<button type="button" id="backBtn" onclick="window.location.href='/user/shoppingList/view'">Back to Shopping List</button>
 		</div>
-		<div>
-			<input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
-			<button type="button" id="addBtn">Add</button>
-		</div>
-		<table id="itemTable">
-			<tr th:each="item : ${shoppingList}">
-				<td>
-					<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}" />
-				</td>
-				<td th:text="${item.ingredientName}" th:style="${item.isChecked ? 'color: grey;' : ''}" class="itemText" >
-					Shopping List Item
-				</td>
-			</tr>
-		</table>
-		<br />
-		<button type="button" id="clearSelectedBtn">Clear Selected</button>
-		<button type="button" id="clearAllBtn">Clear All</button>
 	</body>
 </html>
