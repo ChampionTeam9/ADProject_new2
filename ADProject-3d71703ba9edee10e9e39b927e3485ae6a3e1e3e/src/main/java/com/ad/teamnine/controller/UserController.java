@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -221,5 +222,16 @@ public class UserController {
 		userService.saveMember(inMember);
 		return "redirect:/page1";
 	}
+	
+	@GetMapping("/{id}")
+    public String viewUserProfile(@PathVariable int id, Model model) {
+        Member member = userService.getMemberById(id);
+        model.addAttribute("member", member);
+
+        // Get all recipes for the user
+        model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
+
+        return "userProfile";
+    }
 
 }
