@@ -49,7 +49,7 @@ public class APIController {
 	}
 
 	@GetMapping("/nutrition")
-	public Ingredient getNutritionInfo(String foodText) {
+	public static Ingredient getNutritionInfo(String foodText) {
 		String appId = "a0eca928";
 		String appKey = "2791c4e7ff627b1a94a4a8e41a6e0a14";
 		String url = "https://api.edamam.com/api/nutrition-data?app_id=" + appId + "&app_key=" + appKey
@@ -142,10 +142,10 @@ public class APIController {
 			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
-			recipeService.createRecipe(recipe);
+			Recipe savedRecipe = recipeService.createRecipe(recipe);
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
-				ingredient.getRecipes().add(recipe);
+				ingredient.getRecipes().add(savedRecipe);
 				ingredientService.saveIngredient(ingredient);
 			}
 		}

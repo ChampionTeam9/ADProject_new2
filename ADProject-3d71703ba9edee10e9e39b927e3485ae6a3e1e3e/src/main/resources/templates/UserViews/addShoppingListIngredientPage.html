@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 	<head>
@@ -38,39 +37,3 @@
 			</form>
 		</div>
 	</body>
-=======
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>
-			Add Ingredient
-		</title>
-		<link href="/style.css" rel="stylesheet"/>
-	</head>
-	<body>
-		<div class="container">
-			<div>
-				<h2>Add Ingredients To Shopping List</h2>
-			</div>
-			<div>
-				<p>Ingredients for <a href="viewRecipePage.html" th:href="@{/recipe/view/}+${recipe.id}"><span th:text="${recipe.name}">recipe name</span></a></p>
-				<p>Edit the fields to change the quantity as needed</p>
-			</div>
-			<form th:action="@{/user/shoppingList/add}" th:object="${addIngredientForm}" method="post">
-				<table>
-					<tr th:each="ingredientName, index : *{ingredientNames}">
-						<td>
-							<input type="checkbox" th:field="*{selectedIngredients}" th:value="${index.index}" />
-						</td>
-						<td>
-							<input type="text" th:field="*{ingredientNames[__${index.index}__]}"/>
-						</td>
-					</tr>
-				</table>
-				<br />
-				<button type="submit" >Add Selected</button>
-			</form>
-		</div>
-	</body>
->>>>>>> main
-</html>
