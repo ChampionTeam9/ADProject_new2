@@ -15,6 +15,6 @@ public class ReviewController {
 	@PostMapping("/create")
 	public String createReview(@ModelAttribute("review") Review review) {
 		reviewService.createReview(review);
-		return "";
+		return "redirect:/";
 	}
 }
