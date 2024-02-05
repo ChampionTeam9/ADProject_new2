@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+
+<h1>User Profile</h1>
+
+
+<div>
+    <!-- 添加 member 的空值检查 -->
+    <!-- <img th:if="${member != null}" th:src="${member.avatarUrl}" alt="Avatar"> -->
+    <p>ID: <span th:if="${member != null}" th:text="${member.id}"></span></p>
+    
+    <!-- 添加 report 按钮 -->
+            <a th:href="@{/report/reportMember/{id}(id=${member.id})}">
+                <button type="button">Report</button>
+            </a>
+</div> 
+
+
+<h2>Recipes</h2>
+
+<div th:if="${recipes != null}">
+    <div th:each="recipe : ${recipes}">
+        <!-- 添加 recipe 及其 imageUrl 的空值检查 -->
+        <div th:if="${recipe != null}">
+            <a th:href="@{/recipe/view/{id}(id=${recipe.id})}">
+                <img th:if="${recipe.image != null}" th:src="${recipe.image}" alt="Recipe Image">
+            </a>
+            <span th:text="${recipe.name}"></span>
+            
+            
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

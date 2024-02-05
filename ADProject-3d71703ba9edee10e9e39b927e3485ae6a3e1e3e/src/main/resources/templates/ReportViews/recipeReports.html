@@ -1,0 +1,14 @@
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Reported Recipe Name</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="report : ${pendingReports}">
+        <td th:text="${report.id}"></td>
+        <td th:text="${report.reportedRecipeName}"></td>
+        <td>
+            <a th:href="@{/admin/recipeReport/{id}(id=${report.id})}">View Details</a>
+        </td>
+    </tr>
+</table>

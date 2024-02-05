@@ -21,6 +21,11 @@ public class Member extends User{
 	private String gender;
 	@Column
 	private Double calorieIntake;
+	
+	@Column
+	@Enumerated(EnumType.STRING)
+	private Status memberStatus;
+	
 	@ElementCollection
 	private List<String> prefenceList;
 	
@@ -180,4 +185,13 @@ public class Member extends User{
 		}
 		return BMR;
 	}
+	
+	public Status getMemberStatus() {
+		return memberStatus;
+	}
+
+	public void setMemberStatus(Status memberStatus) {
+		this.memberStatus = memberStatus;
+	}
+	
 }

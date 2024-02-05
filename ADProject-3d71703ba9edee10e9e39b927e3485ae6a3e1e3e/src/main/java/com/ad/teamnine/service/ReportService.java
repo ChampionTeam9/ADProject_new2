@@ -1,39 +1,50 @@
 package com.ad.teamnine.service;
-
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ad.teamnine.model.Admin;
-import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.MemberReport;
-import com.ad.teamnine.model.Report;
+import com.ad.teamnine.model.RecipeReport;
+import com.ad.teamnine.model.Status;
 import com.ad.teamnine.repository.MemberReportRepository;
+import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.RecipeReportRepository;
-import com.ad.teamnine.repository.ReportRepository;
+import com.ad.teamnine.repository.RecipeRepository;
+
 
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class ReportService {
-
 	@Autowired
-	MemberReportRepository MReRepo;
-	@Autowired
-	RecipeReportRepository ReReRepo;
-	@Autowired
-	ReportRepository ReRepo;
-
-	// Determine the type of reporting
-	public boolean determineIfMemberReport(int id) {
-		Optional<Report> report = ReRepo.findById(id);
-		if (report.isPresent()) {
-			return report.get() instanceof MemberReport;
-		}
-		return false;
-	}
+	RecipeRepository recipeRepository;
 	
+	@Autowired
+	MemberRepository memberRepository;
+
+	@Autowired
+	RecipeReportRepository recipeReportRepository;
+	
+	@Autowired
+	MemberReportRepository memberReportRepository;
+	
+	
+	//report inappropriate recipes
+		public void reportRecipes(RecipeReport report) {		
+				report.setStatus(Status.PENDING);				
+				recipeReportRepository.save(report);				
+			}
+						
+	//report inappropriate members
+		public void reportMembers(MemberReport report) {		
+				report.setStatus(Status.PENDING);				
+				memberReportRepository.save(report);				
+		}
+			
 
 }
+
+
+
+
+

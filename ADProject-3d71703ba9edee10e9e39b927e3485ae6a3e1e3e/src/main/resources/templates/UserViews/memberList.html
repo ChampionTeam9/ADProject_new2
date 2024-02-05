@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Member List</title>
+</head>
+<body>
+    <h1>Member List</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="member : ${members}">
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.username}"></td>
+            <td>
+                <a th:href="@{/user/admin/memberManage/{id}/reports(id=${member.id})}">View Reports</a>
+                <a th:href="@{/user/admin/memberManage/delete/{id}(id=${member.id})}">Delete Member</a> 
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

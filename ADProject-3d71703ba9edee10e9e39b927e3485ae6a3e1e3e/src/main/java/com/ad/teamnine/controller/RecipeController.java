@@ -89,56 +89,8 @@ public class RecipeController {
     }
 
 	@PostMapping("/create")
-    public String addRecipe(@RequestParam("name") String name,
-			@RequestParam("description") String description, 
-			@RequestParam("servings") int servings,
-			@RequestParam("preparationTime") int preparationTime,
-			@RequestParam("timeUnit") String timeUnit,
-			@RequestParam("ingredients") List<Ingredient> ingredients, 
-			@RequestParam("steps")List<String> steps,
-			@RequestParam("image") MultipartFile pictureFile,
-			@RequestParam("tags") List<String> tags,
-			@RequestParam("status") String status,
-			Model model) {
+    public String addRecipe(@ModelAttribute Recipe recipe) {
 		
-		Recipe recipe = new Recipe();
-        
-        recipe.setName(name);
-        recipe.setDescription(description);
-        recipe.setServings(servings);
-        
-        if (timeUnit.equals("Minutes")) {
-        	recipe.setPreparationTime(preparationTime);
-        }
-        else {
-        	preparationTime = preparationTime * 60;
-        	recipe.setPreparationTime(preparationTime);
-        }
-        
-        recipe.setIngredients(ingredients);
-        recipe.setSteps(steps);
-        
-        // 获取图片文件名
-        String fileName = pictureFile.getOriginalFilename();
-
-        // 保存图片到服务器的某个位置
-        String filePath = "/path/to/save/images/" + fileName;
-
-        try {
-            // 写入文件
-            pictureFile.transferTo(new File(filePath));
-
-            // 将图片路径保存到 Recipe 对象中
-            recipe.setImage(filePath);
-        } catch (IOException e) {
-            // Handle the exception (e.g., log it)
-            e.printStackTrace();
-        }
-
-        
-        
-        recipe.setStatus(Status.valueOf(status));
-        recipe.setTags(tags);
 
         
         recipeService.createRecipe(recipe);

@@ -10,7 +10,7 @@
 </head>
 <body>
     <h2>Update Recipe</h2>
-    <form action="/recipe/edit" method="post">
+    <form id="recipeForm" action="/recipe/edit" method="post">
 		<input type="hidden" id="idInput" name="id" th:value="${recipe.id}">
 		<input type="hidden" id="numberOfSavedInput" name="numberOfSaved" th:value="${recipe.numberOfSaved}">
 		<input type="hidden" id="numberOfStepsInput" name="numberOfSteps" th:value="${recipe.numberOfSteps}">
@@ -350,6 +350,24 @@
 		        
 	    var recipeStatus = /*[[${recipe.status}]]*/ 'unknown';
 	    console.log("Recipe Status:", recipeStatus);
+	    
+	    
+		document.getElementById("recipeForm").addEventListener("submit", function (event) {
+	        // 阻止默认的表单提交
+	        event.preventDefault();
+	
+	        // 获取输入框中的时间值和时间单位
+	        var preparationTimeInput = document.getElementById("preparationTimeInput");
+	        var selectedUnit = document.getElementById("timeUnit").value;
+	
+	        // 将时间值根据时间单位进行转换
+	        if (selectedUnit === "hours") {
+	            preparationTimeInput.value = parseInt(preparationTimeInput.value) * 60;
+	        }
+	
+	        // 提交表单
+	        this.submit();
+	    });
 	
     </script>
 </body>
