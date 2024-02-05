@@ -142,6 +142,7 @@ public class APIController {
 			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
+			recipe.setImage("https://th.bing.com/th/id/OIP._zHSsdDI6X5LnwpnBOMTswHaHa?w=165&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7");
 			recipeService.createRecipe(recipe);
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
