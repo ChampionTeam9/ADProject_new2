@@ -222,12 +222,12 @@ public class UserController {
 			return "/UserViews/register";
 		}
 		inMember.setStatus(Status.CREATED);
-		LocalDate birthdate = inMember.getBirthdate();
-		LocalDate currentDate = LocalDate.now();
-		if (birthdate != null) {
-			int age = Period.between(birthdate, currentDate).getYears();
-			inMember.setAge(age);
-		}
+//		LocalDate birthdate = inMember.getBirthdate();
+//		LocalDate currentDate = LocalDate.now();
+//		if (birthdate != null) {
+//			int age = Period.between(birthdate, currentDate).getYears();
+//			inMember.setAge(age);
+//		}
 		httpSession.setAttribute("UserID", inMember.getId());
 		userService.saveMember(inMember);
 		return "redirect:/page1";
