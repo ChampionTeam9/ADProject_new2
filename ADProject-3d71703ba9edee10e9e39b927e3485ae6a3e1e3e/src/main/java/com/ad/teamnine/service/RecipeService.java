@@ -33,9 +33,8 @@ public class RecipeService {
 	MemberRepository memberRepo;
 
 	// create new recipe
-	public void createRecipe(Recipe newRecipe) {
-		recipeRepo.save(newRecipe);
-		return;
+	public Recipe createRecipe(Recipe newRecipe) {
+		return recipeRepo.save(newRecipe);
 	}
 
 	// update exist recipe
