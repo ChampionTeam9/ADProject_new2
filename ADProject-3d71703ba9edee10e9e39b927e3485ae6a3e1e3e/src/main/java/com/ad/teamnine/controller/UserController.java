@@ -67,7 +67,8 @@ public class UserController {
 			return "UserViews/addShoppingListIngredientPage";
 		}
 		// Get member's shopping list
-		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
@@ -89,7 +90,8 @@ public class UserController {
 	@GetMapping("shoppingList/view")
 	public String viewShoppingListIngredient(Model model) {
 		// Get member's shopping list
-		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
@@ -128,7 +130,8 @@ public class UserController {
 		String message = (String) payload.get("message");
 		System.out.println(message);
 		// Get member's shopping list
-		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
@@ -144,34 +147,36 @@ public class UserController {
 		}
 		return ResponseEntity.ok().build();
 	}
-	
+
 	// Add ShoppingListItem at editShoppingListPage
 	@PostMapping("shoppingList/addItem")
-	public ResponseEntity<Map<String, Object>> addItem (@RequestBody Map<String, Object> payload){
+	public ResponseEntity<Map<String, Object>> addItem(@RequestBody Map<String, Object> payload) {
 		String ingredientName = (String) payload.get("ingredientName");
-		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Member member =
+		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
 		Member member = userService.getMemberById(1);
 		ShoppingListItem newItem = new ShoppingListItem(member, ingredientName);
 		ShoppingListItem savedItem = shoppingListItemService.saveShoppingListItem(newItem);
 		int id = savedItem.getId();
 		Map<String, Object> response = new HashMap<>();
-	    response.put("id", id);
+		response.put("id", id);
 		return ResponseEntity.ok(response);
 	}
-	
-	//set preference
+
+	// set preference
 	@GetMapping("/setPreference")
 	public String setPreference(Model model) {
 		Set<String> tags = userService.getRandomUniqueTags(7);
 		model.addAttribute("tags", tags);
 		return "/UserViews/setPreference";
 	}
-	
+
 	@PostMapping("/setPreference")
-	public String receivePreference(@RequestParam(value = "tags", required = false) List<String> tags,HttpSession session) {
+	public String receivePreference(@RequestParam(value = "tags", required = false) List<String> tags,
+			HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
-		Member member=new Member();
+		Member member = new Member();
 		if (oldTags == null) {
 			member.setPrefenceList(tags);
 			userService.saveMember(member);
@@ -181,10 +186,11 @@ public class UserController {
 			List<String> combinedTags = new ArrayList<>(selectedTags);
 			member.setPrefenceList(combinedTags);
 			userService.saveMember(member);
-		}	
+		}
 		return "test";
 	}
-	//refresh tags on the website
+
+	// refresh tags on the website
 	@PostMapping("/refresh")
 	public String refreshTags(Model model, @RequestParam("tags") List<String> tags, HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
@@ -226,21 +232,18 @@ public class UserController {
 		userService.saveMember(inMember);
 		return "redirect:/page1";
 	}
-	
 
-	@GetMapping("/{id}")
-    public String viewUserProfile(@PathVariable int id, Model model) {
-        Member member = userService.getMemberById(id);
-        model.addAttribute("member", member);
+	@GetMapping("/profile/{memberId}")
+	public String viewUserProfile(@PathVariable(name = "memberId") int id, Model model) {
+		Member member = userService.getMemberById(id);
+		model.addAttribute("member", member);
 
-        // Get all recipes for the user
-        model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
+		// Get all recipes for the user
+		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 
-        return "userProfile";
-    }
+		return "userProfile";
+	}
 
-
-	
 	@GetMapping("/admin/dashboard")
 	public String getDashboard(Model model) {
 //	    List<Object[]> dailyData = userService.getDailyMemberData();
@@ -255,96 +258,108 @@ public class UserController {
 //	    model.addAttribute("dates", dates);
 //	    model.addAttribute("newUsers", newUsers);
 
-	    return "UserViews/dashboard";
+		return "UserViews/dashboard";
+	}
+
+	// Member Management
+	// show all members
+	@GetMapping("/admin/memberManage")
+	public String showMemberList(Model model) {
+		List<Member> members = userService.getAllMembers();
+		model.addAttribute("members", members);
+		return "UserViews/memberList";
+	}
+
+	// show member's history of being reported
+	@GetMapping("/admin/memberManage/{id}/reports")
+	public String showMemberReports(@PathVariable("id") Integer memberId, Model model) {
+		Member member = userService.getMemberById(memberId);
+		List<MemberReport> memberReports = userService.getReportsByMember(member);
+		model.addAttribute("member", member);
+		model.addAttribute("memberReports", memberReports);
+		return "UserViews/memberReports";
+	}
+
+	// delete members
+	@GetMapping("/admin/memberManage/delete/{id}")
+	public String deleteMember(@PathVariable("id") Integer memberId) {
+		userService.deleteMember(memberId);
+		return "redirect:/user/admin/memberManage";
+	}
+
+	// show all reported recipes
+	@GetMapping("/admin/recipeReport")
+	public String showPendingRecipeReports(Model model) {
+		List<RecipeReport> pendingReports = userService.getPendingRecipeReport();
+		model.addAttribute("pendingReports", pendingReports);
+		return "ReportViews/recipeReports";
+	}
+
+	// approve or reject recipe report
+	@GetMapping("/admin/recipeReport/{id}")
+	public String showRecipeReportDetails(@PathVariable(value = "id") Integer id, Model model) {
+		RecipeReport report = userService.getRecipeReportById(id);
+		model.addAttribute("report", report);
+		return "ReportViews/recipeReportDetails";
+	}
+
+	@PostMapping("/admin/recipeReport/{id}/approve")
+	public String approveRecipeReport(@PathVariable(value = "id") Integer id) {
+		userService.approveRecipeReport(id);
+		return "redirect:/admin/recipeReport";
+	}
+
+	@PostMapping("/admin/recipeReport/{id}/reject")
+	public String rejectRecipeReport(@PathVariable(value = "id") Integer id) {
+		userService.rejectRecipeReport(id);
+		return "redirect:/admin/recipeReport";
+	}
+
+	// show all reported members
+	@GetMapping("/admin/memberReport")
+	public String showPendingMemberReports(Model model) {
+		List<MemberReport> pendingReports = userService.getPendingMemberReport();
+		model.addAttribute("pendingReports", pendingReports);
+		return "ReportViews/memberReports";
+	}
+	
+	// approve or reject member report
+	@GetMapping("/admin/memberReport/{id}")
+	public String showMemberReportDetails(@PathVariable(value = "id") Integer id, Model model) {
+		MemberReport report = userService.getMemberReportById(id);
+		model.addAttribute("report", report);
+		return "ReportViews/memberReportDetails";
+	}
+	@PostMapping("/admin/memberReport/{id}/approve")
+	public String approveMemberReport(@PathVariable(value = "id") Integer id) {
+		userService.approveMemberReport(id);
+		return "redirect:/admin/memberReport";
+	}
+	@PostMapping("/admin/memberReport/{id}/reject")
+	public String rejectMemberReport(@PathVariable(value = "id") Integer id) {
+		userService.rejectMemberReport(id);
+		return "redirect:/admin/memberReport";
 	}
 	
 	
-	//Member Management
-	//show all members
-    @GetMapping("/admin/memberManage")
-    public String showMemberList(Model model) {
-        List<Member> members = userService.getAllMembers();
-        model.addAttribute("members", members);
-        return "UserViews/memberList";
-    }
+	@GetMapping("/member/savedList/{id}")
+	public String showSavedList(@PathVariable(value = "id") Integer id, Model model) {
+		Member member = userService.getMemberById(id);
+		List<Recipe> recipes = member.getSavedRecipes();
+		model.addAttribute(recipes);
+		return "/UserViews/showSavedListPage";
+	}
 
-    // show member's history of being reported
-    @GetMapping("/admin/memberManage/{id}/reports")
-    public String showMemberReports(@PathVariable("id") Integer memberId, Model model) {
-        Member member =userService.getMemberById(memberId);
-        List<MemberReport> memberReports = userService.getReportsByMember(member);
-        model.addAttribute("member", member);
-        model.addAttribute("memberReports", memberReports);
-        return "UserViews/memberReports"; 
-    }
-
-  //delete members
-    @GetMapping("/admin/memberManage/delete/{id}")
-    public String deleteMember(@PathVariable("id") Integer memberId) {
-        userService.deleteMember(memberId);
-        return "redirect:/user/admin/memberManage";
-    }
-
-	//show all reported recipes
-	@GetMapping("/admin/recipeReport")
-    public String showPendingRecipeReports(Model model) {
-       List<RecipeReport> pendingReports = userService.getPendingRecipeReport();
-        model.addAttribute("pendingReports", pendingReports);
-        return "ReportViews/recipeReports"; 
-    }
-	
-	//approve or reject recipe report
-	 @GetMapping("/admin/recipeReport/{id}")
-	 public String showRecipeReportDetails(@PathVariable(value = "id") Integer id, Model model) {
-	        RecipeReport report = userService.getRecipeReportById(id);
-	        model.addAttribute("report", report);
-	        return "ReportViews/recipeReportDetails";
-	    }
-
-	 @PostMapping("/admin/recipeReport/{id}/approve")
-	 public String approveRecipeReport(@PathVariable(value = "id") Integer id) {
-	        userService.approveRecipeReport(id);
-	        return "redirect:/admin/recipeReport";
-	    }
-
-	 @PostMapping("/admin/recipeReport/{id}/reject")
-	 public String rejectRecipeReport(@PathVariable(value = "id") Integer id) {
-	        userService.rejectRecipeReport(id);
-	        return "redirect:/admin/recipeReport";
-	    }	
-
-	 
-	//show all reported members
-	 @GetMapping("/admin/memberReport")
-	    public String showPendingMemberReports(Model model) {
-	       List<MemberReport> pendingReports = userService.getPendingMemberReport();
-	        model.addAttribute("pendingReports", pendingReports);
-	        return "ReportViews/memberReports"; 
-	    }
-	 
-	 //approve or reject member report
-	 @PostMapping("/admin/memberReport/{id}/approve")
-	 @GetMapping("/admin/recipeReport/{id}")
-	 public String showMemberReportDetails(@PathVariable(value = "id") Integer id, Model model) {
-	        MemberReport report= userService.getMemberReportById(id);
-	        model.addAttribute("report", report);
-	        return "ReportViews/memberReportDetails";
-	    }
-
-	 public String approveMemberReport(@PathVariable(value = "id") Integer id) {
-	        userService.approveMemberReport(id);
-	        return "redirect:/admin/memberReport";
-	    }
-
-	 @PostMapping("/admin/memberReport/{id}/reject")
-	 public String rejectMemberReport(@PathVariable(value = "id") Integer id) {
-	        userService.rejectMemberReport(id);
-	        return "redirect:/admin/memberReport";
-	    }	
-	 
-	 
-	
-	
-
+	@GetMapping("/member/myRecipeList/{id}")
+	public String showMyRecipeList(@PathVariable(value = "id") Integer id, Model model) {
+		Member member = userService.getMemberById(id);
+		List<Recipe> recipes = member.getAddedRecipes();
+		model.addAttribute(recipes);
+		return "/UserViews/showMyRecipeListPage";
+	}
+	@GetMapping("/login")
+	public String login() {
+		return "/UserViews/login";
+	}
 
 }
