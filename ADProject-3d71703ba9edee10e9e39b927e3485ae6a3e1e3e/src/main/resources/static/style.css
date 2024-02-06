@@ -7,9 +7,12 @@ body {
   padding: 20px;
 }
 .custom-container {
-  width: 50%;
+  
   margin: 0 auto;
 }
+.no-caret .dropdown-toggle::after {
+    display: none;
+  }
 button {
   padding: 5px 10px;
   background-color: #5cb85c;
@@ -27,6 +30,10 @@ button:hover {
 .dropdown-submenu {
   position: relative;
 }
+.navbar-collapse {
+    justify-content: center;
+}
+
 
 .dropdown-submenu .dropdown-menu {
   top: 0;
