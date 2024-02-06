@@ -61,11 +61,13 @@ public class ReportController {
 			Model model,
 			HttpSession sessionObj) {
 		MemberReport report = new MemberReport();
-		Member member = 
-				userService.getMemberById((int)sessionObj.getAttribute("userId"));
+//		Member member = 
+//				userService.getMemberById((int)sessionObj.getAttribute("userId"));
+		Member member =userService.getMemberById(1);
+		Member reportedMember = userService.getMemberById(memberId);
+		report.setMember(member);
+		report.setMemberReported(reportedMember);
 		model.addAttribute("report",report);
-		model.addAttribute("memberReported",userService.getMemberById(memberId));
-		model.addAttribute("member",member);
 		return "ReportViews/showMemberReportPage";
 	}
 	
@@ -73,10 +75,7 @@ public class ReportController {
 	public String reportMember(@ModelAttribute("report") MemberReport report) {
 		
 		reportService.reportMembers(report);
-		Integer authorId = report.getMemberReported().getId();
-		
-		
-		return "redirect:/member/view/"+authorId;
+		return "redirect:/member/view/"+report.getMemberReported().getId();
 		
 	}
 	
