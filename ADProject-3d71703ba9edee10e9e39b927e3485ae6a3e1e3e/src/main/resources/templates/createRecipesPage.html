@@ -41,18 +41,24 @@
 		            <option value="minutes">Minutes</option>
 		            <option value="hours">Hours</option>
 		        </select>
-		        <br />
 	        </div>
+	        
+	        <br />
+	        <br />
 	        
 	        <div class="form-group">
 		        <label for="ingredientsInput">Ingredients:</label>
 		        <div name="ingredientsInput">
 		            <input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
 					<button type="button" id="addIngredientBtn">Add</button>
+					<span id="ingredientsError" style="color: red;"></span>
 		        </div>
 	        </div>
-	        <table id="itemTable">
+	        <br />
+	        <br />
+	        <table id="itemTable" class="table table-hover">
 			</table>
+	        <br />
 	        <br />
 	        
 	        <div class="form-group">
@@ -62,8 +68,18 @@
 					<button type="button" id="addStepBtn">Add</button>
 		        </div>
 	        </div>
-	        <table id="stepsTable">
+	        <br />
+	        <br />
+	        <table id="stepsTable" class="table table-hover">
 			</table>
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+				<label for="notesInput">Notes:</label>
+				<textarea name="notesInput" cols="40" rows="5" th:field="*{notes}" placeholder="Add any additional remarks for your recipe here"></textarea>
+			</div>
+			<br />
 	        <br />
 	        
 	        <div class="form-group">
@@ -77,6 +93,8 @@
 	        
 	        <button type="button" onclick="selectFromFile()">Select Picture</button>
 			<br />
+			<br />
+			<br />
 	        
 			<!-- Tags 输入框 --> 
 	        <label for="tagsInput">Tags:</label>
@@ -84,6 +102,9 @@
 	    		<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)">
 	    		<div id="tagDropdown"></div>
 	        </div>
+			
+			<br />
+			<br />
 			
 			<div class="form-group">
 		        <label for="public">Public</label>
@@ -116,6 +137,7 @@
 						}
 				        console.log("ingredientIdsEle.value: " + ingredientIdsEle.value);
 				        addRow(newIngredient, newIngredientId);
+				        addIngredientInput.value = "";
 				    }
 				});
 			})
@@ -125,6 +147,7 @@
 			addStepBtn.addEventListener("click", (event) => {
 				var newStep = addStepInput.value;
 				addStep(newStep);
+				addStepInput.value = "";
 			})
 		});
 		
@@ -138,8 +161,19 @@
 		            if (xhr.status == 200) {
 		                console.log("response ok");
 		                let data = JSON.parse(xhr.responseText);
-		                let newIngredientId = data.id;
-		                callback(null, newIngredientId);
+		                let statusMessage = data.statusMessage;
+		                if (statusMessage){
+							console.log("status message: " + data.statusMessage);
+							const ingredientsError = document.getElementById("ingredientsError");
+							if (statusMessage === "NOT_FOUND"){
+								ingredientsError.textContent = "Ingredient does not exist, please check and re-enter.";
+							} else {
+								ingredientsError.textContent = "Quantity is missing, please check and re-enter.";
+							}
+						} else {
+							let newIngredientId = data.id;
+		                	callback(null, newIngredientId);
+						}
 		            } else {
 		                callback("Error saving item", null);
 		            }
@@ -360,24 +394,6 @@
 	            addTag(tagInput.value.trim());
 	        }
 	    });
-	    
-	    // 监听时间单位选择变化
-    	document.getElementById("timeUnit").addEventListener("change", function () {
-	        // 获取选中的时间单位
-	        var selectedUnit = this.value;
-	
-	        // 获取输入框中的时间值
-	        var preparationTime = document.getElementById("preparationTimeInput").value;
-	
-	        // 如果选择的是"hours"，则将时间值乘以60
-	        if (selectedUnit === "hours") {
-	            preparationTime *= 60;
-	        }
-	
-	        // 更新输入框中的值
-	        document.getElementById("preparationTimeInput").value = preparationTime;
-	    });
-	    
     </script>
 </body>
 </html>

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -95,14 +96,23 @@ public class RecipeController {
 	public ResponseEntity<Map<String, Object>> addItem (@RequestBody Map<String, Object> payload){
 		String ingredientName = (String) payload.get("ingredientName");
 		Ingredient ingredient = ingredientService.getIngredientByfoodText(ingredientName);
+		Map<String, Object> response = new HashMap<>();
 		if (ingredient == null) {
 			// Create ingredient 
-			ingredient = APIController.getNutritionInfo(ingredientName);
+			ResponseEntity<Ingredient> ingredientResponse = APIController.getNutritionInfo(ingredientName);
+			if (ingredientResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+				response.put("statusMessage", "NOT_FOUND");
+				return ResponseEntity.ok(response);
+			}
+			if (ingredientResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+			    response.put("statusMessage", "MISSING_QUANTITY");
+			    return ResponseEntity.ok(response);
+			}
+			ingredient = ingredientResponse.getBody();
 			ingredientService.saveIngredient(ingredient);
 			System.out.println(ingredient);
 		}
 		int id = ingredient.getId();
-		Map<String, Object> response = new HashMap<>();
 	    response.put("id", id);
 	    System.out.println("id: " + id);
 		return ResponseEntity.ok(response);
@@ -110,18 +120,15 @@ public class RecipeController {
 
 	@PostMapping("/create")
     public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
-			@RequestParam("preparationTime") int preparationTime,
 			@RequestParam("timeUnit") String timeUnit,
 			@RequestParam("image") MultipartFile pictureFile,
 			@RequestParam("ingredientIds") String ingredientIds,
 			Model model) {
 		
-        if (timeUnit.equals("Minutes")) {
-        	recipe.setPreparationTime(preparationTime);
-        }
-        else {
-        	preparationTime = preparationTime * 60;
-        	recipe.setPreparationTime(preparationTime);
+		// If preparation time entered in hours, convert to mins
+        if (timeUnit.equals("hours")) {
+        	int preparationTime = recipe.getPreparationTime();
+        	recipe.setPreparationTime(preparationTime * 60);
         }
 
         // 获取图片文件名
@@ -140,6 +147,13 @@ public class RecipeController {
 //            // Handle the exception (e.g., log it)
 //            e.printStackTrace();
 //        }
+        
+        // Get member's shopping list
+ 		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+ 		// Hardcode first
+ 		Member member = userService.getMemberById(1);
+        recipe.setMember(member);
+ 		
         Recipe savedRecipe = recipeService.createRecipe(recipe);
         
         String[] ingredientsToAdd = ingredientIds.split(",");
