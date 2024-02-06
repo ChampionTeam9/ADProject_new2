@@ -225,6 +225,10 @@ public class UserService {
 		    List<Object[]> resultList = query.getResultList();
 		    return resultList;
 		}
+		public Member getMemberByUsername(String username)
+		{
+			return (Member) userRepo.findByUsername(username);
+		}
 }
 
 
