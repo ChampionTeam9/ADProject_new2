@@ -7,13 +7,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.MemberReport;
 import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.RecipeReport;
-import com.ad.teamnine.model.Report;
 import com.ad.teamnine.service.RecipeService;
 import com.ad.teamnine.service.ReportService;
 import com.ad.teamnine.service.UserService;
