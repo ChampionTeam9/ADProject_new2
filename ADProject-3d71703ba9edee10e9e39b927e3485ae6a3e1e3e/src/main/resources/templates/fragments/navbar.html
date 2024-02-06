@@ -1,61 +1,181 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
-	  <a class="navbar-brand" href="/">Healthier Recipes</a>
-	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-	    <span class="navbar-toggler-icon"></span>
-	  </button>
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-	    <ul class="navbar-nav mr-auto justify-content-center">
-		  <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Course</a>
-		    <div class="dropdown-menu">
-		      <a class="dropdown-item" href="">Item1</a>
-		      <div class="dropdown-divider"></div>
-		      <a class="dropdown-item" href="">Item2</a>
-		    </div>
-		  </li>
-		  <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cuisine</a>
-		    <div class="dropdown-menu">
-		      <a class="dropdown-item" href="">Item1</a>
-		      <div class="dropdown-divider"></div>
-		      <a class="dropdown-item" href="">Item2</a>
-		    </div>
-		  </li>
-		  <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dietary</a>
-		    <div class="dropdown-menu">
-		      <a class="dropdown-item" href="">Item1</a>
-		      <div class="dropdown-divider"></div>
-		      <a class="dropdown-item" href="">Item2</a>
-		    </div>
-		  </li>
-		  <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Main Ingredient</a>
-		    <div class="dropdown-menu">
-		      <a class="dropdown-item" href="">Item1</a>
-		      <div class="dropdown-divider"></div>
-		      <a class="dropdown-item" href="">Item2</a>
-		    </div>
-		  </li>
-		  <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Occasion</a>
-		    <div class="dropdown-menu">
-		      <a class="dropdown-item" href="">Item1</a>
-		      <div class="dropdown-divider"></div>
-		      <a class="dropdown-item" href="">Item2</a>
-		    </div>
-		  </li>
-		  <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ProfilePic</a>
-		    <div class="dropdown-menu">
-		      <a class="dropdown-item" href="">Item1</a>
-		      <div class="dropdown-divider"></div>
-		      <a class="dropdown-item" href="">Item2</a>
-		    </div>
-		  </li>
-	    </ul>
-	  </div>
+		<a class="navbar-brand" href="/">Healthier Recipes</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto justify-content-center">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Cuisine</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/african">African</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/american">American</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/asian">Asian</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/italian">Italian</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/mexican">Mexican</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/french">French</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/indian">Indian</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Type of Dish</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/appetizers">Appetizers</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/breakfast">Breakfast</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/desserts">Desserts</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/main">Main Dish</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/salads">Salads</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/soup">Soups-Stews</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/snack">Snacks</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Cooking Method</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/baking">Baking</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/grilling">Grilling</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/slow">Slow-Cooker</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/stir">Stir-Fry</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="no-cook">No-Cook</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="roasting">Roasting</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="fry">Fry</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Dietary Considerations</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/vegan">Vegan</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/vege">Vegetarian</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/gluten">Gluten-Free</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/low-carb">Low-Carb</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/diabetic">Diabetic</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/low-fat">Low-Fat</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/high-protein">High-Protein</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Ingredients</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/chicken">Chicken</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/beef">Beef</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/pasta">Pasta</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/chocolate">Chocolate</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/vegetables">Vegetables</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/pork">Pork</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/cheese">Cheese</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Occasions and Events</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/christmas">Christmas</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/easter">Easter</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/thanksgiving">Thanksgiving</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/birthday">Birthday</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/wedding">Wedding</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/halloween">Halloween</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/new-year">New Year</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">Preparation Time and Difficulty</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="/recipe/search/15">15-Minutes-or-Less</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/30">30-Minutes-or-Less</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/easy">Easy</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/beginner-cook">Beginner-Cook</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/quick-and-easy">Quick-and-Easy</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/kid-friendly">Kid-Friendly</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/recipe/search/make-ahead">Make-Ahead</a>
+					</div>
+				<li class="nav-item dropdown no-caret">
+					<a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
+						data-bs-toggle="dropdown" aria-expanded="false">
+						<img src="/search.png" style="width: 25px; height: 25px;">
+					</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle"  id="navbarDropdown" role="button"
+						data-bs-toggle="dropdown" aria-expanded="false">
+						<img src="/user.png" style="width: 25px; height: 25px;">
+					</a>
+
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="">My Profile</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="">My Recipes</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="">Saved Recipes</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="">My Reviews</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/user/shoppingList/view">Shoppong List</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="" id="login-logout-item">login</a>
+					</div>
+				</li>
+
+
+				<script src="/listener.js">
+
+					document.addEventListener('DOMContentLoaded', function () {
+
+					});
+				</script>
+
+			</ul>
+		</div>
 	</div>
-  </div>
+	</div>
 </nav>
