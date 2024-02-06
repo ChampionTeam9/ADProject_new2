@@ -1,0 +1,30 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard</title>
+</head>
+
+<body>
+	<h1>Dashboard</h1>
+	<!--
+    <div>
+        <h2>Daily New Members</h2>
+        <p>Total new members: <span th:text="${#lists.size(newUsers)}"></span></p>
+        <ul>
+            <li th:each="user, i : ${newUsers}" th:text="${dates[i.index]} + ': ' + ${user}"></li>
+        </ul>
+    </div>
+-->
+	<!-- Manage Management & View Reports -->
+	<div>
+		<h2>Management</h2>
+		<a href="/user/admin/memberManage">Manage Members</a><br />
+		<a href="/user/admin/recipeReport">View Recipe Reports</a>
+		<a href="/user/admin/memberReport">View Member Reports</a>
+	</div>
+</body>
+
+</html>

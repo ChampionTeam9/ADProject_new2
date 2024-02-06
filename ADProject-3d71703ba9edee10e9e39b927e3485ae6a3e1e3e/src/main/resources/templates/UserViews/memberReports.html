@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Member Reports</title>
+</head>
+<body>
+    <h1>Reports for Member: <span th:text="${member.username}"></span></h1>
+    <table>
+        <tr>
+            <th>Report ID</th>
+            <th>Reason</th>
+            <th>Reported By</th>
+            <!-- Add other report details as needed -->
+        </tr>
+        <tr th:each="report : ${member.reportsToMember}">
+            <td th:text="${report.id}"></td>
+            <td th:text="${report.reason}"></td>
+            <!-- <td th:text="${report.member.username}"></td> -->
+            <!-- Add other report details as needed -->
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Member Report Details</title>
+</head>
+<body>
+    <h1>Member Report Details</h1>
+    <p>ID: <span th:text="${report.id}"></span></p>
+    <p>Reported Member Name: <span th:text="${report.memberReported.username}"></span></p>
+    <p>Reason: <span th:text="${report.reason}"></span></p>
+    
+    <form th:action="@{/admin/memberReport/{id}/approve(id=${report.id})}" method="post">
+        <input type="submit" value="Approve">
+    </form>
+    
+    <form th:action="@{/admin/memberReport/{id}/reject(id=${report.id})}" method="post">
+        <input type="submit" value="Reject">
+    </form>
+</body>
+</html>
