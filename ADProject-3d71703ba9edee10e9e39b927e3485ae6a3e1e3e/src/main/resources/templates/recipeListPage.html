@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Recipe List</title>
+    <link href="/style.css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -10,16 +11,29 @@
 	<div class="container">
 		<h2>My Recipes</h2>
 	</div>
-	<div class="container">
+	<div class="container" style="text-align: center;">
 		<div class="row">
 			<div th:each="recipe : ${recipes}" class="col-md-3">
 				<div class="card mt-5" style="width: 18rem;">
 					<div class="card" style="width: 18rem;">
-						<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image">
+						<a th:href="@{/recipe/view/{id}(id=${recipe.id})}">
+							<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image">
+						</a>
 						<div class="card-body">
-							<h5 class="card-title" th:text="${recipe.name}"></h5>
+							<h5 class="card-title">
+								<a th:href="@{/recipe/view/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+							</h5>
 							<p class="card-text" th:text="${recipe.description}"></p>
 						</div>
+						<ul class="list-group list-group-flush">
+							<!--
+							<li class="list-group-item" ><a th:href="@{/user/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a></li>
+							-->						
+							<li class="list-group-item">
+								<button type="button" class="button-style" th:id="${recipe.id}" onclick="window.location.href='/recipe/edit/' + this.id">Edit</button>
+								<button type="button" class="button-style" th:id="${recipe.id}" onclick="promptDelete(this.id)">Delete</button>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -27,22 +41,12 @@
 	</div>
 
 	<script>
-	    function deleteRecipe(recipeId) {
-	        var confirmDelete = confirm("Are you sure you want to delete this recipe?");
-	        if (confirmDelete) {
-	            $.ajax({
-                type: "DELETE",
-                url: "/recipe/delete/" + recipeId,
-                success: function (data) {
-                    window.location.replace("/recipe/list");
-                },
-                error: function (error) {
-                    console.error("Error deleting recipe: " + error.responseText);
-                }
-            });
-
-	        }
-	    }
+		function promptDelete(id){
+			console.log("id: " + id);
+			if (window.confirm("Comfirm deletion?")){
+				window.location = "/recipe/delete/"+id;
+			}
+		}
 	</script>
 	
 	</body>

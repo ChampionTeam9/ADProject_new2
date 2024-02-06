@@ -181,7 +181,7 @@ public class RecipeController {
         setRecipeNutrients(recipe);
         recipe.setHealthScore(recipe.calculateHealthScore());
         recipeService.createRecipe(recipe);
-        return "redirect:/recipe/viewMyRecipes";
+        return "redirect:/recipe/view/myRecipes";
     }
 	
 	public void setRecipeNutrients(Recipe recipe) {
@@ -220,7 +220,7 @@ public class RecipeController {
 		recipe.setSaturatedFat(saturatedFatPDV);
 	}
 	
-	@GetMapping("/viewMyRecipes")
+	@GetMapping("/view/myRecipes")
 	public String showMyRcipes(Model model) {
 		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
 		// Hardcode first
@@ -230,12 +230,17 @@ public class RecipeController {
 	    return "recipeListPage";
 	}
 	
-	@DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteRecipe(@PathVariable("id") Integer id) {
-        // 通过服务层执行删除操作
+	@GetMapping("/delete/{id}")
+    public String deleteRecipe(@PathVariable("id") Integer id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        List<Ingredient> ingredients = recipe.getIngredients();
+        for (Ingredient ingredient : ingredients) {
+        	// Remove recipe from ingredient before deletion (referential integrity)
+        	ingredient.getRecipes().remove(recipe);
+        	ingredientService.saveIngredient(ingredient);
+        }
         recipeService.deleteRecipe(id);
-        
-        return ResponseEntity.ok("Recipe deleted successfully");
+        return "redirect:/recipe/view/myRecipes";
     }
 	
 	@RequestMapping("/edit/{id}")
