@@ -9,12 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.ad.teamnine.model.*;
+import com.ad.teamnine.model.IngredientInfo.Parsed;
 import com.ad.teamnine.service.*;
 
 @RestController
@@ -49,14 +52,23 @@ public class APIController {
 	}
 
 	@GetMapping("/nutrition")
-	public Ingredient getNutritionInfo(String foodText) {
+	public static ResponseEntity<Ingredient> getNutritionInfo(String foodText) {
 		String appId = "a0eca928";
 		String appKey = "2791c4e7ff627b1a94a4a8e41a6e0a14";
 		String url = "https://api.edamam.com/api/nutrition-data?app_id=" + appId + "&app_key=" + appKey
 				+ "&nutrition-type=cooking&ingr=" + foodText;
 		RestTemplate restTemplate = new RestTemplate();
 		IngredientInfo ingredientInfo = restTemplate.getForObject(url, IngredientInfo.class);
-		IngredientInfo.Nutrients nutrients = ingredientInfo.getIngredients().get(0).getParsed().get(0).getNutrients();
+		List<Parsed> parsed = ingredientInfo.getIngredients().get(0).getParsed();
+		if (parsed == null) {
+			//No such ingredient found
+			return new ResponseEntity<Ingredient>(HttpStatus.NOT_FOUND);
+		}
+		String status = parsed.get(0).getStatus();
+		if (status.equals("MISSING_QUANTITY")) {
+			return new ResponseEntity<Ingredient>(HttpStatus.BAD_REQUEST);
+		}
+		IngredientInfo.Nutrients nutrients = parsed.get(0).getNutrients();
 		double protein = getDefaultIfNull(nutrients.getPROCNT().getQuantity());
 		double calories = getDefaultIfNull(nutrients.getENERC_KCAL().getQuantity());
 		double carbohydrate = getDefaultIfNull(nutrients.getCHOCDF().getQuantity());
@@ -65,7 +77,7 @@ public class APIController {
 		double fat = getDefaultIfNull(nutrients.getFAT().getQuantity());
 		double saturatedFat = getDefaultIfNull(nutrients.getFASAT().getQuantity());
 		Ingredient ingredient = new Ingredient(foodText, protein, calories, carbohydrate, sugar, sodium, fat, saturatedFat);
-		return ingredient;
+		return new ResponseEntity<Ingredient>(ingredient, HttpStatus.OK);
 	}
 	
 	private static double getDefaultIfNull(Double value) {
@@ -142,10 +154,10 @@ public class APIController {
 			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
-			recipeService.createRecipe(recipe);
+			Recipe savedRecipe = recipeService.createRecipe(recipe);
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
-				ingredient.getRecipes().add(recipe);
+				ingredient.getRecipes().add(savedRecipe);
 				ingredientService.saveIngredient(ingredient);
 			}
 		}
