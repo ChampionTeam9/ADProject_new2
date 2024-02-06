@@ -172,7 +172,7 @@ public class RecipeController {
         setRecipeNutrients(recipe);
         recipe.setHealthScore(recipe.calculateHealthScore());
         recipeService.createRecipe(recipe);
-        return "redirect:/recipe/list";
+        return "redirect:/recipe/viewMyRecipes";
     }
 	
 	public void setRecipeNutrients(Recipe recipe) {
@@ -211,11 +211,13 @@ public class RecipeController {
 		recipe.setSaturatedFat(saturatedFatPDV);
 	}
 	
-	@GetMapping("/list")
-	public String showAddRecipeList(Model model) {
-	    //List<Recipe> recipeList = RecipeService.getAllRecipes();
-	    model.addAttribute("recipes", recipeService.getAllRecipes());
-	    
+	@GetMapping("/viewMyRecipes")
+	public String showMyRcipes(Model model) {
+		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
+		// Hardcode first
+		Member member = userService.getMemberById(1);
+	    List<Recipe> recipes = recipeService.getAllRecipesByMember(member);
+	    model.addAttribute("recipes", recipes);
 	    return "recipeListPage";
 	}
 	
