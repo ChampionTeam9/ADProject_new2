@@ -38,7 +38,7 @@
     
     <a href="#" th:attr="onclick='deleteRecipe(' + ${recipe.id} + ')'" >Delete</a>
     
-    <a th:href="@{/report/reportRecipe/{id}(id=${recipe.id})}" class="btn btn-primary">Report</a>
+    <a th:href="@{/report/reportRecipe/{recipeId}(recipeId=${recipe.id})}" class="btn btn-primary">Report</a>
     
     
     

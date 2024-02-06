@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.MemberReport;
+import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.RecipeReport;
 import com.ad.teamnine.model.Report;
 import com.ad.teamnine.service.RecipeService;
@@ -38,21 +39,20 @@ public class ReportController {
 			Model model,
 			HttpSession sessionObj) {
 		RecipeReport report = new RecipeReport();
-		Member member = 
-			userService.getMemberById((int)sessionObj.getAttribute("userId"));
-//		Member member =userService.getMemberById(1533);
+//		Member member = 
+//			userService.getMemberById((int)sessionObj.getAttribute("userId"));
+		Member member =userService.getMemberById(1);
+		Recipe recipe=recipeService.getRecipeById(recipeId);
+		report.setMember(member);
+		report.setRecipeReported(recipe);
 		model.addAttribute("report",report);
-		model.addAttribute("recipe",recipeService.getRecipeById(recipeId));
-		model.addAttribute("member",member);
 		return "ReportViews/showRecipeReportPage";
 	}
 	
 	@PostMapping("/reportRecipe")
 	public String reportRecipe(@ModelAttribute("report") RecipeReport report) {
-		
 		reportService.reportRecipes(report);
-		Integer recipeId = report.getRecipeReported().getId();
-		return "redirect:/recipe/view/"+recipeId;
+		return "redirect:/recipe/view/"+report.getRecipeReported().getId();
 		
 	}
 	
@@ -68,17 +68,17 @@ public class ReportController {
 		model.addAttribute("member",member);
 		return "ReportViews/showMemberReportPage";
 	}
-//	
-//	@PostMapping("/reportMember")
-//	public String reportMember(@ModelAttribute("report") MemberReport report) {
-//		
-//		reportService.reportMembers(report);
-//		Member author = report.getMember();
-//		
-//		
-//		return "redirect:/recipe/view/"+recipeId;
-//		
-//	}
+	
+	@PostMapping("/reportMember")
+	public String reportMember(@ModelAttribute("report") MemberReport report) {
+		
+		reportService.reportMembers(report);
+		Integer authorId = report.getMemberReported().getId();
+		
+		
+		return "redirect:/member/view/"+authorId;
+		
+	}
 	
 
 

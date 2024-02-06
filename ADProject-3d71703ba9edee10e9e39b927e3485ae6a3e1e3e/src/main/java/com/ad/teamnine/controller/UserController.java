@@ -227,8 +227,8 @@ public class UserController {
 	}
 	
 
-	@GetMapping("/{id}")
-    public String viewUserProfile(@PathVariable int id, Model model) {
+	@GetMapping("/{memberId}")
+    public String viewUserProfile(@PathVariable(name="memberId") int id, Model model) {
         Member member = userService.getMemberById(id);
         model.addAttribute("member", member);
 
