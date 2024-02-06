@@ -7,6 +7,8 @@
 </head>
 <body>
     <h1 th:text="${recipe.name}"></h1>
+    
+    <p><strong>Created by:</strong> <a th:href="@{/user/profile/{userId}(userId=${recipe.member.id})}" th:text="${recipe.member.username}"></a ></p >
 
     <div>
 		<img th:src="@{${recipe.image}}" alt="Recipe Image" class="recipe-image">
@@ -38,7 +40,7 @@
     
     <a href="#" th:attr="onclick='deleteRecipe(' + ${recipe.id} + ')'" >Delete</a>
     
-    <a th:href="@{/report/reportRecipe/{id}(id=${recipe.id})}" class="btn btn-primary">Report</a>
+    <a th:href="@{/report/reportRecipe/{recipeId}(recipeId=${recipe.id})}" class="btn btn-primary">Report</a>
     
     
     

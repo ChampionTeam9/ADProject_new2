@@ -23,6 +23,9 @@ public class Member extends User{
 	private Double calorieIntake;
 	
 	@Column
+	private LocalDate registrationDate;
+	
+	@Column
 	@Enumerated(EnumType.STRING)
 	private Status memberStatus;
 	
