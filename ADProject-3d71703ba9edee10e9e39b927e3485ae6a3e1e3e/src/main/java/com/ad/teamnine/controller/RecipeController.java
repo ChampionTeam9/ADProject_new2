@@ -2,10 +2,14 @@ package com.ad.teamnine.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -140,22 +144,20 @@ public class RecipeController {
         
         recipe.setNumberOfSteps(recipe.getSteps().size());
 
-        // 获取图片文件名
-//        String fileName = pictureFile.getOriginalFilename();
-
-        // 保存图片到服务器的某个位置
-//        String filePath = "/path/to/save/images/" + fileName;
-
-//        try {
-//            // 写入文件
-//            pictureFile.transferTo(new File(filePath));
-//
-//            // 将图片路径保存到 Recipe 对象中
-//            recipe.setImage(filePath);
-//        } catch (IOException e) {
-//            // Handle the exception (e.g., log it)
-//            e.printStackTrace();
-//        }
+        String uploadDirectory = "src/main/resources/static/images";
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + pictureFile.getOriginalFilename();
+        Path uploadPath = Path.of(uploadDirectory);
+        Path filePath = uploadPath.resolve(uniqueFileName);
+        try {
+        	if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+			Files.copy(pictureFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        recipe.setImage(uniqueFileName);
         
         // Get member's shopping list
  		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
