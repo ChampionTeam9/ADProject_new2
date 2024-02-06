@@ -222,12 +222,12 @@ public class UserController {
 			return "/UserViews/register";
 		}
 		inMember.setStatus(Status.CREATED);
-		LocalDate birthdate = inMember.getBirthdate();
-		LocalDate currentDate = LocalDate.now();
-		if (birthdate != null) {
-			int age = Period.between(birthdate, currentDate).getYears();
-			inMember.setAge(age);
-		}
+//		LocalDate birthdate = inMember.getBirthdate();
+//		LocalDate currentDate = LocalDate.now();
+//		if (birthdate != null) {
+//			int age = Period.between(birthdate, currentDate).getYears();
+//			inMember.setAge(age);
+//		}
 		httpSession.setAttribute("UserID", inMember.getId());
 		userService.saveMember(inMember);
 		return "redirect:/UserViews/HomePage";
@@ -361,5 +361,26 @@ public class UserController {
 	public String login() {
 		return "/UserViews/login";
 	}
+	@PostMapping("/login")
+	public String loginlogic( @RequestParam(name="username") String username,
+	                         @RequestParam(name="password") String password,
+	                         
+	                         Model model, HttpSession httpSession) {
+	  
+	    
+	    Member member = userService.getMemberByUsername(username);
+	    if (member != null && member.getPassword().equals(password)) {
+	        httpSession.setAttribute("userId", member.getId());
+	        if (userService.checkIfAdmin(member)) {
+	            return "redirect:/admin/dashboard";
+	        } else {
+	            return "";
+	        }
+	    } else {
+	        return "redirect:/user/login";
+	    }
+	}
+
+	
 
 }
