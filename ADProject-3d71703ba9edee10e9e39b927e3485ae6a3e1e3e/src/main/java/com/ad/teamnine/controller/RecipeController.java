@@ -62,6 +62,13 @@ public class RecipeController {
 		return "/ReviewViews/createReviewPage";
 	}
 	
+	@GetMapping("/search/{tag}")
+	public String searchByTag(@PathVariable String tag,Model model) {
+	    List<Recipe> results = recipeService.searchByTag(tag);
+	    model.addAttribute("results", results);
+	    return "page1";
+	}
+
 	//search by title name
 	@PostMapping("/search")
 	public String searchRecipe(@RequestParam("query") String query,
