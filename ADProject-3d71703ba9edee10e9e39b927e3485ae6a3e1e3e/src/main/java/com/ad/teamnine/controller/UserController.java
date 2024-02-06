@@ -55,7 +55,7 @@ public class UserController {
 		}
 		addIngredientForm.setIngredientNames(ingredientNames);
 		model.addAttribute("addIngredientForm", addIngredientForm);
-		return "UserViews/addShoppingListIngredientPage";
+		return "/UserViews/addShoppingListIngredientPage";
 	}
 
 	// Save the ingredients selected as ShoppingListItem
@@ -169,7 +169,7 @@ public class UserController {
 	public String setPreference(Model model) {
 		Set<String> tags = userService.getRandomUniqueTags(7);
 		model.addAttribute("tags", tags);
-		return "/UserViews/setPreference";
+		return "/UserViews/setPreferencePage";
 	}
 
 	@PostMapping("/setPreference")
@@ -187,7 +187,7 @@ public class UserController {
 			member.setPrefenceList(combinedTags);
 			userService.saveMember(member);
 		}
-		return "test";
+		return "/RecipeViews/HomePage";
 	}
 
 	// refresh tags on the website
@@ -230,7 +230,7 @@ public class UserController {
 		}
 		httpSession.setAttribute("UserID", inMember.getId());
 		userService.saveMember(inMember);
-		return "redirect:/page1";
+		return "redirect:/UserViews/HomePage";
 	}
 
 	@GetMapping("/profile/{memberId}")
@@ -241,7 +241,7 @@ public class UserController {
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 
-		return "userProfile";
+		return "UserViews/userProfile";
 	}
 
 	@GetMapping("/admin/dashboard")

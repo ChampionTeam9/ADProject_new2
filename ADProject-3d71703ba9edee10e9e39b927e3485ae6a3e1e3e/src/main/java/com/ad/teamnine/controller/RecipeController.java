@@ -66,7 +66,7 @@ public class RecipeController {
 	public String searchByTag(@PathVariable String tag,Model model) {
 	    List<Recipe> results = recipeService.searchByTag(tag);
 	    model.addAttribute("results", results);
-	    return "page1";
+	    return "/RecipeViews/HomePage";
 	}
 
 	//search by title name
@@ -90,13 +90,13 @@ public class RecipeController {
 	            break;
 	    }
 	    model.addAttribute("results", results);
-	    return "page1";
+	    return "/RecipeViews/HomePage";
 	}
 	
 	@GetMapping("/create")
     public String showAddRecipeForm(Model model) {
 		model.addAttribute("recipe", new Recipe());
-        return "createRecipesPage";
+        return "/RecipeViews/createRecipesPage";
     }
 	
 	@PostMapping("/addItem")
@@ -197,7 +197,7 @@ public class RecipeController {
 		Recipe recipe = recipeService.getRecipeById(id);
 	    model.addAttribute("recipe", recipe);
 		
-		return "updateRecipesPage";
+		return "/RecipeViews/updateRecipesPage";
 	}
 	
 	@PostMapping("/edit")

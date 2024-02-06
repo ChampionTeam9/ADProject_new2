@@ -40,7 +40,7 @@ public class APIController {
 	@GetMapping("/readCsv")
 	public List<String[]> readCsv() {
 		try {
-			URI uri = ClassLoader.getSystemResource("test.csv").toURI();
+			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
 			saveEntities(results);
