@@ -90,6 +90,8 @@ public class Recipe {
 		recipesToReport = new ArrayList<>();
 		this.member = member;
 		numberOfSaved = 0;
+		this.status = Status.PUBLIC;
+		this.steps = new ArrayList<>();
 	}
 
 	// constructor

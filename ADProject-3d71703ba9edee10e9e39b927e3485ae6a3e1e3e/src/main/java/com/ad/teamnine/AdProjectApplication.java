@@ -38,6 +38,12 @@ public class AdProjectApplication {
 			recipe1.getIngredients().add(ingredient1);
 			recipe1.getIngredients().add(ingredient2);
 			recipe1.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
+			recipe1.setPreparationTime(30);
+			recipe1.setServings(4);
+			recipe1.setNotes("This is the notes of recipe 1");
+			recipe1.getSteps().add("Cut the bananas and mix well with flour");
+			recipe1.getTags().add("cuisine");
+			recipe1.getTags().add("easy");
 			recipeRepo.save(recipe1);
 			
 			Recipe recipe2 = new Recipe(2, "recipe2Name", "recipe2Description", member1);

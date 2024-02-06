@@ -142,24 +142,37 @@ public class RecipeController {
         	recipe.setPreparationTime(preparationTime * 60);
         }
         
-        recipe.setNumberOfSteps(recipe.getSteps().size());
-
-        String uploadDirectory = "src/main/resources/static/images";
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + pictureFile.getOriginalFilename();
-        Path uploadPath = Path.of(uploadDirectory);
-        Path filePath = uploadPath.resolve(uniqueFileName);
-        try {
-        	if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-			Files.copy(pictureFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        recipe.setImage(uniqueFileName);
+        List<String> steps = recipe.getSteps();
+        List<String> newSteps = new ArrayList<>();
+        for (String step : steps) {
+        	if (step != null && !step.isEmpty())
+        		newSteps.add(step);
+        }
+        recipe.setSteps(newSteps);
+        recipe.setNumberOfSteps(newSteps.size());
         
-        // Get member's shopping list
+        if (pictureFile != null && !pictureFile.isEmpty()) {
+        	String uploadDirectory = "src/main/resources/static/images";
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + pictureFile.getOriginalFilename();
+            Path uploadPath = Path.of(uploadDirectory);
+            Path filePath = uploadPath.resolve(uniqueFileName);
+            try {
+            	if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+    			Files.copy(pictureFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+            recipe.setImage(uniqueFileName);
+        }
+        else {
+        	// No new image file uploaded, retain the existing image
+        	Recipe existingRecipe = recipeService.getRecipeById(recipe.getId());
+        	recipe.setImage(existingRecipe.getImage());
+        }
+        
  		// Member member = memberService.getMemberById((int)sessionObj.getAttribute("userId"));
  		// Hardcode first
  		Member member = userService.getMemberById(1);
@@ -243,22 +256,12 @@ public class RecipeController {
         return "redirect:/recipe/view/myRecipes";
     }
 	
-	@RequestMapping("/edit/{id}")
-	public String getUpdateUserPage(@PathVariable("id") Integer id, Model model) {
-		
+	@GetMapping("/edit/{id}")
+	public String getUpdateRecipePage(@PathVariable("id") Integer id, Model model) {
 		Recipe recipe = recipeService.getRecipeById(id);
 	    model.addAttribute("recipe", recipe);
-		
 		return "updateRecipesPage";
 	}
-	
-	@PostMapping("/edit")
-    public String updateRecipe(@ModelAttribute Recipe recipe) {
-		
-        recipeService.updateRecipe(recipe);
-
-        return "redirect:/recipe/list";
-    }
 	
 	@GetMapping("/view/{id}")
 	public String viewRecipe(@PathVariable("id") Integer id, Model model) {
