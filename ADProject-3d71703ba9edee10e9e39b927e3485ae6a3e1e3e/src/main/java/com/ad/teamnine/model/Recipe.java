@@ -73,6 +73,10 @@ public class Recipe {
 	private Member member;
 
 	public Recipe() {
+		ingredients = new ArrayList<>();
+		tags = new ArrayList<>();
+		reviews = new ArrayList<>();
+		recipesToReport = new ArrayList<>();
 	}
 
 	public Recipe(int id, String name, String description, Member member) {
@@ -105,7 +109,7 @@ public class Recipe {
 		this.saturatedFat = saturatedFat;
 		this.steps = steps;
 		this.healthScore = calculateHealthScore();
-		this.status = Status.Public;
+		this.status = Status.PUBLIC;
 	}
 
 	// getter and setter

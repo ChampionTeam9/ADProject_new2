@@ -1,5 +1,5 @@
 package com.ad.teamnine.model;
 
 public enum Status {
-	CREATED,UPDATED,DELETED,APPROVED,REJECTED,Public,Private
+	CREATED,UPDATED,DELETED,APPROVED,REJECTED,PUBLIC,PRIVATE, PENDING
 }

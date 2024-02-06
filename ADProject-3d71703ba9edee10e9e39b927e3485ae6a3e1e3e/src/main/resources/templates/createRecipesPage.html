@@ -3,206 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/style.css" rel="stylesheet"/>
     <title>Add Recipe</title>
-    <style>
- 
-    </style>
 </head>
 <body>
-    <h2>Add Recipe</h2>
-    <form action="/recipe/create" method="post" enctype="multipart/form-data">
-        <label for="nameInput">Recipe Name:</label>
-        <input type="text" id="nameInput" name="name" required> 
-        <br>
-      
-        <label for="descriptionInput">Description:</label>
-        <input type="text" id="descriptionInput" name="description" required>      
-        <br>
-        
-        <label for="servingsInput">Servings:</label>
-        <input type="number" id="servingsInput" name="servings" required min="1" step="1">
-        <!-- min="1" 表示最小值为1，step="1" 表示步长为1，即只能输入整数 -->
-        <br>
-        
-        <label for="preparationTimeInput">Preparation Time:</label>
-        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1">
-        
-        <!-- 添加按钮或下拉列表来选择时间单位 -->
-        <label for="timeUnit">Time Unit:</label>
-        <select id="timeUnit" name="timeUnit">
-            <option value="minutes">Minutes</option>
-            <option value="hours">Hours</option>
-        </select>
-        <br>
-        
-        <label for="ingredientsInput">Ingredients:</label>
-        <div id="ingredientsContainer">
-            <!-- 默认显示三个原料框 -->
-            <input type="text" name="ingredients" required>
-            <br>
-            <input type="text" name="ingredients" >
-            <br>
-            <input type="text" name="ingredients" >
-            <br>
-        </div>
-
-        <!-- 按钮触发添加新原料框 -->
-        <button type="button" onclick="addIngredient()">Add Ingredient</button>
-        <br>
-        
-        <label for="stepsInput">steps:</label>
-        <div id="stepsContainer">
-            <!-- 默认显示三个方向框 -->
-            <input type="text" name="steps" required>
-            <br>
-            <input type="text" name="steps" >
-            <br>
-            <input type="text" name="steps" >
-            <br>
-        </div>
-
-        <!-- 按钮触发添加新方向框 -->
-        <button type="button" onclick="addstep()">Add step</button>
-        <br>
-        
-        
-        <!-- Upload Picture 输入框 -->
-        <label for="pictureInput">Upload Picture:</label>
-        <input type="file" id="pictureInput" name="image" accept="image/*" style="display: none;" class="fileBtn" onchange="fileBtn(this)">
-        
-
-        <!-- 图片预览框 -->
-        <div id="picturePreview"></div>
-        
-        <button type="button" onclick="selectFromFile()">Select Picture</button>
-		<br>
-        
-        
-      
-		
-		<!-- Tags 输入框 --> 
-        <label for="tagsInput">Tags:</label>
-        <div id="tagsContainer">
-				
-    		<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)">
-    		<div id="tagDropdown"></div>
-		   
-        </div>
-		
+	<div class="container">
+	    <h2>Add Recipe</h2>
+	    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm">
+			<input type="hidden" id="ingredientIds" name="ingredientIds" value=""/>
+			
+			<div class="form-group">
+		        <label for="nameInput">Recipe Name:</label>
+		        <input type="text" id="nameInput" name="name" th:field="*{name}" required> 
+		    </div>
+	        <br />
 	
-        <label for="public">Public</label>
-    	<input type="radio" id="public" name="status" value="Public">
-
-    	<label for="private">Private</label>
-    	<input type="radio" id="private" name="status" value="Private">
-
-    	<br>
-    
-        <input type="submit" value="Save" />
-        
-    </form>
-    
+			<div class="form-group">
+		        <label for="descriptionInput">Description:</label>
+		        <input type="text" id="descriptionInput" name="description" th:field="*{description}" required>  
+		    </div>    
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="servingsInput">Servings:</label>
+		        <input type="number" id="servingsInput" name="servings" required min="1" step="1" th:field="*{servings}">
+		        <!-- min="1" 表示最小值为1，step="1" 表示步长为1，即只能输入整数 -->
+	        </div>
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="preparationTimeInput">Preparation Time:</label>
+		        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1" th:field="*{preparationTime}">
+		        
+		        <!-- 添加按钮或下拉列表来选择时间单位 -->
+		        <label for="timeUnit"></label>
+		        <select id="timeUnit" name="timeUnit">
+		            <option value="minutes">Minutes</option>
+		            <option value="hours">Hours</option>
+		        </select>
+	        </div>
+	        
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="ingredientsInput">Ingredients:</label>
+		        <div name="ingredientsInput">
+		            <input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
+					<button type="button" id="addIngredientBtn">Add</button>
+					<span id="ingredientsError" style="color: red;"></span>
+		        </div>
+	        </div>
+	        <br />
+	        <br />
+	        <table id="itemTable" class="table table-hover">
+			</table>
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="stepsInput">Steps:</label>
+		        <div name="stepsInput">
+		            <input type="text" placeholder="Add a step" id="addStepInput" />
+					<button type="button" id="addStepBtn">Add</button>
+		        </div>
+	        </div>
+	        <br />
+	        <br />
+	        <table id="stepsTable" class="table table-hover">
+			</table>
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+				<label for="notesInput">Notes:</label>
+				<textarea name="notesInput" cols="40" rows="5" th:field="*{notes}" placeholder="Add any additional remarks for your recipe here"></textarea>
+			</div>
+			<br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <!-- Upload Picture 输入框 -->
+		        <label for="pictureInput">Upload Picture:</label>
+		        <input type="file" id="pictureInput" name="image" accept="image/*" style="display: none;" class="fileBtn" onchange="fileBtn(this)">
+	        </div>
+	
+	        <!-- 图片预览框 -->
+	        <div id="picturePreview"></div>
+	        
+	        <button type="button" onclick="selectFromFile()">Select Picture</button>
+			<br />
+			<br />
+			<br />
+	        
+			<!-- Tags 输入框 --> 
+	        <label for="tagsInput">Tags:</label>
+	        <div id="tagsContainer">
+	    		<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)">
+	    		<div id="tagDropdown"></div>
+	        </div>
+			
+			<br />
+			<br />
+			
+			<div class="form-group">
+		        <label for="public">Public</label>
+		    	<input type="radio" id="public" name="status" value="Public">
+		    	<label for="private">Private</label>
+		    	<input type="radio" id="private" name="status" value="Private">
+			</div>
+	
+	    	<br />    
+	        <input type="submit" value="Save" />
+	    </form>
+    </div>
     <script>
-        function addIngredient() {
-        var container = document.getElementById("ingredientsContainer");
-        var ingredientRow = document.createElement("div");
-        
-        var input = document.createElement("input");
-        input.type = "text";
-        input.name = "ingredients";
-        input.required = true;
-        
-        // 创建删除按钮
-        var deleteButton = document.createElement("button");
-        deleteButton.type = "button";
-        deleteButton.textContent = "Delete";
-        
-        // 删除
-        deleteButton.onclick = function() {
-			removeRow(ingredientRow,container);
-		};
-
-        ingredientRow.appendChild(input);
-        ingredientRow.appendChild(deleteButton);
-        container.appendChild(ingredientRow);
-       
-        
-        
-    }
-    
-
-
-        function removeRows(event) {
-		    // 获取点击的按钮所在的父级div
-		    var ingredientDiv = event.target.parentNode;
+		document.addEventListener("DOMContentLoaded", function(event) {
+			const ingredientIdsEle = document.getElementById("ingredientIds");
+			const addIngredientInput = document.getElementById("addIngredientInput");
+			const addIngredientBtn = document.getElementById("addIngredientBtn");
+			addIngredientBtn.addEventListener("click", (event) => {
+				var newIngredient = addIngredientInput.value;
+				addItem(newIngredient, function (error, newIngredientId) {
+				    if (error) {
+				        console.error(error);
+				    } else {
+				        console.log("New Ingredient ID:", newIngredientId);
+				        var ingredientIdsStr = ingredientIdsEle.value;
+				        if (ingredientIdsEle.value == ""){
+							ingredientIdsEle.value = newIngredientId;
+						} else {
+							ingredientIdsEle.value = ingredientIdsStr + "," + newIngredientId;
+						}
+				        console.log("ingredientIdsEle.value: " + ingredientIdsEle.value);
+				        addRow(newIngredient, newIngredientId);
+				        addIngredientInput.value = "";
+				    }
+				});
+			})
+			
+			const addStepInput = document.getElementById("addStepInput");
+			const addStepBtn = document.getElementById("addStepBtn");
+			addStepBtn.addEventListener("click", (event) => {
+				var newStep = addStepInput.value;
+				addStep(newStep);
+				addStepInput.value = "";
+			})
+		});
 		
-		    // 从父级div的父级div（即ingredientsContainer）中移除当前行
-		    ingredientDiv.parentNode.removeChild(ingredientDiv);
-		    
-		    updateNumberOfIngredients();
-		    updateNumberOfSteps();
+		function addItem(newIngredient, callback){
+			console.log("add item function");
+			let xhr = new XMLHttpRequest();
+		    xhr.open("POST", "/recipe/addItem");
+		    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+		    xhr.onreadystatechange = function () {
+		        if (xhr.readyState == 4) {
+		            if (xhr.status == 200) {
+		                console.log("response ok");
+		                let data = JSON.parse(xhr.responseText);
+		                let statusMessage = data.statusMessage;
+		                if (statusMessage){
+							console.log("status message: " + data.statusMessage);
+							const ingredientsError = document.getElementById("ingredientsError");
+							if (statusMessage === "NOT_FOUND"){
+								ingredientsError.textContent = "Ingredient does not exist, please check and re-enter.";
+							} else {
+								ingredientsError.textContent = "Quantity is missing, please check and re-enter.";
+							}
+						} else {
+							let newIngredientId = data.id;
+		                	callback(null, newIngredientId);
+						}
+		            } else {
+		                callback("Error saving item", null);
+		            }
+		        }
+		    }
+		    let data = {
+		        "ingredientName": newIngredient,
+		    }
+		    xhr.send(JSON.stringify(data));
 		}
-
-		function removeRow(row,container) {
-		    
-		    container.removeChild(row);
-		    updateNumberOfIngredients();
-		    updateNumberOfSteps();
-		}
-
-
-    
-	    function updateNumberOfIngredients() {
-		    var container = document.getElementById("ingredientsContainer");
-		    var numberOfIngredientsInput = document.getElementById("numberOfIngredientsInput");
 		
-		    // 设置 numberOfSteps 的值为当前行数
-		    numberOfIngredientsInput.value = (container.getElementsByTagName("div").length);
-		}
-    
-    
-    
-        
-        
-        function addstep() {
-            var container = document.getElementById("stepsContainer");
-            var stepRow = document.createElement("div");
-            
-            var input = document.createElement("input");
-            input.type = "text";
-            input.name = "steps";
-            input.required = true;
-            
-            // 创建删除按钮
+        function addRow(ingredientName, ingredientId) {
+	        console.log("add row function");
+			console.log("ingredientName: " + ingredientName);
+			const itemTable = document.getElementById("itemTable");
+			var newRow = itemTable.insertRow(-1);
+			var cell1 = newRow.insertCell(0);
+			cell1.className = "itemText";
+			cell1.innerHTML = ingredientName;
+	        
+	        // 创建删除按钮
+	        var cell2 = newRow.insertCell(1);
 	        var deleteButton = document.createElement("button");
 	        deleteButton.type = "button";
 	        deleteButton.textContent = "Delete";
+	        deleteButton.id = ingredientId;
 	        
 	        // 删除
-        	deleteButton.onclick = function() {
-				removeRow(stepRow,container);
+	        deleteButton.onclick = function(e) {
+				var deleteButton = e.target;
+				console.log(deleteButton);
+				var ingredientId = this.id;
+				console.log("delete button ingredientID: " + ingredientId);
+				removeItem(ingredientId);
+				var row = deleteButton.closest("tr");
+				row.remove();
 			};
-        
-            stepRow.appendChild(input);
-            stepRow.appendChild(deleteButton);
-            container.appendChild(stepRow);
-            
-            updateNumberOfSteps();
+	        cell2.appendChild(deleteButton);
+	    }
+    
+        function removeItem(id) {
+		    const ingredientIdsEle = document.getElementById("ingredientIds");
+		    var ingredientIdsStr = ingredientIdsEle.value;
+	        if (ingredientIdsEle.value.length == 1){
+				ingredientIdsEle.value = "";
+			} else {
+				ingredientIdsEle.value = ingredientIdsStr.replace(id, "");
+			}
+			console.log("ingredingredientIdsEle.value: " + ingredientIdsEle.value);
+		}
+    
+        function addStep(newStep) {
+            const stepsTable = document.getElementById("stepsTable");
+            var count = stepsTable.getElementsByTagName("tr").length;
+			var newRow = stepsTable.insertRow(-1);
+			var cell1 = newRow.insertCell(0);
+			cell1.className = "stepText";
+			cell1.innerHTML = newStep;
+			
+			var input = document.createElement("input");
+			input.type = "hidden";
+			input.name = "steps[" + count + "]";
+			input.value = newStep;
+			cell1.appendChild(input);
+	        
+	        // 创建删除按钮
+	        var cell2 = newRow.insertCell(1);
+	        var deleteButton = document.createElement("button");
+	        deleteButton.type = "button";
+	        deleteButton.textContent = "Delete";
+	        deleteButton.id = "stepsDelete" + count;
+	        
+	        // 删除
+	        deleteButton.onclick = function(e) {
+				var deleteButton = e.target;
+				console.log(deleteButton);
+				var stepId = this.id;
+				console.log("delete button stepId: " + stepId);
+				stepId = parseInt(stepId.substring(11));
+				console.log("delete button stepId: " + stepId);
+				var row = deleteButton.closest("tr");
+				row.remove();
+			};
+	        cell2.appendChild(deleteButton);
         }
-        
-    
-	    function updateNumberOfSteps() {
-	    var container = document.getElementById("stepsContainer");
-	    var numberOfStepsInput = document.getElementById("numberOfStepsInput");
-	
-	    // 设置 numberOfSteps 的值为当前行数
-	    numberOfStepsInput.value = (container.getElementsByTagName("div").length);
-	}
-    
-    
-    
-    
-    function getMatchingTags(keyword) {
+
+	    function getMatchingTags(keyword) {
 		    var dropdown = document.getElementById("tagDropdown");
 		
 		    // 使用Ajax向服务器请求匹配的Tag选项
@@ -226,7 +284,7 @@
 		            // 在下拉菜单添加完毕后，将其移动到tagsContainer的最下方
 		            moveDropdownToBottom();
 		        });
-		}
+			}
 		
 		function selectTag(tag) {
 		    var tagsContainer = document.getElementById("tagsContainer");
@@ -279,11 +337,7 @@
 		
 		    // 将下拉菜单(tagDropdown)移动到tagsContainer的最下方
 		    tagsContainer.appendChild(tagDropdown);
-		    
-		    
 		}
-	
-        
     
         function selectFromFile() {
             document.getElementById("pictureInput").click();
@@ -319,10 +373,9 @@
 		
 		    // 读取文件内容
 		    reader.readAsDataURL(file);
-		        }
+		        }   
 		        
-		        
-		            // 预定义的标签
+		// 预定义的标签
 	    var predefinedTags = ["HTML", "CSS", "JavaScript", "Web"];
 	
 	    // 获取DOM元素
@@ -341,9 +394,6 @@
 	            addTag(tagInput.value.trim());
 	        }
 	    });
-	
-	   
-	
     </script>
 </body>
 </html>

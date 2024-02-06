@@ -33,9 +33,8 @@ public class RecipeService {
 	MemberRepository memberRepo;
 
 	// create new recipe
-	public void createRecipe(Recipe newRecipe) {
-		recipeRepo.save(newRecipe);
-		return;
+	public Recipe createRecipe(Recipe newRecipe) {
+		return recipeRepo.save(newRecipe);
 	}
 
 	// update exist recipe
@@ -76,7 +75,7 @@ public class RecipeService {
 	public void setStatusToPublicById(Integer id) {
 		Recipe recipe = recipeRepo.findById(id).orElse(null);
 		if (recipe != null) {
-			recipe.setStatus(Status.Public);
+			recipe.setStatus(Status.PUBLIC);
 			recipeRepo.save(recipe);
 		} else {
 			System.out.println("Recipe with ID " + id + " not found");
@@ -87,7 +86,7 @@ public class RecipeService {
 	public void setStatusToPrivateById(Integer id) {
 		Recipe recipe = recipeRepo.findById(id).orElse(null);
 		if (recipe != null) {
-			recipe.setStatus(Status.Private);
+			recipe.setStatus(Status.PRIVATE);
 			recipeRepo.save(recipe);
 		} else {
 			System.out.println("Recipe with ID " + id + " not found");
@@ -155,5 +154,9 @@ public class RecipeService {
 	                .collect(Collectors.toList());
 
 	        return matchingTags;
+	    }
+		
+		public List<Recipe> getAllRecipesByMember(Member member) {
+	        return recipeRepo.findByMember(member);
 	    }
 }
