@@ -130,6 +130,8 @@ public class RecipeController {
         	int preparationTime = recipe.getPreparationTime();
         	recipe.setPreparationTime(preparationTime * 60);
         }
+        
+        recipe.setNumberOfSteps(recipe.getSteps().size());
 
         // 获取图片文件名
 //        String fileName = pictureFile.getOriginalFilename();
@@ -153,20 +155,61 @@ public class RecipeController {
  		// Hardcode first
  		Member member = userService.getMemberById(1);
         recipe.setMember(member);
- 		
-        Recipe savedRecipe = recipeService.createRecipe(recipe);
         
+        recipeService.createRecipe(recipe);
+        
+        List<Ingredient> ingredients = recipe.getIngredients();
         String[] ingredientsToAdd = ingredientIds.split(",");
         for (int i = 0; i < ingredientsToAdd.length; i ++) {
         	if (ingredientsToAdd[i].equals(""))
         		continue;
 			Ingredient ingredient = ingredientService.getIngredientById(Integer.parseInt(ingredientsToAdd[i]));
 			System.out.println("Ingredient: " + ingredient);
-			ingredient.getRecipes().add(savedRecipe);
+			ingredient.getRecipes().add(recipe);
 			ingredientService.saveIngredient(ingredient);
+			ingredients.add(ingredient);
 		}
+        setRecipeNutrients(recipe);
+        recipe.setHealthScore(recipe.calculateHealthScore());
+        recipeService.createRecipe(recipe);
         return "redirect:/recipe/list";
     }
+	
+	public void setRecipeNutrients(Recipe recipe) {
+		// Sum up nutrients from each recipe
+		List<Ingredient> ingredients = recipe.getIngredients();
+		int servings = recipe.getServings();
+		Double calories = 0.0;
+		Double protein = 0.0;
+		Double carbohydrate = 0.0;
+		Double sugar = 0.0;
+		Double sodium = 0.0;
+		Double fat = 0.0;
+		Double saturatedFat = 0.0;
+		for (Ingredient ingredient : ingredients) {
+			calories += ingredient.getCalories();
+			protein += ingredient.getProtein();
+			carbohydrate += ingredient.getCarbohydrate();
+			sugar += ingredient.getSugar();
+			sodium += ingredient.getSodium();
+			fat += ingredient.getFat();
+			saturatedFat += ingredient.getSaturatedFat();
+		}
+		recipe.setCalories(calories / servings);
+		// Calculate PDV of each macronutrient by using their reference intake
+		Double proteinPDV = (protein / servings) / 50 * 100;
+		Double carbohydratePDV = (carbohydrate / servings) / 260 * 100;
+		Double sugarPDV = (sugar / servings) / 90 * 100;
+		Double sodiumPDV = (sodium / 1000 / servings) / 6 * 100;
+		Double fatPDV = (fat / servings) / 70 * 100;
+		Double saturatedFatPDV = (saturatedFat / servings) / 20 * 100;
+		recipe.setProtein(proteinPDV);
+		recipe.setCarbohydrate(carbohydratePDV);
+		recipe.setSugar(sugarPDV);
+		recipe.setSodium(sodiumPDV);
+		recipe.setFat(fatPDV);
+		recipe.setSaturatedFat(saturatedFatPDV);
+	}
 	
 	@GetMapping("/list")
 	public String showAddRecipeList(Model model) {

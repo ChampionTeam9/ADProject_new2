@@ -49,9 +49,10 @@
 	        <div class="form-group">
 		        <label for="ingredientsInput">Ingredients:</label>
 		        <div name="ingredientsInput">
-		            <input type="text" placeholder="Add an ingredient" id="addIngredientInput" />
+		            <input type="text" placeholder="Enter an ingredient and click Add" id="addIngredientInput" />
 					<button type="button" id="addIngredientBtn">Add</button>
 					<span id="ingredientsError" style="color: red;"></span>
+					<span id="fetchingIngredient" style="color: grey;"></span>
 		        </div>
 	        </div>
 	        <br />
@@ -64,7 +65,7 @@
 	        <div class="form-group">
 		        <label for="stepsInput">Steps:</label>
 		        <div name="stepsInput">
-		            <input type="text" placeholder="Add a step" id="addStepInput" />
+		            <input type="text" placeholder="Enter a step and click Add" id="addStepInput" />
 					<button type="button" id="addStepBtn">Add</button>
 		        </div>
 	        </div>
@@ -98,6 +99,7 @@
 	        
 			<!-- Tags 输入框 --> 
 	        <label for="tagsInput">Tags:</label>
+	        <br />
 	        <div id="tagsContainer">
 	    		<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)">
 	    		<div id="tagDropdown"></div>
@@ -122,7 +124,9 @@
 			const ingredientIdsEle = document.getElementById("ingredientIds");
 			const addIngredientInput = document.getElementById("addIngredientInput");
 			const addIngredientBtn = document.getElementById("addIngredientBtn");
+			const fetchingIngredientSpan = document.getElementById("fetchingIngredient");
 			addIngredientBtn.addEventListener("click", (event) => {
+				fetchingIngredientSpan.textContent = "Fetching Ingredient...";
 				var newIngredient = addIngredientInput.value;
 				addItem(newIngredient, function (error, newIngredientId) {
 				    if (error) {
@@ -139,9 +143,9 @@
 				        addRow(newIngredient, newIngredientId);
 				        addIngredientInput.value = "";
 				    }
+					fetchingIngredientSpan.textContent = "";
 				});
 			})
-			
 			const addStepInput = document.getElementById("addStepInput");
 			const addStepBtn = document.getElementById("addStepBtn");
 			addStepBtn.addEventListener("click", (event) => {
@@ -149,6 +153,17 @@
 				addStep(newStep);
 				addStepInput.value = "";
 			})
+			
+			 // 获取DOM元素
+			var tagContainer = document.getElementById("tagContainer");
+			var tagInput = document.getElementById("tagsInput");
+			// 添加输入框事件监听
+			tagInput.addEventListener("keydown", function (event) {
+				if (event.key === "Enter" || event.key === ",") {
+		            event.preventDefault();
+		            addTag(tagInput.value.trim());
+		        }
+		    });
 		});
 		
 		function addItem(newIngredient, callback){
@@ -162,9 +177,9 @@
 		                console.log("response ok");
 		                let data = JSON.parse(xhr.responseText);
 		                let statusMessage = data.statusMessage;
+		                const ingredientsError = document.getElementById("ingredientsError");
 		                if (statusMessage){
 							console.log("status message: " + data.statusMessage);
-							const ingredientsError = document.getElementById("ingredientsError");
 							if (statusMessage === "NOT_FOUND"){
 								ingredientsError.textContent = "Ingredient does not exist, please check and re-enter.";
 							} else {
@@ -172,6 +187,7 @@
 							}
 						} else {
 							let newIngredientId = data.id;
+							ingredientsError.textContent = ""; // clear the error
 		                	callback(null, newIngredientId);
 						}
 		            } else {
@@ -284,7 +300,7 @@
 		            // 在下拉菜单添加完毕后，将其移动到tagsContainer的最下方
 		            moveDropdownToBottom();
 		        });
-			}
+		}
 		
 		function selectTag(tag) {
 		    var tagsContainer = document.getElementById("tagsContainer");
@@ -300,7 +316,7 @@
 		    deleteButton.type = "button";
 		    deleteButton.textContent = "Delete";
 		    deleteButton.onclick = function () {
-		        removeRow(newTagDiv, tagsContainer);
+		        tagsContainer.removeChild(newTagDiv);
 		    };
 		
 		    // 添加新标签和删除按钮
@@ -329,12 +345,10 @@
 		    // 清空输入框
 		    document.getElementById("newTagInput").value = "";
 		}
-
 		
 		function moveDropdownToBottom() {
 		    var tagsContainer = document.getElementById("tagsContainer");
 		    var tagDropdown = document.getElementById("tagDropdown");
-		
 		    // 将下拉菜单(tagDropdown)移动到tagsContainer的最下方
 		    tagsContainer.appendChild(tagDropdown);
 		}
@@ -373,27 +387,7 @@
 		
 		    // 读取文件内容
 		    reader.readAsDataURL(file);
-		        }   
-		        
-		// 预定义的标签
-	    var predefinedTags = ["HTML", "CSS", "JavaScript", "Web"];
-	
-	    // 获取DOM元素
-	    var tagContainer = document.getElementById("tagContainer");
-	    var tagInput = document.getElementById("tagInput");
-	
-	    // 初始化已有标签
-	    for (var i = 0; i < predefinedTags.length; i++) {
-	        createTag(predefinedTags[i]);
-	    }
-	
-	    // 添加输入框事件监听
-	    tagInput.addEventListener("keydown", function (event) {
-	        if (event.key === "Enter" || event.key === ",") {
-	            event.preventDefault();
-	            addTag(tagInput.value.trim());
-	        }
-	    });
+		}   
     </script>
 </body>
 </html>
