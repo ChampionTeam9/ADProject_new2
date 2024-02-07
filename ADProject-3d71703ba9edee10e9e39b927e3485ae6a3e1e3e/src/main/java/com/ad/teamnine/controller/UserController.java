@@ -228,12 +228,12 @@ public class UserController {
 	  
 	    httpSession.setAttribute("UserID", inMember.getId());
 	    userService.saveMember(inMember);
-	    		return "redirect:/RecipeViews/HomePage";
+	    		return "redirect:/";
 	}
 
 
 	@GetMapping("/profile")
-	public String viewUserProfile(HttpSession sessionObj, Model model) {
+	public String viewMemberProfile(HttpSession sessionObj, Model model) {
 		Integer id = null;
 		Object userIdObj = sessionObj.getAttribute("userId");
 		if (userIdObj != null && userIdObj instanceof Integer) {
@@ -243,6 +243,15 @@ public class UserController {
 			return "redirect:/user/login";
 		}
 		Member member = userService.getMemberById(id);
+		model.addAttribute("member", member);
+		// Get all recipes for the user
+		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
+
+		return "UserViews/userProfile";
+	}
+	@GetMapping("/profile/{id}")
+	public String viewUserProfile(@PathVariable("id") Integer memberId,HttpSession sessionObj, Model model) {
+		Member member = userService.getMemberById(memberId);
 		model.addAttribute("member", member);
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
@@ -377,7 +386,7 @@ public class UserController {
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getAddedRecipes();
 		model.addAttribute(recipes);
-		return "UserViews/showMyRecipeListPage";
+		return "UserViews/showMyRecipePage";
 	}
 	
 	@GetMapping("/member/myReview")
@@ -393,7 +402,7 @@ public class UserController {
 		Member member = userService.getMemberById(id);
 		List<Review> reviews = member.getReviews();
 		model.addAttribute(reviews);
-		return "UserViews/showMyReviewListPage";
+		return "UserViews/showMyReviewPage";
 	}
 	
 	@GetMapping("/login")

@@ -45,7 +45,7 @@ public class AdProjectApplication {
 			recipe1.getTags().add("cuisine");
 			recipe1.getTags().add("easy");
 			recipeRepo.save(recipe1);
-			
+			/*
 			Recipe recipe2 = new Recipe(2, "recipe2Name", "recipe2Description", member1);
 			recipe2.getIngredients().add(ingredient1);
 			recipe2.getIngredients().add(ingredient2);
@@ -82,6 +82,7 @@ public class AdProjectApplication {
 			ingredient2.getRecipes().add(recipe5);
 			ingrRepo.save(ingredient1);
 			ingrRepo.save(ingredient2);
+			*/
 		};
 	}
 }
