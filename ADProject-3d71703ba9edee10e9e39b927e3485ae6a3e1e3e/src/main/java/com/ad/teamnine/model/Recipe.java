@@ -77,6 +77,7 @@ public class Recipe {
 		tags = new ArrayList<>();
 		reviews = new ArrayList<>();
 		recipesToReport = new ArrayList<>();
+		numberOfSaved = 0;
 	}
 
 	public Recipe(int id, String name, String description, Member member) {
@@ -88,6 +89,9 @@ public class Recipe {
 		reviews = new ArrayList<>();
 		recipesToReport = new ArrayList<>();
 		this.member = member;
+		numberOfSaved = 0;
+		this.status = Status.PUBLIC;
+		this.steps = new ArrayList<>();
 	}
 
 	// constructor

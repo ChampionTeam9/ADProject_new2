@@ -24,6 +24,9 @@ button {
 button:hover {
   background-color: #4cae4c;
 }
+.button-style {
+	border-radius: 4px;
+}
 .form-group {
 	margin-bottom: 10px;
 }
