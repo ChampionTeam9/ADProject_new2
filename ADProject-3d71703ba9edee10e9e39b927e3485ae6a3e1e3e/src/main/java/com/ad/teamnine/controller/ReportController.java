@@ -36,9 +36,7 @@ public class ReportController {
 			Model model,
 			HttpSession sessionObj) {
 		RecipeReport report = new RecipeReport();
-//		Member member = 
-//			userService.getMemberById((int)sessionObj.getAttribute("userId"));
-		Member member =userService.getMemberById(1);
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		Recipe recipe=recipeService.getRecipeById(recipeId);
 		report.setMember(member);
 		report.setRecipeReported(recipe);
@@ -49,7 +47,7 @@ public class ReportController {
 	@PostMapping("/reportRecipe")
 	public String reportRecipe(@ModelAttribute("report") RecipeReport report) {
 		reportService.reportRecipes(report);
-		return "redirect:/recipe/view/"+report.getRecipeReported().getId();
+		return "redirect:/recipe/detail/"+report.getRecipeReported().getId();
 		
 	}
 	
@@ -72,7 +70,7 @@ public class ReportController {
 	public String reportMember(@ModelAttribute("report") MemberReport report) {
 		
 		reportService.reportMembers(report);
-		return "redirect:/member/view/"+report.getMemberReported().getId();
+		return "redirect:/user/profile/"+report.getMemberReported().getId();
 		
 	}
 	
