@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
 }
 .container {
-  width: 50%;
+  width: 60%;
   margin: 0 auto;
   padding: 20px;
 }
@@ -69,4 +69,13 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: vertical;
+}
+.page-divide-container {
+  display: flex;
+}
+.two-thirds-column {
+  width: 66.666%;
+}
+.one-third-column {
+  width: 33.333%;
 }

@@ -267,6 +267,9 @@ public class RecipeController {
 	public String viewRecipe(@PathVariable("id") Integer id, Model model) {
 	    Recipe recipe = recipeService.getRecipeById(id);
 	    model.addAttribute("recipe", recipe);
+	    // get number of people who rated 
+	    int numberOfUsersRatings = recipeService.getNumberOfUsersRatings(id);
+	    model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
 	    return "viewPage"; 
 	}
 

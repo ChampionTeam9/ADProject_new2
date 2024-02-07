@@ -21,6 +21,7 @@ import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.Status;
 import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.RecipeRepository;
+import com.ad.teamnine.repository.ReviewRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -31,6 +32,8 @@ public class RecipeService {
 	RecipeRepository recipeRepo;
 	@Autowired
 	MemberRepository memberRepo;
+	@Autowired
+	ReviewRepository reviewRepo;
 
 	// create new recipe
 	public Recipe createRecipe(Recipe newRecipe) {
@@ -57,12 +60,19 @@ public class RecipeService {
 	public void saveRecipe(Recipe recipe, Member member) {
 		member.getSavedRecipes().add(recipe);
 		memberRepo.save(member);
+		recipe.setNumberOfSaved(recipe.getNumberOfSaved() + 1); 
+		recipeRepo.save(recipe);
 	}
 
 	// unsubscribe specific recipe by id
 	public void unsubscribeRecipe(Recipe recipe, Member member) {
 		member.getSavedRecipes().remove(recipe);
 		memberRepo.save(member);
+	}
+	
+	// get number of people who rated a specific recipe
+	public int getNumberOfUsersRatings(int recipeId) {
+		return reviewRepo.getNumberOfUsersRatings(recipeId);
 	}
 
 	// get specific recipe by id
@@ -128,35 +138,35 @@ public class RecipeService {
     }
 	
 	// get all unique tags
-		public Set<String> getAllUniqueTags() {
-			List<String> tagLists = recipeRepo.findAllDistinctTags();
-			Set<String> uniqueTags = new HashSet<>();
+	public Set<String> getAllUniqueTags() {
+		List<String> tagLists = recipeRepo.findAllDistinctTags();
+		Set<String> uniqueTags = new HashSet<>();
 
-			for (String tags : tagLists) {
-				uniqueTags.addAll(Arrays.asList(tags.split(",")));
-			}
-
-			return uniqueTags;
+		for (String tags : tagLists) {
+			uniqueTags.addAll(Arrays.asList(tags.split(",")));
 		}
 
-		public Set<String> getRandomUniqueTags(int count) {
-			List<String> allTags = new ArrayList<>(getAllUniqueTags());
-			Collections.shuffle(allTags, new Random());
-			return allTags.stream().limit(count).collect(Collectors.toCollection(LinkedHashSet::new));
-		}
-		
-		public List<String> findMatchingTags(String keyword) {
-	        Set<String> allUniqueTags = getAllUniqueTags();
+		return uniqueTags;
+	}
 
-	        
-	        List<String> matchingTags = allUniqueTags.stream()
-	                .filter(tag -> tag.toLowerCase().contains(keyword.toLowerCase()))
-	                .collect(Collectors.toList());
+	public Set<String> getRandomUniqueTags(int count) {
+		List<String> allTags = new ArrayList<>(getAllUniqueTags());
+		Collections.shuffle(allTags, new Random());
+		return allTags.stream().limit(count).collect(Collectors.toCollection(LinkedHashSet::new));
+	}
+	
+	public List<String> findMatchingTags(String keyword) {
+        Set<String> allUniqueTags = getAllUniqueTags();
 
-	        return matchingTags;
-	    }
-		
-		public List<Recipe> getAllRecipesByMember(Member member) {
-	        return recipeRepo.findByMember(member);
-	    }
+        
+        List<String> matchingTags = allUniqueTags.stream()
+                .filter(tag -> tag.toLowerCase().contains(keyword.toLowerCase()))
+                .collect(Collectors.toList());
+
+        return matchingTags;
+    }
+	
+	public List<Recipe> getAllRecipesByMember(Member member) {
+        return recipeRepo.findByMember(member);
+    }
 }
