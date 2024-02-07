@@ -233,6 +233,7 @@ public class UserController {
 		return "redirect:/UserViews/HomePage";
 	}
 
+
 	@GetMapping("/profile/{memberId}")
 	public String viewUserProfile(@PathVariable(name = "memberId") int id, Model model) {
 		Member member = userService.getMemberById(id);
