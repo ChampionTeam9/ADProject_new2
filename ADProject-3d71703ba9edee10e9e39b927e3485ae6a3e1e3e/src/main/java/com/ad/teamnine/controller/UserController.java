@@ -233,11 +233,18 @@ public class UserController {
 		return "redirect:/UserViews/HomePage";
 	}
 
-	@GetMapping("/profile/{memberId}")
-	public String viewUserProfile(@PathVariable(name = "memberId") int id, Model model) {
+	@GetMapping("/profile")
+	public String viewUserProfile(HttpSession sessionObj, Model model) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		model.addAttribute("member", member);
-
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 
@@ -342,28 +349,52 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/member/savedList/{id}")
-	public String showSavedList(@PathVariable(value = "id") Integer id, Model model) {
+	@GetMapping("/member/savedList")
+	public String showSavedList(Model model,HttpSession sessionObj) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getSavedRecipes();
 		model.addAttribute(recipes);
-		return "/UserViews/showSavedListPage";
+		return "UserViews/showSavedListPage";
 	}
 
-	@GetMapping("/member/myRecipeList/{id}")
-	public String showMyRecipeList(@PathVariable(value = "id") Integer id, Model model) {
+	@GetMapping("/member/myRecipeList")
+	public String showMyRecipeList(Model model,HttpSession sessionObj) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getAddedRecipes();
 		model.addAttribute(recipes);
-		return "/UserViews/showMyRecipeListPage";
+		return "UserViews/showMyRecipeListPage";
 	}
 	
-	@GetMapping("/member/myReview/{id}")
-	public String showMyReviewList(@PathVariable(value = "id") Integer id, Model model) {
+	@GetMapping("/member/myReview")
+	public String showMyReviewList(Model model,HttpSession sessionObj) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		List<Review> reviews = member.getReviews();
 		model.addAttribute(reviews);
-		return "/UserViews/showMyReviewListPage";
+		return "UserViews/showMyReviewListPage";
 	}
 	
 	@GetMapping("/login")
