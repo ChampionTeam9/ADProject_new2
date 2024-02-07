@@ -357,6 +357,15 @@ public class UserController {
 		model.addAttribute(recipes);
 		return "/UserViews/showMyRecipeListPage";
 	}
+	
+	@GetMapping("/member/myReview/{id}")
+	public String showMyReviewList(@PathVariable(value = "id") Integer id, Model model) {
+		Member member = userService.getMemberById(id);
+		List<Review> reviews = member.getReviews();
+		model.addAttribute(reviews);
+		return "/UserViews/showMyReviewListPage";
+	}
+	
 	@GetMapping("/login")
 	public String login() {
 		return "/UserViews/login";
