@@ -8,6 +8,6 @@ public class MainController {
 	}
 	@RequestMapping("/")
 	public String homePage() {
-		return "page1";
+		return "RecipeViews/HomePage";
 	}
 }

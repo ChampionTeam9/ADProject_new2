@@ -40,7 +40,7 @@ public class APIController {
 	@GetMapping("/readCsv")
 	public List<String[]> readCsv() {
 		try {
-			URI uri = ClassLoader.getSystemResource("test.csv").toURI();
+			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
 			saveEntities(results);
@@ -154,7 +154,9 @@ public class APIController {
 			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
+			recipeService.createRecipe(recipe);
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
+
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
 				ingredient.getRecipes().add(savedRecipe);

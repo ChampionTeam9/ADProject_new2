@@ -1,6 +1,5 @@
 package com.ad.teamnine.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,7 +69,7 @@ public class RecipeController {
 	public String searchByTag(@PathVariable String tag,Model model) {
 	    List<Recipe> results = recipeService.searchByTag(tag);
 	    model.addAttribute("results", results);
-	    return "page1";
+	    return "/RecipeViews/HomePage";
 	}
 
 	//search by title name
@@ -94,13 +93,13 @@ public class RecipeController {
 	            break;
 	    }
 	    model.addAttribute("results", results);
-	    return "page1";
+	    return "/RecipeViews/HomePage";
 	}
 	
 	@GetMapping("/create")
     public String showAddRecipeForm(Model model) {
 		model.addAttribute("recipe", new Recipe());
-        return "createRecipesPage";
+        return "/RecipeViews/createRecipesPage";
     }
 	
 	@PostMapping("/addItem")
@@ -259,8 +258,8 @@ public class RecipeController {
 	@GetMapping("/edit/{id}")
 	public String getUpdateRecipePage(@PathVariable("id") Integer id, Model model) {
 		Recipe recipe = recipeService.getRecipeById(id);
-	    model.addAttribute("recipe", recipe);
-		return "updateRecipesPage";
+	    model.addAttribute("recipe", recipe);	
+		return "/RecipeViews/updateRecipesPage";
 	}
 	
 	@GetMapping("/view/{id}")

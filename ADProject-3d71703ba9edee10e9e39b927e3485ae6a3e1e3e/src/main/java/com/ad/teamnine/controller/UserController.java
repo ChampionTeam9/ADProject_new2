@@ -55,7 +55,7 @@ public class UserController {
 		}
 		addIngredientForm.setIngredientNames(ingredientNames);
 		model.addAttribute("addIngredientForm", addIngredientForm);
-		return "UserViews/addShoppingListIngredientPage";
+		return "/UserViews/addShoppingListIngredientPage";
 	}
 
 	// Save the ingredients selected as ShoppingListItem
@@ -169,7 +169,7 @@ public class UserController {
 	public String setPreference(Model model) {
 		Set<String> tags = userService.getRandomUniqueTags(7);
 		model.addAttribute("tags", tags);
-		return "/UserViews/setPreference";
+		return "/UserViews/setPreferencePage";
 	}
 
 	@PostMapping("/setPreference")
@@ -187,7 +187,7 @@ public class UserController {
 			member.setPrefenceList(combinedTags);
 			userService.saveMember(member);
 		}
-		return "test";
+		return "/RecipeViews/HomePage";
 	}
 
 	// refresh tags on the website
@@ -216,19 +216,21 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registerMember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult, Model model, HttpSession httpSession) {
-	    if (bindingResult.hasErrors()) {
-	        return "/UserViews/register";
-	    }
-	    if (userService.checkifUserExist(inMember)) {
-	        model.addAttribute("errorMessage", "An account with the given details already exists.");
-	        return "/UserViews/register"; 
-	    }
-	    inMember.setStatus(Status.CREATED);
-	  
-	    httpSession.setAttribute("UserID", inMember.getId());
-	    userService.saveMember(inMember);
-	    return "redirect:/"; 
+	public String registermember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult,
+			Model model, HttpSession httpSession) {
+		if (bindingResult.hasErrors()) {
+			return "/UserViews/register";
+		}
+		inMember.setStatus(Status.CREATED);
+//		LocalDate birthdate = inMember.getBirthdate();
+//		LocalDate currentDate = LocalDate.now();
+//		if (birthdate != null) {
+//			int age = Period.between(birthdate, currentDate).getYears();
+//			inMember.setAge(age);
+//		}
+		httpSession.setAttribute("UserID", inMember.getId());
+		userService.saveMember(inMember);
+		return "redirect:/UserViews/HomePage";
 	}
 
 
@@ -240,7 +242,7 @@ public class UserController {
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 
-		return "userProfile";
+		return "UserViews/userProfile";
 	}
 
 	@GetMapping("/admin/dashboard")
@@ -356,6 +358,15 @@ public class UserController {
 		model.addAttribute(recipes);
 		return "/UserViews/showMyRecipeListPage";
 	}
+	
+	@GetMapping("/member/myReview/{id}")
+	public String showMyReviewList(@PathVariable(value = "id") Integer id, Model model) {
+		Member member = userService.getMemberById(id);
+		List<Review> reviews = member.getReviews();
+		model.addAttribute(reviews);
+		return "/UserViews/showMyReviewListPage";
+	}
+	
 	@GetMapping("/login")
 	public String login() {
 		return "/UserViews/login";

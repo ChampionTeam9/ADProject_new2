@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Review List</title>
+</head>
+<body>
+    <h1>My Review List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Recipe</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Iterate over the list of reviews and display each review -->
+            <tr th:each="review : ${reviews}">
+                <td th:text="${review.id}">Review ID</td>
+                <td th:text="${review.rating}">Rating</td>
+                <td th:text="${review.comment}">Comment</td>
+                <!-- Assuming you have a method getRecipeName() in Recipe class to get the name of the recipe -->
+                <td th:text="${review.recipe.getRecipeName()}">Recipe Name</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
