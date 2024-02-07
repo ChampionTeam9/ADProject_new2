@@ -1,18 +1,18 @@
-
 document.addEventListener('DOMContentLoaded', (event) => {
+    fetch('/api/user/status')
+        .then(response => response.json())
+        .then(data => {
+            const loginLogoutItem = document.getElementById('login-logout-item');
+            const userNameDisplay = document.getElementById('user-name-display'); // 获取显示用户名的元素
 
-  const username = sessionStorage.getItem("username"); // 或者其他存储用户信息的方法
-  const loginLogoutItem = document.getElementById('login-logout-item');
-  const userIcon = document.getElementById('navbarDropdown');
-
-  if (username) {
-    // 如果用户已登录
-    loginLogoutItem.textContent = '注销';
-    loginLogoutItem.href = '/logout'; // 设置为实际的注销路径
-    userIcon.innerHTML += ' ' + username; // 在用户图标旁边添加用户名
-  } else {
-    // 如果用户未登录
-    loginLogoutItem.textContent = '登录';
-    loginLogoutItem.href = '/login'; // 设置为实际的登录路径
-  }
+            if (data.isLoggedIn) {
+                loginLogoutItem.textContent = 'logout';
+                loginLogoutItem.href = '/user/logout';
+                userNameDisplay.textContent = 'Hello, ' + data.username; // 显示用户名
+            } else {
+                loginLogoutItem.textContent = 'login';
+                loginLogoutItem.href = '/user/login';
+                userNameDisplay.textContent = ''; // 清空用户名显示
+            }
+        });
 });

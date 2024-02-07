@@ -236,6 +236,16 @@ public class UserService {
 			} else
 				return true;
 		}
+
+		public String getUsernameById(Integer userId) {
+			 return getUserById(userId).getUsername();
+			
+			
+		}
+		  public User getUserById(Integer id) {
+			   Optional<User> user = userRepo.findById(id);
+			   return user.orElse(null);
+			  }
 }
 
 

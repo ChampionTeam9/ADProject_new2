@@ -415,12 +415,18 @@ public class UserController {
 	        if (userService.checkIfAdmin(member)) {
 	            return "redirect:/admin/dashboard";
 	        } else {
-	            return "";
+	            return "redirect:/";
 	        }
 	    } else {
 	        return "redirect:/user/login";
 	    }
 	}
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("userId");
+		return "redirect:/";
+	}
+	
 
 	
 
