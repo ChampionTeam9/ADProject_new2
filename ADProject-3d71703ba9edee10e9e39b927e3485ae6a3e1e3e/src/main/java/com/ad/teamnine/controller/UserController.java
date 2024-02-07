@@ -233,6 +233,7 @@ public class UserController {
 		return "redirect:/UserViews/HomePage";
 	}
 
+
 	@GetMapping("/profile")
 	public String viewUserProfile(HttpSession sessionObj, Model model) {
 		Integer id = null;
