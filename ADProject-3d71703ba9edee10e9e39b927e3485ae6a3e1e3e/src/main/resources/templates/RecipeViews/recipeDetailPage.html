@@ -8,15 +8,20 @@
 	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  		<style>
+			button {
+				border-radius: 4px;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="custom-container">
 			<div th:replace="fragments/navbar"></div>
 		</div>
-		<div class="container">
+		<div class="container" style="width: 60%;">
 			<table style="width: 100%;">
 				<tr>
-					<td rowspan="5">
+					<td rowspan="4">
 						<img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image">
 					</td>
 					<td colspan="3">
@@ -43,35 +48,33 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<p>Created By: 
+						<p><b>Created By: </b>
 						<a th:href="@{/user/profile/{userId}(userId=${recipe.member.id})}" th:text="${recipe.member.username}"></a >
 						</p> 
 					</td>
 					<td>
-						<p>Recipe Id: <span th:text="${recipe.id}"></span></p>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3">
-						<p>Tags: <span th:each="tag : ${recipe.tags}"><span th:text="${tag}"></span>&nbsp;&nbsp;&nbsp;</span></p>
+						<p><b>Recipe Id: </b><span th:text="${recipe.id}"></span></p>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="4">
-						<p>Serving size: <span th:text="${recipe.servings}"></span> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Preparation Time <span th:text="${recipe.preparationTime}"></span></p>
+						<p><b>Tags: </b><span th:each="tag : ${recipe.tags}"><span th:text="${tag}"></span>&nbsp;&nbsp;&nbsp;</span></p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<p><b>Serving size: </b><span th:text="${recipe.servings}"></span> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; <b>Preparation Time: </b><span th:text="${recipe.preparationTime}"></span> minutes</p>
 					</td>
 				</tr>
 			</table>
 			<br />
 			<div class="page-divide-container">
-				<div class="two-thirds-column">
+				<div class="two-thirds-column" style="margin-right: 30px;">
 					<div>
 						<h3 style="margin-right: 10px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button" onclick="window.location.href='/user/shoppingList/add'" style="height: 30px; font-size: 18px;">Add to Shopping List</button></h3>
-						<table style="margin-left:auto; margin-right: auto; width:100%">
-							<tr th:each="ingredient : ${recipe.ingredients}">
-								<td th:text="${ingredient.foodText}"></td>
-							</tr>
-						</table>
+						<ul th:each="ingredient : ${recipe.ingredients}">
+							<li th:text="${ingredient.foodText}"></li>
+						</ul>
 					</div>
 					<br />
 					<div>
@@ -87,13 +90,14 @@
 				<div class="one-third-column">
 					<div>
 						<h3>Health Score</h3>
-						<h4 th:text="${recipe.healthScore}" style="text-align: center;"></h4>
+						<h4 th:text="${recipe.healthScore} + ' / 6'" style="text-align: center;"></h4>
 					</div>
+					<br />
 					<div>
 						<h3>Nutritional Info</h3>
 						<table style="margin-left:auto; margin-right: auto; width:100%; text-align: center;">
 							<tr>
-								<td>Amount per Serving</td>
+								<td>Nutrient</td>
 								<td>% Daily Value</td>
 							</tr>
 							<tr>

@@ -89,3 +89,7 @@ th, td {
 	padding-left: 15px;
 	padding-right: 15px;
 }
+.user-profile {
+    display: flex;
+    align-items: center;
+}
