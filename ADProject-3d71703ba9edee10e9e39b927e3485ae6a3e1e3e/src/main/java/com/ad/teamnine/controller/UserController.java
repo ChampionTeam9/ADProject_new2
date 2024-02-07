@@ -407,7 +407,7 @@ public class UserController {
 	
 	@GetMapping("/login")
 	public String login() {
-		return "/UserViews/login";
+		return "UserViews/login";
 	}
 	@PostMapping("/login")
 	public String loginlogic( @RequestParam(name="username") String username,
