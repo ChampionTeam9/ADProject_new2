@@ -190,7 +190,7 @@ public class RecipeController {
 		setRecipeNutrients(recipe);
 		recipe.setHealthScore(recipe.calculateHealthScore());
 		recipeService.createRecipe(recipe);
-		return "redirect:/recipe/view/myRecipes";
+		return "redirect:/user/member/myRecipeList";
 	}
 
 	public void setRecipeNutrients(Recipe recipe) {
