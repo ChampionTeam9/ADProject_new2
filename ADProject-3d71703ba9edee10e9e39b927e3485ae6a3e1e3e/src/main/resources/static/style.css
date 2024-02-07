@@ -79,3 +79,7 @@ textarea {
 .one-third-column {
   width: 33.333%;
 }
+.star-rating {
+  font-size: 24px;
+  display: inline-block;
+}

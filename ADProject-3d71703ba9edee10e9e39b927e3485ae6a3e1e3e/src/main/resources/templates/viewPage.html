@@ -18,7 +18,16 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">stars + rating</td>
+					<td colspan="2">
+						<div class="star-rating">
+							<span class="star" th:style="'color: ' + (${recipe.rating} >= 1 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
+							<span class="star" th:style="'color: ' + (${recipe.rating} >= 2 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
+							<span class="star" th:style="'color: ' + (${recipe.rating} >= 3 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
+							<span class="star" th:style="'color: ' + (${recipe.rating} >= 4 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
+							<span class="star" th:style="'color: ' + (${recipe.rating} >= 5 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
+						</div>
+						&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; <span th:text="${recipe.rating}"></span>
+					</td>
 					<td><p><span th:text="${numberOfUserRatings}"></span> rated</p></td>
 				</tr>
 				<tr>
@@ -78,7 +87,7 @@
 						<h3>Nutritional Info</h3>
 						<table style="margin-left:auto; margin-right: auto; width:100%; text-align: center;">
 							<tr>
-								<td></td>
+								<td>Amount per Serving</td>
 								<td>% Daily Value</td>
 							</tr>
 							<tr>
@@ -112,6 +121,10 @@
 						</table>
 					</div>
 				</div>
+			</div>
+			<br />
+			<div>
+				
 			</div>
 	    </div>
 	</body>
