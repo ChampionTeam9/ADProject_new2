@@ -6,19 +6,24 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.ad.teamnine.model.*;
 import com.ad.teamnine.model.IngredientInfo.Parsed;
 import com.ad.teamnine.service.*;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api")
@@ -40,7 +45,7 @@ public class APIController {
 	@GetMapping("/readCsv")
 	public List<String[]> readCsv() {
 		try {
-			URI uri = ClassLoader.getSystemResource("test.csv").toURI();
+			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
 			saveEntities(results);
@@ -155,7 +160,9 @@ public class APIController {
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
 			recipe.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
+			recipeService.createRecipe(recipe);
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
+
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
 				ingredient.getRecipes().add(savedRecipe);
@@ -185,6 +192,24 @@ public class APIController {
 		}
 		return itemsArr;
 	}
+	@GetMapping("/user/status")
+	@ResponseBody
+	public Map<String, Object> getUserStatus(HttpSession session) {
+	    Map<String, Object> status = new HashMap<>();
+	   
+	    Integer userId = (Integer) session.getAttribute("userId");
+	    boolean isLoggedIn = userId != null;
+	    status.put("isLoggedIn", isLoggedIn);
+	    
+	    if (isLoggedIn) {
+	        
+	        String username = userService.getUsernameById(userId); 
+	        status.put("username", username);
+	    }
+	    return status;
+	}
+
+
 }
 
 

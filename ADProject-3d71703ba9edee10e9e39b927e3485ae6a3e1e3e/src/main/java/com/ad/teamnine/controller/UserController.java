@@ -55,7 +55,7 @@ public class UserController {
 		}
 		addIngredientForm.setIngredientNames(ingredientNames);
 		model.addAttribute("addIngredientForm", addIngredientForm);
-		return "UserViews/addShoppingListIngredientPage";
+		return "/UserViews/addShoppingListIngredientPage";
 	}
 
 	// Save the ingredients selected as ShoppingListItem
@@ -169,7 +169,7 @@ public class UserController {
 	public String setPreference(Model model) {
 		Set<String> tags = userService.getRandomUniqueTags(7);
 		model.addAttribute("tags", tags);
-		return "/UserViews/setPreference";
+		return "/UserViews/setPreferencePage";
 	}
 
 	@PostMapping("/setPreference")
@@ -187,7 +187,7 @@ public class UserController {
 			member.setPrefenceList(combinedTags);
 			userService.saveMember(member);
 		}
-		return "test";
+		return "/RecipeViews/HomePage";
 	}
 
 	// refresh tags on the website
@@ -216,32 +216,47 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registermember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult,
-			Model model, HttpSession httpSession) {
-		if (bindingResult.hasErrors()) {
-			return "/UserViews/register";
-		}
-		inMember.setStatus(Status.CREATED);
-//		LocalDate birthdate = inMember.getBirthdate();
-//		LocalDate currentDate = LocalDate.now();
-//		if (birthdate != null) {
-//			int age = Period.between(birthdate, currentDate).getYears();
-//			inMember.setAge(age);
-//		}
-		httpSession.setAttribute("UserID", inMember.getId());
-		userService.saveMember(inMember);
-		return "redirect:/page1";
+	public String registerMember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult, Model model, HttpSession httpSession) {
+	    if (bindingResult.hasErrors()) {
+	        return "/UserViews/register";
+	    }
+	    if (userService.checkifUserExist(inMember)) {
+	        model.addAttribute("errorMessage", "An account with the given details already exists.");
+	        return "/UserViews/register"; 
+	    }
+	    inMember.setStatus(Status.CREATED);
+	  
+	    httpSession.setAttribute("UserID", inMember.getId());
+	    userService.saveMember(inMember);
+	    		return "redirect:/";
 	}
 
-	@GetMapping("/profile/{memberId}")
-	public String viewUserProfile(@PathVariable(name = "memberId") int id, Model model) {
+
+	@GetMapping("/profile")
+	public String viewMemberProfile(HttpSession sessionObj, Model model) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		model.addAttribute("member", member);
-
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 
-		return "userProfile";
+		return "UserViews/userProfile";
+	}
+	@GetMapping("/profile/{id}")
+	public String viewUserProfile(@PathVariable("id") Integer memberId,HttpSession sessionObj, Model model) {
+		Member member = userService.getMemberById(memberId);
+		model.addAttribute("member", member);
+		// Get all recipes for the user
+		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
+
+		return "UserViews/userProfile";
 	}
 
 	@GetMapping("/admin/dashboard")
@@ -342,21 +357,54 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/member/savedList/{id}")
-	public String showSavedList(@PathVariable(value = "id") Integer id, Model model) {
+	@GetMapping("/member/savedList")
+	public String showSavedList(Model model,HttpSession sessionObj) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getSavedRecipes();
 		model.addAttribute(recipes);
-		return "/UserViews/showSavedListPage";
+		return "UserViews/showSavedListPage";
 	}
 
-	@GetMapping("/member/myRecipeList/{id}")
-	public String showMyRecipeList(@PathVariable(value = "id") Integer id, Model model) {
+	@GetMapping("/member/myRecipeList")
+	public String showMyRecipeList(Model model,HttpSession sessionObj) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getAddedRecipes();
 		model.addAttribute(recipes);
-		return "/UserViews/showMyRecipeListPage";
+		return "UserViews/showMyRecipePage";
 	}
+	
+	@GetMapping("/member/myReview")
+	public String showMyReviewList(Model model,HttpSession sessionObj) {
+		Integer id = null;
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null && userIdObj instanceof Integer) {
+		    id = (Integer) userIdObj;
+		}
+		else {
+			return "redirect:/user/login";
+		}
+		Member member = userService.getMemberById(id);
+		List<Review> reviews = member.getReviews();
+		model.addAttribute(reviews);
+		return "UserViews/showMyReviewPage";
+	}
+	
 	@GetMapping("/login")
 	public String login() {
 		return "/UserViews/login";
@@ -374,12 +422,18 @@ public class UserController {
 	        if (userService.checkIfAdmin(member)) {
 	            return "redirect:/admin/dashboard";
 	        } else {
-	            return "";
+	            return "redirect:/";
 	        }
 	    } else {
 	        return "redirect:/user/login";
 	    }
 	}
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("userId");
+		return "redirect:/";
+	}
+	
 
 	
 

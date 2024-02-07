@@ -229,6 +229,23 @@ public class UserService {
 		{
 			return (Member) userRepo.findByUsername(username);
 		}
+
+		public boolean checkifUserExist(Member member) {
+			if (userRepo.findByUsername(member.getUsername()) == null) {
+				return false;
+			} else
+				return true;
+		}
+
+		public String getUsernameById(Integer userId) {
+			 return getUserById(userId).getUsername();
+			
+			
+		}
+		  public User getUserById(Integer id) {
+			   Optional<User> user = userRepo.findById(id);
+			   return user.orElse(null);
+			  }
 }
 
 

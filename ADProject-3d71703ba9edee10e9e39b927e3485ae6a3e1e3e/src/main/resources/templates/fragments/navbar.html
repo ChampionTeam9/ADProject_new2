@@ -146,22 +146,24 @@
 					</a>
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle"  id="navbarDropdown" role="button"
-						data-bs-toggle="dropdown" aria-expanded="false">
+					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+						aria-expanded="false">
 						<img src="/user.png" style="width: 25px; height: 25px;">
 					</a>
 
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/profile/${id}">My Profile</a>
+						<a class="dropdown-item" href="/user/profile">My Profile</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="user/member/myRecipeList/${id}">My Recipes</a>
+						<a class="dropdown-item" href="/user/member/myRecipeList">My Recipes</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/user/member/savedList/${id}">Saved Recipes</a>
+						<a class="dropdown-item" href="/user/member/savedList">Saved Recipes</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">My Reviews</a>
+						<a class="dropdown-item" href="/user/member/myReview">My Reviews</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="/user/shoppingList/view">Shoppong List</a>
+						<a class="dropdown-item" href="/user/shoppingList/view">Shopping List</a>
 						<div class="dropdown-divider"></div>
+						<div class="dropdown-item" id="user-name-display"></div>
+						
 						<a class="dropdown-item" href="/user/login" id="login-logout-item">login</a>
 					</div>
 				</li>
@@ -173,6 +175,7 @@
 
 					});
 				</script>
+				<script src="/login_logout.js"></script>
 
 			</ul>
 		</div>
