@@ -100,16 +100,16 @@ public class UserController {
 	}
 
 	// Update database if shoppingListItem was checked off or not
-//	@PostMapping("shoppingList/updateCheckedStatus")
-//	public ResponseEntity<Void> updateCheckedStatus(@RequestBody Map<String, Object> payload) {
-//		int id = (int) payload.get("id");
-//		System.out.println("Received Payload: " + payload);
-//		boolean isChecked = (boolean) payload.get("isChecked");
-//		ShoppingListItem shoppingListItem = shoppingListItemService.getShoppingListItemById(id);
-//		shoppingListItem.setChecked(isChecked);
-//		shoppingListItemService.saveShoppingListItem(shoppingListItem);
-//		return ResponseEntity.ok().build();
-//	}
+	@PostMapping("shoppingList/updateCheckedStatus")
+	public ResponseEntity<Void> updateCheckedStatus(@RequestBody Map<String, Object> payload) {
+		int id = (int) payload.get("id");
+		System.out.println("Received Payload: " + payload);
+		boolean isChecked = (boolean) payload.get("isChecked");
+		ShoppingListItem shoppingListItem = shoppingListItemService.getShoppingListItemById(id);
+		shoppingListItem.setChecked(isChecked);
+		shoppingListItemService.saveShoppingListItem(shoppingListItem);
+		return ResponseEntity.ok().build();
+	}
 
 	// Edit the shopping list
 	@GetMapping("shoppingList/edit")
