@@ -216,22 +216,21 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registermember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult,
-			Model model, HttpSession httpSession) {
-		if (bindingResult.hasErrors()) {
-			return "/UserViews/register";
-		}
-		inMember.setStatus(Status.CREATED);
-//		LocalDate birthdate = inMember.getBirthdate();
-//		LocalDate currentDate = LocalDate.now();
-//		if (birthdate != null) {
-//			int age = Period.between(birthdate, currentDate).getYears();
-//			inMember.setAge(age);
-//		}
-		httpSession.setAttribute("UserID", inMember.getId());
-		userService.saveMember(inMember);
-		return "redirect:/page1";
+	public String registerMember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult, Model model, HttpSession httpSession) {
+	    if (bindingResult.hasErrors()) {
+	        return "/UserViews/register";
+	    }
+	    if (userService.checkifUserExist(inMember)) {
+	        model.addAttribute("errorMessage", "An account with the given details already exists.");
+	        return "/UserViews/register"; 
+	    }
+	    inMember.setStatus(Status.CREATED);
+	  
+	    httpSession.setAttribute("UserID", inMember.getId());
+	    userService.saveMember(inMember);
+	    return "redirect:/"; 
 	}
+
 
 	@GetMapping("/profile/{memberId}")
 	public String viewUserProfile(@PathVariable(name = "memberId") int id, Model model) {
