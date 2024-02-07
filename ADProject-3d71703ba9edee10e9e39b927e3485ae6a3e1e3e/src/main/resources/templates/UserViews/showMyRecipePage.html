@@ -14,6 +14,9 @@
 		<h2>My Recipes</h2>
 	</div>
 	<div class="container" style="text-align: center;">
+		<div style="text-align: right;">
+			<button type="button" class="button-style" onclick="window.location.href='/recipe/create'">Add Recipe</button>
+		</div>
 		<div class="row">
 			<div th:each="recipe : ${recipes}" class="col-md-3">
 				<div class="card mt-5" style="width: 18rem;">

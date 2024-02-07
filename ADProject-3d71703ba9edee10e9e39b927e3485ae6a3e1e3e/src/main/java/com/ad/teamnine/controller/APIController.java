@@ -159,6 +159,7 @@ public class APIController {
 			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
+			recipe.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
 			recipeService.createRecipe(recipe);
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
 

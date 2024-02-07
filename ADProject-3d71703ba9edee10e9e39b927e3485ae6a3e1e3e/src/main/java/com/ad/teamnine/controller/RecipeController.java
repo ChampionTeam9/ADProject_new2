@@ -229,13 +229,6 @@ public class RecipeController {
 		recipe.setSaturatedFat(saturatedFatPDV);
 	}
 
-	@GetMapping("/detail/{id}")
-	public String viewRecipe(@PathVariable("id") Integer id, Model model) {
-		Recipe recipe = recipeService.getRecipeById(id);
-		model.addAttribute("recipe", recipe);
-		return "RecipeViews/recipeDetailPage";
-	}
-
 	@GetMapping("/delete/{id}")
 	public String deleteRecipe(@PathVariable("id") Integer id) {
 		Recipe recipe = recipeService.getRecipeById(id);
@@ -254,5 +247,15 @@ public class RecipeController {
 		Recipe recipe = recipeService.getRecipeById(id);
 		model.addAttribute("recipe", recipe);
 		return "/RecipeViews/updateRecipesPage";
+	}
+	
+	@GetMapping("/detail/{id}")
+	public String viewRecipe(@PathVariable("id") Integer id, Model model) {
+	    Recipe recipe = recipeService.getRecipeById(id);
+	    model.addAttribute("recipe", recipe);
+	    // get number of people who rated 
+	    int numberOfUsersRatings = recipeService.getNumberOfUsersRatings(id);
+	    model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
+	    return "RecipeViews/recipeDetailPage";
 	}
 }
