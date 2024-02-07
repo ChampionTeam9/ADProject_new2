@@ -29,9 +29,7 @@
 							<p class="card-text" th:text="${recipe.description}"></p>
 						</div>
 						<ul class="list-group list-group-flush">
-							<!--
 							<li class="list-group-item" ><a th:href="@{/user/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a></li>
-							-->
 							<li class="list-group-item">
 								<button type="button" class="button-style" th:id="${recipe.id}"
 									onclick="promptDelete(this.id)">Unsave</button>

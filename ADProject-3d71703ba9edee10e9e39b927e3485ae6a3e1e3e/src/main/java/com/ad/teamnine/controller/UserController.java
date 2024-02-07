@@ -369,23 +369,23 @@ public class UserController {
 		}
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getSavedRecipes();
-		model.addAttribute(recipes);
+		model.addAttribute("recipes", recipes);
 		return "UserViews/showSavedListPage";
 	}
 
 	@GetMapping("/member/myRecipeList")
 	public String showMyRecipeList(Model model,HttpSession sessionObj) {
-		Integer id = null;
-		Object userIdObj = sessionObj.getAttribute("userId");
-		if (userIdObj != null && userIdObj instanceof Integer) {
-		    id = (Integer) userIdObj;
-		}
-		else {
-			return "redirect:/user/login";
-		}
-		Member member = userService.getMemberById(id);
+//		Integer id = null;
+//		Object userIdObj = sessionObj.getAttribute("userId");
+//		if (userIdObj != null && userIdObj instanceof Integer) {
+//		    id = (Integer) userIdObj;
+//		}
+//		else {
+//			return "redirect:/user/login";
+//		}
+		Member member = userService.getMemberById(1);
 		List<Recipe> recipes = member.getAddedRecipes();
-		model.addAttribute(recipes);
+		model.addAttribute("recipes", recipes);
 		return "UserViews/showMyRecipePage";
 	}
 	
@@ -401,7 +401,7 @@ public class UserController {
 		}
 		Member member = userService.getMemberById(id);
 		List<Review> reviews = member.getReviews();
-		model.addAttribute(reviews);
+		model.addAttribute("reviews", reviews);
 		return "UserViews/showMyReviewPage";
 	}
 	
@@ -412,10 +412,7 @@ public class UserController {
 	@PostMapping("/login")
 	public String loginlogic( @RequestParam(name="username") String username,
 	                         @RequestParam(name="password") String password,
-	                         
 	                         Model model, HttpSession httpSession) {
-	  
-	    
 	    Member member = userService.getMemberByUsername(username);
 	    if (member != null && member.getPassword().equals(password)) {
 	        httpSession.setAttribute("userId", member.getId());
