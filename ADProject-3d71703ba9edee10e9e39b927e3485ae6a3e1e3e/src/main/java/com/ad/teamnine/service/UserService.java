@@ -216,15 +216,20 @@ public class UserService {
 		
 		
 		//get daily created data
-//		public List<Object[]> getDailyMemberData() {
-//		    String sql = "SELECT CAST(registrationDate AS DATE) AS date, COUNT(*) AS new_users " +
-//		                 "FROM user " +
-//		                 "WHERE registrationDate >= CURRENT_DATE " +
-//		                 "GROUP BY CAST(registrationDate AS DATE)";	    
-//		    TypedQuery<Object[]> query = entityManager.createQuery(sql, Object[].class);
-//		    List<Object[]> resultList = query.getResultList();
-//		    return resultList;
+		public List<Object[]> getDailyMemberData() {
+		    String sql = "SELECT CAST(registrationDate AS DATE) AS date, COUNT(*) AS new_users " +
+		                 "FROM user " +
+		                 "WHERE registrationDate >= CURRENT_DATE " +
+		                 "GROUP BY CAST(registrationDate AS DATE)";	    
+		    TypedQuery<Object[]> query = entityManager.createQuery(sql, Object[].class);
+		    List<Object[]> resultList = query.getResultList();
+		    return resultList;
 		}
+		public Member getMemberByUsername(String username)
+		{
+			return (Member) userRepo.findByUsername(username);
+		}
+}
 
 
 	

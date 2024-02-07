@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.MemberReport;
+import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.RecipeReport;
-import com.ad.teamnine.model.Report;
 import com.ad.teamnine.service.RecipeService;
 import com.ad.teamnine.service.ReportService;
 import com.ad.teamnine.service.UserService;
@@ -38,21 +36,20 @@ public class ReportController {
 			Model model,
 			HttpSession sessionObj) {
 		RecipeReport report = new RecipeReport();
-		Member member = 
-			userService.getMemberById((int)sessionObj.getAttribute("userId"));
-//		Member member =userService.getMemberById(1533);
+//		Member member = 
+//			userService.getMemberById((int)sessionObj.getAttribute("userId"));
+		Member member =userService.getMemberById(1);
+		Recipe recipe=recipeService.getRecipeById(recipeId);
+		report.setMember(member);
+		report.setRecipeReported(recipe);
 		model.addAttribute("report",report);
-		model.addAttribute("recipe",recipeService.getRecipeById(recipeId));
-		model.addAttribute("member",member);
 		return "ReportViews/showRecipeReportPage";
 	}
 	
 	@PostMapping("/reportRecipe")
 	public String reportRecipe(@ModelAttribute("report") RecipeReport report) {
-		
 		reportService.reportRecipes(report);
-		Integer recipeId = report.getRecipeReported().getId();
-		return "redirect:/recipe/view/"+recipeId;
+		return "redirect:/recipe/view/"+report.getRecipeReported().getId();
 		
 	}
 	
@@ -61,24 +58,23 @@ public class ReportController {
 			Model model,
 			HttpSession sessionObj) {
 		MemberReport report = new MemberReport();
-		Member member = 
-				userService.getMemberById((int)sessionObj.getAttribute("userId"));
+//		Member member = 
+//				userService.getMemberById((int)sessionObj.getAttribute("userId"));
+		Member member =userService.getMemberById(1);
+		Member reportedMember = userService.getMemberById(memberId);
+		report.setMember(member);
+		report.setMemberReported(reportedMember);
 		model.addAttribute("report",report);
-		model.addAttribute("memberReported",userService.getMemberById(memberId));
-		model.addAttribute("member",member);
 		return "ReportViews/showMemberReportPage";
 	}
-//	
-//	@PostMapping("/reportMember")
-//	public String reportMember(@ModelAttribute("report") MemberReport report) {
-//		
-//		reportService.reportMembers(report);
-//		Member author = report.getMember();
-//		
-//		
-//		return "redirect:/recipe/view/"+recipeId;
-//		
-//	}
+	
+	@PostMapping("/reportMember")
+	public String reportMember(@ModelAttribute("report") MemberReport report) {
+		
+		reportService.reportMembers(report);
+		return "redirect:/member/view/"+report.getMemberReported().getId();
+		
+	}
 	
 
 
