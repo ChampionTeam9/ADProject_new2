@@ -90,8 +90,8 @@
 	        <table id="stepsTable" class="table table-hover">
 				<tr th:each="step, index : *{steps}">
 					<td th:text="*{steps[__${index.index}__]}">
-						<input type="hidden" th:name="'steps[' + ${index.index} + ']'" />
 					</td>
+					<input type="hidden" th:name="'steps[' + ${index.index} + ']'" th:value="*{steps[__${index.index}__]}" />
 					<td>
 						<button type="button" th:id="'stepsDelete' + ${index.index}" th:name="'steps[' + ${index.index} + ']'" onclick="removeStep(this)">Delete</button>
 					</td>
@@ -129,8 +129,8 @@
 	        <table id="tagsTable" class="table table-hover">
 				<tr th:each="tag, index : *{tags}">
 					<td th:text="*{tags[__${index.index}__]}">
-						<input type="hidden" name="tags[__${index.index}__]" />
 					</td>
+					<input type="hidden" th:name="tags[__${index.index}__]" class="tagText" th:value="*{tags[__${index.index}__]}"/>
 					<td>
 						<button type="button" th:id="'tagsDelete' + ${index.index}" onclick="removeStep(this)">Delete</button>
 					</td>
@@ -354,13 +354,13 @@
             var lastRowInputName;
 			var lastRowTagIndex = -1;
             if (count > 0) {
-				// kiv error here, to correct
 	            var lastRowInputName = tagsTable.querySelector("tr:last-child input[name^='tags']").getAttribute("name");
 				var lastRowTagIndex = parseInt(lastRowInputName.match(/\[(\d+)\]/)[1]);
+				console.log("lastRowTagIndex: " + lastRowTagIndex);
 			}
 			var newRow = tagsTable.insertRow(-1);
 			var cell1 = newRow.insertCell(0);
-			cell1.className = "tagText";
+			cell1.className = "tags";
 			cell1.innerHTML = tag;
 			
 			var input = document.createElement("input");
