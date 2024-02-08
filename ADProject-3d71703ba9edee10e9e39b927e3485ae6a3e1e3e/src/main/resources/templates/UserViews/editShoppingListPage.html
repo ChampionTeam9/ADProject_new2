@@ -33,6 +33,7 @@
 				const checkboxes = document.getElementsByClassName('shoppingListItem')
 				for (const checkbox of checkboxes) {
 					checkbox.addEventListener('change', (event) => {
+						updateCheckedStatus(checkbox, event.currentTarget.checked)
 						updateRowStyle(checkbox);
 					})
 				}
@@ -96,6 +97,7 @@
 				const itemTable = document.getElementById("itemTable");
 				var newRow = itemTable.insertRow(-1);
 				var cell1 = newRow.insertCell(0);
+				cell1.style.width = "20%";
 				var checkbox = document.createElement("input");
 				checkbox.type = "checkbox";
 				checkbox.className = "shoppingListItem";
@@ -107,6 +109,25 @@
 				var cell2 = newRow.insertCell(1);
 				cell2.className = "itemText";
 				cell2.innerHTML = ingredientName;
+			}
+			
+			function updateCheckedStatus(checkbox, isChecked) {
+			    const id = parseInt(checkbox.id);
+			    console.log("id: " + id);
+			    
+			    let xhr = new XMLHttpRequest();
+			    xhr.open("POST", "/user/shoppingList/updateCheckedStatus");
+			    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			    xhr.onreadystatechange = function () {
+			        if (xhr.readyState == 4 && xhr.status == 200) {
+			            console.log("response ok");
+			        }
+			    }
+			    let data = {
+			        "id": id,
+			        "isChecked" : isChecked,
+			    }
+			    xhr.send(JSON.stringify(data));    
 			}
 			
 			function updateRowStyle(checkbox){
@@ -131,13 +152,13 @@
 			</div>
 			<br />
 			<div>
-				<input type="text" placeholder="Enter an item and click Add" id="addIngredientInput" />
+				<input type="text" placeholder="Enter an item" id="addIngredientInput" style="width: 93%;"/>
 				<button type="button" id="addBtn" class="button-style">Add</button>
 			</div>
 			<br />
-			<table id="itemTable">
+			<table id="itemTable" style="width: 50%;" >
 				<tr th:each="item : ${shoppingList}">
-					<td>
+					<td style="width: 20%;">
 						<input type="checkbox" class="shoppingListItem" th:id="${item.id}" th:checked="${item.isChecked}" />
 					</td>
 					<td th:text="${item.ingredientName}" th:style="${item.isChecked ? 'color: grey; text-decoration: line-through;' : ''}" class="itemText" >
@@ -146,9 +167,12 @@
 				</tr>
 			</table>
 			<br />
-			<button type="button" id="clearSelectedBtn" class="button-style">Clear Selected</button>
-			<button type="button" id="clearAllBtn" class="button-style">Clear All</button>
-			<button type="button" id="backBtn" onclick="window.location.href='/user/shoppingList/view'" class="button-style">Back to Shopping List</button>
+			<br />
+			<div style="text-align: center;">
+				<button type="button" id="clearSelectedBtn" class="button-style" style="margin-right: 5px;">Clear Selected</button>
+				<button type="button" id="clearAllBtn" class="button-style" style="margin-right: 5px;">Clear All</button>
+				<button type="button" id="backBtn" onclick="window.location.href='/user/shoppingList/view'" class="button-style">Back to Shopping List</button>
+			</div>
 		</div>
 	</body>
 </html>

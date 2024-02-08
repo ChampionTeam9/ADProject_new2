@@ -62,10 +62,7 @@ public class UserController {
 			return "UserViews/addShoppingListIngredientPage";
 		}
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		List<String> ingredientNames = addIngredientForm.getIngredientNames();
 		List<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
