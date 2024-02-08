@@ -21,7 +21,7 @@
 		<div class="container" style="width: 60%;">
 		    <h2>Add Recipe</h2>
 		    <br />
-		    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm" onsubmit="return validateForm()">
+		    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm" onsubmit="return validateForm(event)">
 				<input type="hidden" id="ingredientIds" name="ingredientIds" value=""/>
 				
 				<div class="form-group">
@@ -44,12 +44,12 @@
 		        <br />
 		        
 		        <div class="form-group">
-			        <label for="preparationTimeInput">Preparation Time:</label>
-			        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1" th:field="*{preparationTime}">
+			        <label for="preparationTimeInput" style="width: 100%;">Preparation Time:</label>
+			        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1" th:field="*{preparationTime}" style="width: 80%;">
 			        
 			        <!-- 添加按钮或下拉列表来选择时间单位 -->
 			        <label for="timeUnit"></label>
-			        <select id="timeUnit" name="timeUnit">
+			        <select id="timeUnit" name="timeUnit" style="width: 18%;">
 			            <option value="minutes">Minutes</option>
 			            <option value="hours">Hours</option>
 			        </select>
@@ -70,7 +70,6 @@
 			        <div id="ingredientsErrorMessage" style="color: red;"></div>
 		        </div>
 		        <br />
-		        <br />
 		        <table id="itemTable" class="table table-borderless">
 				</table>
 		        <br />
@@ -81,10 +80,9 @@
 			        <div name="stepsInput">
 			            <input type="text" placeholder="Enter a step" id="addStepInput" style="width: 93%;"/>
 						<button type="button" id="addStepBtn" class="button-style">Add</button>
-						<span th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}" class="text-danger"></span>
+						<div id="stepsErrorMessage" style="color: red;"></div>
 			        </div>
 		        </div>
-		        <br />
 		        <br />
 		        <table id="stepsTable" class="table table-borderless">
 				</table>
@@ -101,7 +99,7 @@
 		        <div class="form-group">
 			        <!-- Upload Picture 输入框 -->
 			        <label for="pictureInput">Upload Picture:</label>
-			        <input type="file" name="pictureInput" id="pictureInput" accept="image/*" style="display: none;" class="fileBtn" onchange="fileBtn(this)">
+			        <input type="file" name="pictureInput" id="pictureInput" accept="image/*" style="display: none;">
 		        </div>
 		        <div id="pictureInputErrorMessage" style="color: red;"></div>
 		        <!-- 图片预览框 -->
@@ -127,9 +125,9 @@
 				
 				<label>Set Recipe as: </label>
 				<div class="form-group">
-			    	<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}" >
+			    	<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}" required>
 			    	<label for="public" style="margin-right: 15px;">Public</label>
-			    	<input type="radio" id="private" name="status" th:value="${T(com.ad.teamnine.model.Status).PRIVATE}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PRIVATE}">
+			    	<input type="radio" id="private" name="status" th:value="${T(com.ad.teamnine.model.Status).PRIVATE}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PRIVATE}" required>
 					<label for="private">Private</label>
 				</div>
 		
@@ -173,6 +171,8 @@
 				const addStepInput = document.getElementById("addStepInput");
 				const addStepBtn = document.getElementById("addStepBtn");
 				addStepBtn.addEventListener("click", (event) => {
+					var stepsErrorMessage = document.getElementById('stepsErrorMessage');
+					stepsErrorMessage.innerText = "";
 					var newStep = addStepInput.value;
 					if (newStep.trim() === ""){
 						return;
@@ -370,6 +370,8 @@
 			}
 	    
 	        function selectFromFile() {
+				var pictureInputErrorMessage = document.getElementById('pictureInputErrorMessage');
+				pictureInputErrorMessage.innerText = "";
 	            document.getElementById("pictureInput").click();
 			}
 	
@@ -405,11 +407,36 @@
 			    reader.readAsDataURL(file);
 			}   
 			
-			function validateForm() {
+			function validateForm(event) {
+				console.log("validateForm() called");
+				
+				// Check if ingredients is empty
+		        var ingredientIdsValue = document.getElementById('ingredientIds').value;
+		        var ingredientsErrorMessage = document.getElementById('ingredientsErrorMessage');
+		        ingredientIdsValue = ingredientIdsValue.replace(/,/g, '');
+		        if (ingredientIdsValue.trim() === '') {
+					event.preventDefault();
+					ingredientsErrorMessage.innerText = 'Please enter at least 1 ingredient.';
+					console.log('Validation failed: no ingredients selected');
+		            return false;
+				}
+				
+				// Check if steps is empty
+				const stepsTable = document.getElementById("stepsTable");
+				var count = stepsTable.getElementsByTagName("tr").length;
+				var stepsErrorMessage = document.getElementById('stepsErrorMessage');
+				if (count === 0){
+					event.preventDefault();
+					stepsErrorMessage.innerText = 'Please enter at least 1 step.';
+					console.log('Validation failed: no steps added');
+		            return false;
+				}
+				
 				// Check if image uploaded
 		        var fileInput = document.getElementById('pictureInput');
 		        var pictureInputErrorMessage = document.getElementById('pictureInputErrorMessage');
 		        if (fileInput.files.length === 0) {
+					event.preventDefault();
 		            pictureInputErrorMessage.innerText = 'Please select a picture to upload.';
 		            console.log('Validation failed: no file selected');
 		            return false; // Prevent form submission
@@ -417,15 +444,7 @@
 		        // Clear any previous error message
 		        pictureInputErrorMessage.innerText = "";
 		        
-		        // Check if ingredients is empty
-		        var ingredientIdsValue = document.getElementById('ingredientIds').value;
-		        var ingredientsErrorMessage = document.getElementById('ingredientsErrorMessage');
-		        ingredientIdsValue = ingredientIdsValue.replace(/,/g, '');
-		        if (ingredientIdsValue.trim() === '') {
-					ingredientsErrorMessage.innerText = 'Please enter at least 1 ingredient.';
-					console.log('Validation failed: no ingredients selected');
-		            return false;
-				}
+				console.log("validation passes");
 				ingredientsErrorMessage.innerText = "";
 		        return true;
 			}

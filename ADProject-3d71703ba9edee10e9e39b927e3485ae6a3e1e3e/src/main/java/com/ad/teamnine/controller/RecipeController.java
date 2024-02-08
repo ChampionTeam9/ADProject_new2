@@ -130,13 +130,10 @@ public class RecipeController {
 
 	@PostMapping("/create")
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
-			@RequestParam("timeUnit") String timeUnit, @RequestParam("image") MultipartFile pictureFile,
-			@RequestParam("ingredientIds") String ingredientIds, Model model) {
+			@RequestParam("timeUnit") String timeUnit, @RequestParam("pictureInput") MultipartFile pictureFile,
+			@RequestParam("ingredientIds") String ingredientIds, Model model, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Binding error at recipe creation");
-			if (pictureFile == null) {
-				model.addAttribute("errorMessage", "Image must not be blank");
-			}
 			// Print out binding errors
             System.out.println("Binding errors:");
             for (ObjectError error : bindingResult.getAllErrors()) {
@@ -180,10 +177,7 @@ public class RecipeController {
 			recipe.setImage(existingRecipe.getImage());
 		}
 
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((Integer)sessionObj.getAttribute("userId"));
 		recipe.setMember(member);
 
 		recipeService.createRecipe(recipe);

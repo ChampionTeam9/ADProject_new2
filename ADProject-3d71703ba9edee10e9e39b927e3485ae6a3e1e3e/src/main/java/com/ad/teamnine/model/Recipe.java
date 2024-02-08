@@ -128,6 +128,7 @@ public class Recipe {
 		this.steps = steps;
 		this.healthScore = calculateHealthScore();
 		this.status = Status.PUBLIC;
+		this.numberOfRating = 0;
 	}
 
 	// getter and setter
