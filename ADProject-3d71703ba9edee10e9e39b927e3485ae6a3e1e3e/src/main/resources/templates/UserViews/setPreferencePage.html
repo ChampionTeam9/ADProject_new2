@@ -5,18 +5,6 @@
 	<meta charset="UTF-8">
 	<title>Set Preference</title>
 </head>
-<script>
-	function submitForm(actionType) {
-		var form = document.getElementById('preferenceForm');
-		if (actionType === 'submit') {
-			form.action = '/user/setPreference';
-		} else if (actionType === 'refresh') {
-			form.action = '/user/refresh';
-		}
-		form.submit();
-	}
-
-</script>
 
 <body>
 	<form id="preferenceForm" action="/user/setPreference" method="post">
@@ -39,6 +27,16 @@
 			<span th:text="${tag}"></span>
 		</li>
 	</ul>
+	<script>
+	function submitForm(actionType) {
+		var form = document.getElementById('preferenceForm');
+		if (actionType === 'submit') {
+			form.action = '/user/setPreference';
+		} else if (actionType === 'refresh') {
+			form.action = '/user/refresh';
+		}
+		form.submit();
+	}
+	</script>
 </body>
-
 </html>

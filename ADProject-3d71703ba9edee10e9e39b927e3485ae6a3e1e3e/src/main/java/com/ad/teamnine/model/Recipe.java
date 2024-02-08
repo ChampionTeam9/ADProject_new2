@@ -93,6 +93,7 @@ public class Recipe {
 		numberOfSaved = 0;
 		this.status = Status.PUBLIC;
 		this.steps = new ArrayList<>();
+		this.rating = 0.0;
 	}
 
 	// constructor

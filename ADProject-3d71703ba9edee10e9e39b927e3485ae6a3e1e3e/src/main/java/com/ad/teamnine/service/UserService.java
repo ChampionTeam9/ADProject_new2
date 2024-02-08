@@ -230,8 +230,8 @@ public class UserService {
 			return (Member) userRepo.findByUsername(username);
 		}
 
-		public boolean checkifUserExist(Member member) {
-			if (userRepo.findByUsername(member.getUsername()) == null) {
+		public boolean checkifUserExist(String username) {
+			if (userRepo.findByUsername(username) == null) {
 				return false;
 			} else
 				return true;

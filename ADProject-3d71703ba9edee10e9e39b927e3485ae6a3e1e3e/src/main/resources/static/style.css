@@ -71,15 +71,25 @@ textarea {
     resize: vertical;
 }
 .page-divide-container {
-  display: flex;
+	display: flex;
 }
 .two-thirds-column {
-  width: 66.666%;
+	width: 66.666%;
 }
 .one-third-column {
-  width: 33.333%;
+	width: 33.333%;
 }
 .star-rating {
-  font-size: 24px;
-  display: inline-block;
+	font-size: 24px;
+	display: inline-block;
+}
+th, td {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.user-profile {
+    display: flex;
+    align-items: center;
 }

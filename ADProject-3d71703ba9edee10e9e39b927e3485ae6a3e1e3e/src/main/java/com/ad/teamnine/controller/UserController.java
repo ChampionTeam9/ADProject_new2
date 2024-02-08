@@ -88,12 +88,9 @@ public class UserController {
 
 	// View the shopping list
 	@GetMapping("shoppingList/view")
-	public String viewShoppingListIngredient(Model model) {
+	public String viewShoppingListIngredient(Model model, HttpSession sessionObj) {
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		model.addAttribute("shoppingList", shoppingList);
 		return "/UserViews/viewShoppingListPage";
@@ -113,12 +110,9 @@ public class UserController {
 
 	// Edit the shopping list
 	@GetMapping("shoppingList/edit")
-	public String editShoppingList(Model model) {
+	public String editShoppingList(Model model, HttpSession sessionObj) {
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		model.addAttribute("shoppingList", shoppingList);
 		return "/UserViews/editShoppingListPage";
@@ -126,14 +120,11 @@ public class UserController {
 
 	// Clear off ShoppingListItems
 	@PostMapping("shoppingList/clearItems")
-	public ResponseEntity<Void> clearItems(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity<Void> clearItems(@RequestBody Map<String, Object> payload, HttpSession sessionObj) {
 		String message = (String) payload.get("message");
 		System.out.println(message);
 		// Get member's shopping list
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		// Use iterator to prevent ConcurrentModificationException
 		Iterator<ShoppingListItem> iterator = shoppingList.iterator();
@@ -150,12 +141,9 @@ public class UserController {
 
 	// Add ShoppingListItem at editShoppingListPage
 	@PostMapping("shoppingList/addItem")
-	public ResponseEntity<Map<String, Object>> addItem(@RequestBody Map<String, Object> payload) {
+	public ResponseEntity<Map<String, Object>> addItem(@RequestBody Map<String, Object> payload, HttpSession sessionObj) {
 		String ingredientName = (String) payload.get("ingredientName");
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		ShoppingListItem newItem = new ShoppingListItem(member, ingredientName);
 		ShoppingListItem savedItem = shoppingListItemService.saveShoppingListItem(newItem);
 		int id = savedItem.getId();
@@ -220,19 +208,23 @@ public class UserController {
 	    if (bindingResult.hasErrors()) {
 	        return "/UserViews/register";
 	    }
-	    if (userService.checkifUserExist(inMember)) {
-	        model.addAttribute("errorMessage", "An account with the given details already exists.");
-	        return "/UserViews/register"; 
-	    }
 	    inMember.setStatus(Status.CREATED);
-	  
-	    httpSession.setAttribute("UserID", inMember.getId());
 	    userService.saveMember(inMember);
-	    		return "redirect:/";
+	    httpSession.setAttribute("userId", inMember.getId());
+	    return "redirect:/";
+	}
+	
+	@PostMapping("/checkIfUsernameAvailable")
+	public ResponseEntity<Map<String, Object>> checkIfUsernameAvailable(@RequestBody Map<String, Object> payload){
+		String username = (String) payload.get("username");
+		Boolean userAlrExists = userService.checkifUserExist(username);
+		Map<String, Object> response = new HashMap<>();
+		response.put("userAlrExists", userAlrExists);
+		return ResponseEntity.ok(response);
 	}
 
-
-	@GetMapping("/profile")
+	// Show my profile for updating of personal information
+	@GetMapping("/myProfile")
 	public String viewMemberProfile(HttpSession sessionObj, Model model) {
 		Integer id = null;
 		Object userIdObj = sessionObj.getAttribute("userId");
@@ -246,9 +238,10 @@ public class UserController {
 		model.addAttribute("member", member);
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
-
-		return "UserViews/userProfile";
+		return "UserViews/showMyProfile";
 	}
+	
+	// Look at other's profile
 	@GetMapping("/profile/{id}")
 	public String viewUserProfile(@PathVariable("id") Integer memberId,HttpSession sessionObj, Model model) {
 		Member member = userService.getMemberById(memberId);
@@ -369,23 +362,23 @@ public class UserController {
 		}
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getSavedRecipes();
-		model.addAttribute(recipes);
+		model.addAttribute("recipes", recipes);
 		return "UserViews/showSavedListPage";
 	}
 
 	@GetMapping("/member/myRecipeList")
 	public String showMyRecipeList(Model model,HttpSession sessionObj) {
-		Integer id = null;
-		Object userIdObj = sessionObj.getAttribute("userId");
-		if (userIdObj != null && userIdObj instanceof Integer) {
-		    id = (Integer) userIdObj;
-		}
-		else {
-			return "redirect:/user/login";
-		}
-		Member member = userService.getMemberById(id);
+//		Integer id = null;
+//		Object userIdObj = sessionObj.getAttribute("userId");
+//		if (userIdObj != null && userIdObj instanceof Integer) {
+//		    id = (Integer) userIdObj;
+//		}
+//		else {
+//			return "redirect:/user/login";
+//		}
+		Member member = userService.getMemberById(1);
 		List<Recipe> recipes = member.getAddedRecipes();
-		model.addAttribute(recipes);
+		model.addAttribute("recipes", recipes);
 		return "UserViews/showMyRecipePage";
 	}
 	
@@ -401,7 +394,7 @@ public class UserController {
 		}
 		Member member = userService.getMemberById(id);
 		List<Review> reviews = member.getReviews();
-		model.addAttribute(reviews);
+		model.addAttribute("reviews", reviews);
 		return "UserViews/showMyReviewPage";
 	}
 	
@@ -412,10 +405,7 @@ public class UserController {
 	@PostMapping("/login")
 	public String loginlogic( @RequestParam(name="username") String username,
 	                         @RequestParam(name="password") String password,
-	                         
 	                         Model model, HttpSession httpSession) {
-	  
-	    
 	    Member member = userService.getMemberByUsername(username);
 	    if (member != null && member.getPassword().equals(password)) {
 	        httpSession.setAttribute("userId", member.getId());

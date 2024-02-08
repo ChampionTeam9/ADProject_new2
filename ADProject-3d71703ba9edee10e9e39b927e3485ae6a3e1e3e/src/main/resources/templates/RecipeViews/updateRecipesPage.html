@@ -2,19 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Update Recipe</title>
-	<link href="/style.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe</title>
+	<link href="/style.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <style>
+		button {
+			border-radius: 4px;
+		}
+	</style>
 </head>
 
 <body>
-	<div class="container">
-		<h2>Add Recipe</h2>
-		<form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data"
-			id="recipeForm">
-			<input type="hidden" id="ingredientIds" name="ingredientIds"
-				th:value="${#strings.arrayJoin(recipe.ingredients.![id], ',')}" />
+	<div class="custom-container">
+		<div th:replace="fragments/navbar"></div>
+	</div>
+	<div class="container" style="width: 60%;">
+	    <h2>Edit Recipe</h2>
+	    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm">
+			<input type="hidden" id="ingredientIds" name="ingredientIds" th:value="${#strings.arrayJoin(recipe.ingredients.![id], ',')}"/>
 			<input type="hidden" name="id" th:field="*{id}" />
 			<input type="hidden" name="calories" th:field="*{calories}" />
 			<input type="hidden" name="carbohydrate" th:field="*{carbohydrate}" />
@@ -24,7 +33,8 @@
 			<input type="hidden" name="protein" th:field="*{protein}" />
 			<input type="hidden" name="rating" th:field="*{rating}" />
 			<input type="hidden" name="saturatedFat" th:field="*{saturatedFat}" />
-
+			<br />
+			
 			<div class="form-group">
 				<label for="nameInput">Recipe Name:</label>
 				<input type="text" id="nameInput" name="name" th:field="*{name}" required>
@@ -32,47 +42,46 @@
 			<br />
 
 			<div class="form-group">
-				<label for="descriptionInput">Description:</label>
-				<input type="text" id="descriptionInput" name="description" th:field="*{description}" required>
-			</div>
-			<br />
-
-			<div class="form-group">
-				<label for="servingsInput">Servings:</label>
-				<input type="number" id="servingsInput" name="servings" required min="1" step="1"
-					th:field="*{servings}">
-				<!-- min="1" 表示最小值为1，step="1" 表示步长为1，即只能输入整数 -->
-			</div>
-			<br />
-
-			<div class="form-group">
-				<label for="preparationTimeInput">Preparation Time:</label>
-				<input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1"
-					th:field="*{preparationTime}">
-
-				<!-- 添加按钮或下拉列表来选择时间单位 -->
-				<label for="timeUnit"></label>
-				<select id="timeUnit" name="timeUnit">
-					<option value="minutes">Minutes</option>
-					<option value="hours">Hours</option>
-				</select>
-			</div>
-
-			<br />
-			<br />
-
-			<div class="form-group">
-				<label for="ingredientsInput">Ingredients:</label>
-				<div name="ingredientsInput">
-					<input type="text" placeholder="Enter an ingredient and click Add" id="addIngredientInput" />
+<<<<<<< HEAD
+		        <label for="descriptionInput">Description:</label>
+		        <input type="text" id="descriptionInput" name="description" th:field="*{description}" required>  
+		    </div>    
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="servingsInput">Servings:</label>
+		        <input type="number" id="servingsInput" name="servings" required min="1" step="1" th:field="*{servings}">
+		        <!-- min="1" 表示最小值为1，step="1" 表示步长为1，即只能输入整数 -->
+	        </div>
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="preparationTimeInput">Preparation Time:</label>
+		        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1" th:field="*{preparationTime}">
+		        
+		        <!-- 添加按钮或下拉列表来选择时间单位 -->
+		        <label for="timeUnit"></label>
+		        <select id="timeUnit" name="timeUnit">
+		            <option value="minutes">Minutes</option>
+		            <option value="hours">Hours</option>
+		        </select>
+	        </div>
+	        
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="ingredientsInput">Ingredients:</label>
+		        <div name="ingredientsInput">
+		            <input type="text" placeholder="Enter an ingredient and click Add" id="addIngredientInput" style="width: 93%;"/>
 					<button type="button" id="addIngredientBtn">Add</button>
 					<span id="ingredientsError" style="color: red;"></span>
 					<span id="fetchingIngredient" style="color: grey;"></span>
-				</div>
-			</div>
-			<br />
-			<br />
-			<table id="itemTable" class="table table-hover">
+		        </div>
+	        </div>
+	        <br />
+	        <br />
+	        <table id="itemTable" class="table table-borderless">
 				<tr th:each="ingredient, index : *{ingredients}">
 					<td th:text="*{ingredients[__${index.index}__].foodText}">
 					</td>
@@ -82,19 +91,19 @@
 					</td>
 				</tr>
 			</table>
-			<br />
-			<br />
-
-			<div class="form-group">
-				<label for="stepsInput">Steps:</label>
-				<div name="stepsInput">
-					<input type="text" placeholder="Enter a step and click Add" id="addStepInput" />
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="stepsInput">Steps:</label>
+		        <div name="stepsInput">
+		            <input type="text" placeholder="Enter a step and click Add" id="addStepInput" style="width: 93%;"/>
 					<button type="button" id="addStepBtn">Add</button>
-				</div>
-			</div>
-			<br />
-			<br />
-			<table id="stepsTable" class="table table-hover">
+		        </div>
+	        </div>
+	        <br />
+	        <br />
+	        <table id="stepsTable" class="table table-borderless">
 				<tr th:each="step, index : *{steps}">
 					<td th:text="*{steps[__${index.index}__]}">
 					</td>
@@ -128,16 +137,16 @@
 			<div id="picturePreview">
 				<img th:src="@{'/images/' + ${recipe.image}}" alt="Recipe Image">
 			</div>
-
-			<button type="button" onclick="selectFromFile()">Select Picture</button>
+	        <br />
+	        <button type="button" onclick="selectFromFile()">Select Picture</button>
 			<br />
 			<br />
 			<br />
-
-			<!-- Tags 输入框 -->
-			<label for="tagsInput">Tags:</label>
-			<br />
-			<table id="tagsTable" class="table table-hover">
+	        
+			<!-- Tags 输入框 --> 
+	        <label for="tagsInput">Tags:</label>
+	        <br />
+	        <table id="tagsTable" class="table table-borderless">
 				<tr th:each="tag, index : *{tags}">
 					<td th:text="*{tags[__${index.index}__]}">
 					</td>
@@ -159,35 +168,36 @@
 
 			<label>Set Recipe as: </label>
 			<div class="form-group">
-				<label for="public">Public</label>
-				<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}"
-					th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}">
+		    	<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}">
+		    	<label for="public" style="margin-right: 15px;">Public</label>
+		    	<input type="radio" id="private" name="status" th:value="${T(com.ad.teamnine.model.Status).PRIVATE}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PRIVATE}">
 				<label for="private">Private</label>
-				<input type="radio" id="private" name="status" th:value="${T(com.ad.teamnine.model.Status).PRIVATE}"
-					th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PRIVATE}">
 			</div>
-
-			<br />
-			<input type="submit" value="Save" />
-		</form>
-	</div>
-	<script>
-		document.addEventListener("DOMContentLoaded", function (event) {
+	
+	    	<br />    
+	        <button type="submit" value="Save" >Save</button>
+	    </form>
+    </div>
+    <script>
+		document.addEventListener("DOMContentLoaded", function(event) {
 			const ingredientIdsEle = document.getElementById("ingredientIds");
-			console.log("ingredientIdsEle.value: " + ingredientIdsEle.value);
 			const addIngredientInput = document.getElementById("addIngredientInput");
 			const addIngredientBtn = document.getElementById("addIngredientBtn");
 			const fetchingIngredientSpan = document.getElementById("fetchingIngredient");
+			const ingredientsError = document.getElementById("ingredientsError");
 			addIngredientBtn.addEventListener("click", (event) => {
+				ingredientsError.textContent = "";
 				fetchingIngredientSpan.textContent = "Fetching Ingredient...";
 				var newIngredient = addIngredientInput.value;
 				addItem(newIngredient, function (error, newIngredientId) {
-					if (error) {
-						console.error(error);
-					} else {
-						console.log("New Ingredient ID:", newIngredientId);
-						var ingredientIdsStr = ingredientIdsEle.value;
-						if (ingredientIdsEle.value == "") {
+				    if (error) {
+				        console.error(error);
+				        fetchingIngredientSpan.textContent = "";
+					    return;
+				    } else {
+				        console.log("New Ingredient ID:", newIngredientId);
+				        var ingredientIdsStr = ingredientIdsEle.value;
+				        if (ingredientIdsEle.value == ""){
 							ingredientIdsEle.value = newIngredientId;
 						} else {
 							ingredientIdsEle.value = ingredientIdsStr + "," + newIngredientId;
@@ -224,8 +234,10 @@
 							console.log("status message: " + data.statusMessage);
 							if (statusMessage === "NOT_FOUND") {
 								ingredientsError.textContent = "Ingredient does not exist, please check and re-enter.";
+								callback("Error saving item", null);
 							} else {
 								ingredientsError.textContent = "Quantity is missing, please check and re-enter.";
+								callback("Error saving item", null);
 							}
 						} else {
 							let newIngredientId = data.id;
