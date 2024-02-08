@@ -7,9 +7,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.ad.teamnine.model.Admin;
 import com.ad.teamnine.model.Ingredient;
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.Recipe;
+import com.ad.teamnine.repository.AdminRepository;
 import com.ad.teamnine.repository.IngredientRepository;
 import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.RecipeRepository;
@@ -22,7 +24,7 @@ public class AdProjectApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRun(MemberRepository memberRepo, IngredientRepository ingrRepo, RecipeRepository recipeRepo) {
+	public CommandLineRunner commandLineRun(AdminRepository adminRepo, MemberRepository memberRepo, IngredientRepository ingrRepo, RecipeRepository recipeRepo) {
 		return args -> {
 			LocalDate date1 = LocalDate.of(2000, 1, 8);
 			Member member1 = new Member(1, "member1Username", "member1Password!", 170, 65.3, date1, "Male");
@@ -101,6 +103,11 @@ public class AdProjectApplication {
 			ingredient2.getRecipes().add(recipe5);
 			ingrRepo.save(ingredient1);
 			ingrRepo.save(ingredient2);
+			Admin admin1 = new Admin();
+			admin1.setId(3);
+			admin1.setPassword("Admin1password!");
+			admin1.setUsername("Admin1username!");
+			adminRepo.save(admin1);
 		};
 	}
 }

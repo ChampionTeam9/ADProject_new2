@@ -49,7 +49,7 @@
 								<li class="list-group-item" >
 									<div class="user-profile" style="display: flex; align-items: center; justify-content: center;">
 										<img src="user.png" style="width: 24px; height: 24px; margin-right: 8px;">
-										<a th:href="@{/user/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a>
+										<a th:href="@{/user/profile/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a>
 									</div>
 								</li>
 							</ul>

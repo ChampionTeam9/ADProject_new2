@@ -15,19 +15,171 @@
 	</div>
 	<div class="container" style="width: 60%;">
 		<h1>Recipe Report Details</h1>
-		<p>ID: <span th:text="${report.id}"></span></p>
-		<p>Reported Recipe Name: <span th:text="${report.reportedRecipe.name}"></span></p>
-		<p>Member: <span th:text="${report.member.username}"></span></p>
-		<p>Reason: <span th:text="${report.reason}"></span></p>
+		<table class="table">
+			<tbody>
+				<tr>
+					<td>ID:</td>
+					<td th:text="${report.id}"></td>
+				</tr>
+				<tr>
+					<td>Reported Recipe Name:</td>
+					<td th:text="${report.recipeReported.name}"></td>
+				</tr>
+				<tr>
+					<td>Member:</td>
+					<td th:text="${report.member.username}"></td>
+				</tr>
+				<tr>
+					<td>Reason:</td>
+					<td th:text="${report.reason}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<!--
+		<div style="display: flex; justify-content: center;">
+			<div style="display: flex; gap: 20px;">
+				<form th:action="@{/user/admin/recipeReport/{id}/approve(id=${report.id})}" method="post">
+					<button type="submit" value="Approve"
+						style="width: 50%; padding: 10px; font-size: 16px; box-sizing: border-box;">Approve</button>
+				</form>
 
-		<form th:action="@{/admin/recipeReport/{id}/approve(id=${report.id})}" method="post">
-			<button type="submit" value="Approve">Approve</button>
-		</form>
+				<form th:action="@{/user/admin/recipeReport/{id}/reject(id=${report.id})}" method="post">
+					<button type="submit" value="Reject"
+						style="width: 50%; padding: 10px; font-size: 16px; box-sizing: border-box;">Reject</button>
+				</form>
+			</div>
+		</div>
+-->
+		<div style="display: flex; justify-content: center; margin-top: 20px;">
+			<form th:action="@{/user/admin/recipeReport/{id}/approve(id=${report.id})}" method="post"
+				style="width: 100%;">
+				<button type="submit" value="Approve"
+					style="width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box;">Approve</button>
+			</form>
+		</div>
 
-		<form th:action="@{/admin/recipeReport/{id}/reject(id=${report.id})}" method="post">
-			<button type="submit" value="Reject">Reject</button>
-		</form>
+		<div style="display: flex; justify-content: center; margin-top: 20px;">
+			<form th:action="@{/user/admin/recipeReport/{id}/reject(id=${report.id})}" method="post"
+				style="width: 100%;">
+				<button type="submit" value="Reject"
+					style="width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box;">Reject</button>
+			</form>
+		</div>
+
+
+		<div style="display: flex; justify-content: center; margin-top: 20px;">
+			<form th:action="@{/user/admin/recipeReport}" method="get" style="width: 100%;">
+				<button type="submit" style="width: 100%; padding: 10px; font-size: 16px;">Back</button>
+			</form>
+		</div>
+
 	</div>
+	<div class="container" style="width: 60%;">
+		<h1>Reported Recipe Other Details</h1>
+	</div>
+	<div class="container" style="width: 60%;">
+		<table class="table">
+			<tbody>
+				<tr>
+					<td>ID:</td>
+					<td th:text="${recipe.id}"></td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td th:text="${recipe.name}"></td>
+				</tr>
+				<tr>
+					<td>Image:</td>
+					<td><img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image"
+							style="max-width: 200px;"></td>
+				</tr>
+				<tr>
+					<td>Rating:</td>
+					<td th:text="${recipe.rating}"></td>
+				</tr>
+				<tr>
+					<td>Number of Reviews:</td>
+					<td th:text="${recipe.numberOfRating}"></td>
+				</tr>
+				<tr>
+					<td>Number of Saved:</td>
+					<td th:text="${recipe.numberOfSaved}"></td>
+				</tr>
+				<tr>
+					<td>Created By:</td>
+					<td th:text="${recipe.member.username}"></td>
+				</tr>
+				<tr>
+					<td>Serving size:</td>
+					<td th:text="${recipe.servings}"></td>
+				</tr>
+				<tr>
+					<td>Preparation Time:</td>
+					<td th:text="${recipe.preparationTime}"></td>
+				</tr>
+				<tr>
+					<td>Tags:</td>
+					<td>
+						<p><span th:each="tag : ${recipe.tags}" style="margin-right: 5px;"><span
+									th:text="${tag}"></span></span></p>
+					</td>
+				</tr>
+				<tr>
+					<td>Ingredients:</td>
+					<td>
+						<ul th:each="ingredient : ${recipe.ingredients}">
+							<li th:text="${ingredient.foodText}"></li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Step:</td>
+					<td>
+						<ul th:each="step : ${recipe.steps}">
+							<li th:text="${step}"></li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td>Health Score:</td>
+					<td th:text="${recipe.healthScore} + ' / 6'"></td>
+				</tr>
+				<tr>
+					<td><strong>Nutrient</strong></td>
+					<td><strong>% Daily Value</strong></td>
+				</tr>
+				<tr>
+					<td>Calories</td>
+					<td th:text="${recipe.calories}"></td>
+				</tr>
+				<tr>
+					<td>Protein</td>
+					<td th:text="${recipe.protein}"></td>
+				</tr>
+				<tr>
+					<td>Carbohydrate</td>
+					<td th:text="${recipe.carbohydrate}"></td>
+				</tr>
+				<tr>
+					<td>Sugar</td>
+					<td th:text="${recipe.sugar}"></td>
+				</tr>
+				<tr>
+					<td>Sodium</th>
+					<td th:text="${recipe.sodium}"></td>
+				</tr>
+				<tr>
+					<td>Fat</th>
+					<td th:text="${recipe.fat}"></td>
+				</tr>
+				<tr>
+					<td>Saturated Fat</th>
+					<td th:text="${recipe.saturatedFat}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<br />
 </body>
 
 </html>
