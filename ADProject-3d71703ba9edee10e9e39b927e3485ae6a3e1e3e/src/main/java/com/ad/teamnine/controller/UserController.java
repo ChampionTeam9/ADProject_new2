@@ -224,7 +224,7 @@ public class UserController {
 	}
 
 	// Show my profile for updating of personal information
-	@GetMapping("/profile")
+	@GetMapping("/myProfile")
 	public String viewMemberProfile(HttpSession sessionObj, Model model) {
 		Integer id = null;
 		Object userIdObj = sessionObj.getAttribute("userId");
@@ -238,7 +238,7 @@ public class UserController {
 		model.addAttribute("member", member);
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
-		return "UserViews/myProfile";
+		return "UserViews/showMyProfile";
 	}
 	
 	// Look at other's profile
