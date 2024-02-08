@@ -19,11 +19,11 @@
 		<p>Reported Member Name: <span th:text="${report.memberReported.username}"></span></p>
 		<p>Reason: <span th:text="${report.reason}"></span></p>
 
-		<form th:action="@{/admin/memberReport/{id}/approve(id=${report.id})}" method="post">
+		<form th:action="@{/user/admin/memberReport/{id}/approve(id=${report.id})}" method="post">
 			<button type="submit" value="Approve">Approve</button>
 		</form>
 
-		<form th:action="@{/admin/memberReport/{id}/reject(id=${report.id})}" method="post">
+		<form th:action="@{/user/admin/memberReport/{id}/reject(id=${report.id})}" method="post">
 			<button type="submit" value="Reject">Reject</button>
 		</form>
 	</div>
