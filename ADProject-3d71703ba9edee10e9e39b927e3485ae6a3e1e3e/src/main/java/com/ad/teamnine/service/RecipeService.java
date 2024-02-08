@@ -58,22 +58,22 @@ public class RecipeService {
 
 	// save specific recipe by id
 	public void saveRecipe(Recipe recipe, Member member) {
-		if (!member.getSavedRecipes().contains(recipe)) {
-			member.getSavedRecipes().add(recipe);
-			memberRepo.save(member);
-			recipe.setNumberOfSaved(recipe.getNumberOfSaved() + 1);
-			recipeRepo.save(recipe);
-		}
+		member.getSavedRecipes().add(recipe);
+		recipe.getMembersWhoSave().add(member); 
+		recipe.setNumberOfSaved(recipe.getNumberOfSaved() + 1);
+		memberRepo.save(member);
+		recipeRepo.save(recipe);
 	}
 
 	// unsubscribe specific recipe by id
 	public void unsubscribeRecipe(Recipe recipe, Member member) {
-		if (member.getSavedRecipes().contains(recipe)) {
-			member.getSavedRecipes().remove(recipe);
-			memberRepo.save(member);
-			recipe.setNumberOfSaved(recipe.getNumberOfSaved() - 1);
-			recipeRepo.save(recipe);
-		}
+
+		member.getSavedRecipes().remove(recipe);
+		recipe.getMembersWhoSave().remove(member); 
+		recipe.setNumberOfSaved(recipe.getNumberOfSaved() - 1);
+		memberRepo.save(member);
+		recipeRepo.save(recipe);
+
 	}
 
 	// get number of people who rated a specific recipe

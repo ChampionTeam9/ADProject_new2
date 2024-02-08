@@ -249,12 +249,20 @@ public class RecipeController {
 	}
 
 	@GetMapping("/detail/{id}")
-	public String viewRecipe(@PathVariable("id") Integer id, Model model) {
+	public String viewRecipe(@PathVariable("id") Integer id, Model model, HttpSession sessionObj) {
 		Recipe recipe = recipeService.getRecipeById(id);
 		model.addAttribute("recipe", recipe);
 		// get number of people who rated
-		int numberOfUsersRatings = recipeService.getNumberOfUsersRatings(id);
+		int numberOfUsersRatings = recipeService.getRecipeById(id).getNumberOfRating();
 		model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
+		if (sessionObj.getAttribute("userId") != null) {
+			Integer userId = (int) sessionObj.getAttribute("userId");
+			Member member = userService.getMemberById(userId);
+			Boolean ifsave = !member.getSavedRecipes().contains(recipe);
+			model.addAttribute("ifsave", ifsave);
+		} else {
+			model.addAttribute("ifsave", true);
+		}
 		return "RecipeViews/recipeDetailPage";
 	}
 }

@@ -19,23 +19,30 @@
 		<h1>My Review List</h1>
 	</div>
 	<div class="container" style="text-align: center;">
-		<table>
+		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Rating</th>
-					<th>Comment</th>
-					<th>Recipe</th>
+					<th scope="col">#</th>
+					<th scope="col">ID</th>
+					<th scope="col">Rating</th>
+					<th scope="col">Comment</th>
+					<th scope="col">Recipe</th>
+					<th scope="col">Recipe Detail</th>
 				</tr>
 			</thead>
 			<tbody>
-				<!-- Iterate over the list of reviews and display each review -->
-				<tr th:each="review : ${reviews}">
+				<tr scope="row" th:each="review,iterStat : ${reviews}">
+					<td th:text="${iterStat.count}">1</td>
 					<td th:text="${review.id}">Review ID</td>
 					<td th:text="${review.rating}">Rating</td>
 					<td th:text="${review.comment}">Comment</td>
-					<!-- Assuming you have a method getRecipeName() in Recipe class to get the name of the recipe -->
-					<td th:text="${review.recipe.getRecipeName()}">Recipe Name</td>
+					<td th:text="${review.recipe.getName()}">Recipe Name</td>
+					<td>
+						<button type="button" th:id="${review.recipe.getId()}"
+							onclick="window.location.href='/recipe/detail/' + this.id">
+							Click
+						</button>
+					</td>
 				</tr>
 			</tbody>
 		</table>
