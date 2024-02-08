@@ -43,7 +43,7 @@ public class Member extends User{
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ShoppingListItem> shoppingList;
 	
-	@OneToMany(mappedBy = "member")
+	@ManyToMany(mappedBy = "membersWhoSave")
 	private List<Recipe> savedRecipes;
 	
 	@OneToMany(mappedBy = "member")

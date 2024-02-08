@@ -145,6 +145,7 @@ public class APIController {
 			String recipeName = currRecipe[0];
 			String recipeDescription = currRecipe[9];
 			double recipeRating = Double.parseDouble(currRecipe[16]);
+			int numberOfRating = Integer.parseInt(currRecipe[17]);
 			int preparationTime = Integer.parseInt(currRecipe[2]);
 			int servings = Integer.parseInt(currRecipe[14]);
 			int numberOfSteps = Integer.parseInt(currRecipe[7]);
@@ -160,6 +161,7 @@ public class APIController {
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
 			recipe.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
+			recipe.setNumberOfRating(numberOfRating);
 			recipeService.createRecipe(recipe);
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
 
