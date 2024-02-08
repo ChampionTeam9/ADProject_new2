@@ -28,6 +28,9 @@ public class AdProjectApplication {
 			Member member1 = new Member(1, "member1Username", "member1Password!", 170, 65.3, date1, "Male");
 			memberRepo.save(member1);
 			
+			Member member2 = new Member(2, "member2Username", "member2Password!", 160, 53.0, date1, "Female");
+			memberRepo.save(member2);
+			
 			Ingredient ingredient1 = new Ingredient("1 whole banana", 1.26, 102.97, 26.38, 14.11, 1.16, 0.38, 0.13);
 			ingrRepo.save(ingredient1);
 			
