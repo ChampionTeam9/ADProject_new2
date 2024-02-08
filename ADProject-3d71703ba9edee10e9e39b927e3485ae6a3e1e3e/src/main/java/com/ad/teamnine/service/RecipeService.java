@@ -58,18 +58,24 @@ public class RecipeService {
 
 	// save specific recipe by id
 	public void saveRecipe(Recipe recipe, Member member) {
-		member.getSavedRecipes().add(recipe);
-		memberRepo.save(member);
-		recipe.setNumberOfSaved(recipe.getNumberOfSaved() + 1); 
-		recipeRepo.save(recipe);
+		if (!member.getSavedRecipes().contains(recipe)) {
+			member.getSavedRecipes().add(recipe);
+			memberRepo.save(member);
+			recipe.setNumberOfSaved(recipe.getNumberOfSaved() + 1);
+			recipeRepo.save(recipe);
+		}
 	}
 
 	// unsubscribe specific recipe by id
 	public void unsubscribeRecipe(Recipe recipe, Member member) {
-		member.getSavedRecipes().remove(recipe);
-		memberRepo.save(member);
+		if (member.getSavedRecipes().contains(recipe)) {
+			member.getSavedRecipes().remove(recipe);
+			memberRepo.save(member);
+			recipe.setNumberOfSaved(recipe.getNumberOfSaved() - 1);
+			recipeRepo.save(recipe);
+		}
 	}
-	
+
 	// get number of people who rated a specific recipe
 	public int getNumberOfUsersRatings(int recipeId) {
 		return reviewRepo.getNumberOfUsersRatings(recipeId);
@@ -107,36 +113,35 @@ public class RecipeService {
 		List<Recipe> results = recipeRepo.findByNameContaining(query);
 		return results;
 	}
-	public List<Recipe> searchByTag(String tag){
-		List<Recipe> results=recipeRepo.findByTagsContaining(tag);
+
+	public List<Recipe> searchByTag(String tag) {
+		List<Recipe> results = recipeRepo.findByTagsContaining(tag);
 		return results;
-	
+
 	}
 
 	public List<Recipe> searchByDescription(String query) {
-		List<Recipe> results=recipeRepo.findByDescriptionContaining(query);
+		List<Recipe> results = recipeRepo.findByDescriptionContaining(query);
 		return results;
 	}
 
 	public List<Recipe> searchAll(String query) {
-	    List<Recipe> results1 = recipeRepo.findByNameContaining(query);
-	    List<Recipe> results2 = recipeRepo.findByTagsContaining(query);
-	    List<Recipe> results3 = recipeRepo.findByDescriptionContaining(query);
-	    return mergeLists(results1, results2, results3);
+		List<Recipe> results1 = recipeRepo.findByNameContaining(query);
+		List<Recipe> results2 = recipeRepo.findByTagsContaining(query);
+		List<Recipe> results3 = recipeRepo.findByDescriptionContaining(query);
+		return mergeLists(results1, results2, results3);
 	}
 
-	//merge
+	// merge
 	public List<Recipe> mergeLists(List<Recipe> listByName, List<Recipe> listByTag, List<Recipe> listByDescription) {
-	    return Stream.of(listByName, listByTag, listByDescription) 
-	            .flatMap(List::stream) 
-	            .distinct() 
-	            .collect(Collectors.toList()); 
+		return Stream.of(listByName, listByTag, listByDescription).flatMap(List::stream).distinct()
+				.collect(Collectors.toList());
 	}
 
 	public List<Recipe> getAllRecipes() {
-        return recipeRepo.findAll();
-    }
-	
+		return recipeRepo.findAll();
+	}
+
 	// get all unique tags
 	public Set<String> getAllUniqueTags() {
 		List<String> tagLists = recipeRepo.findAllDistinctTags();
@@ -154,19 +159,17 @@ public class RecipeService {
 		Collections.shuffle(allTags, new Random());
 		return allTags.stream().limit(count).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
-	
+
 	public List<String> findMatchingTags(String keyword) {
-        Set<String> allUniqueTags = getAllUniqueTags();
+		Set<String> allUniqueTags = getAllUniqueTags();
 
-        
-        List<String> matchingTags = allUniqueTags.stream()
-                .filter(tag -> tag.toLowerCase().contains(keyword.toLowerCase()))
-                .collect(Collectors.toList());
+		List<String> matchingTags = allUniqueTags.stream()
+				.filter(tag -> tag.toLowerCase().contains(keyword.toLowerCase())).collect(Collectors.toList());
 
-        return matchingTags;
-    }
-	
+		return matchingTags;
+	}
+
 	public List<Recipe> getAllRecipesByMember(Member member) {
-        return recipeRepo.findByMember(member);
-    }
+		return recipeRepo.findByMember(member);
+	}
 }

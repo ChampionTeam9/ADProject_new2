@@ -37,20 +37,20 @@ public class RecipeController {
 		this.userService = userService;
 	}
 
-	@PostMapping("/save/{id}")
+	@GetMapping("/save/{id}")
 	public String saveRecipe(@PathVariable Integer id, HttpSession sessionObj) {
 		Recipe recipe = recipeService.getRecipeById(id);
-		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
+		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
 		recipeService.saveRecipe(recipe, member);
-		return ""; // 改成redirection
+		return "redirect:/recipe/detail/"+id; 
 	}
 
-	@PostMapping("/unsubscribe/{id}")
+	@GetMapping("/unsubscribe/{id}")
 	public String unsubscribeRecipe(@PathVariable Integer id, HttpSession sessionObj) {
 		Recipe recipe = recipeService.getRecipeById(id);
 		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
 		recipeService.unsubscribeRecipe(recipe, member);
-		return ""; // 改成redirection
+		return "redirect:/recipe/detail/"+id; 
 	}
 
 	@GetMapping("/review/{id}")
@@ -126,12 +126,10 @@ public class RecipeController {
 		System.out.println("id: " + id);
 		return ResponseEntity.ok(response);
 	}
-
 	@PostMapping("/create")
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
 			@RequestParam("timeUnit") String timeUnit, @RequestParam("image") MultipartFile pictureFile,
 			@RequestParam("ingredientIds") String ingredientIds, Model model) {
-
 		// If preparation time entered in hours, convert to mins
 		if (timeUnit.equals("hours")) {
 			int preparationTime = recipe.getPreparationTime();

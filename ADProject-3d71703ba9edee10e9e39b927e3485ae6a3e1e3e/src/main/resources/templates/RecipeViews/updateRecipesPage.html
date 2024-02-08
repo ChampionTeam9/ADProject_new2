@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
 		}
 	</style>
 </head>
+
 <body>
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
@@ -34,12 +36,13 @@
 			<br />
 			
 			<div class="form-group">
-		        <label for="nameInput">Recipe Name:</label>
-		        <input type="text" id="nameInput" name="name" th:field="*{name}" required> 
-		    </div>
-	        <br />
-	
+				<label for="nameInput">Recipe Name:</label>
+				<input type="text" id="nameInput" name="name" th:field="*{name}" required>
+			</div>
+			<br />
+
 			<div class="form-group">
+<<<<<<< HEAD
 		        <label for="descriptionInput">Description:</label>
 		        <input type="text" id="descriptionInput" name="description" th:field="*{description}" required>  
 		    </div>    
@@ -83,7 +86,8 @@
 					<td th:text="*{ingredients[__${index.index}__].foodText}">
 					</td>
 					<td>
-						<button type="button" th:id="*{ingredients[__${index.index}__].id}" onclick="removeIngredient(this.id, this)">Delete</button>
+						<button type="button" th:id="*{ingredients[__${index.index}__].id}"
+							onclick="removeIngredient(this.id, this)">Delete</button>
 					</td>
 				</tr>
 			</table>
@@ -103,30 +107,34 @@
 				<tr th:each="step, index : *{steps}">
 					<td th:text="*{steps[__${index.index}__]}">
 					</td>
-					<input type="hidden" th:name="'steps[' + ${index.index} + ']'" th:value="*{steps[__${index.index}__]}" />
+					<input type="hidden" th:name="'steps[' + ${index.index} + ']'"
+						th:value="*{steps[__${index.index}__]}" />
 					<td>
-						<button type="button" th:id="'stepsDelete' + ${index.index}" th:name="'steps[' + ${index.index} + ']'" onclick="removeStep(this)">Delete</button>
+						<button type="button" th:id="'stepsDelete' + ${index.index}"
+							th:name="'steps[' + ${index.index} + ']'" onclick="removeStep(this)">Delete</button>
 					</td>
 				</tr>
 			</table>
-	        <br />
-	        <br />
-	        
-	        <div class="form-group">
+			<br />
+			<br />
+
+			<div class="form-group">
 				<label for="notesInput">Notes:</label>
-				<textarea name="notesInput" cols="40" rows="5" th:field="*{notes}" placeholder="Add any additional remarks for your recipe here"></textarea>
+				<textarea name="notesInput" cols="40" rows="5" th:field="*{notes}"
+					placeholder="Add any additional remarks for your recipe here"></textarea>
 			</div>
 			<br />
-	        <br />
-	        
-	        <div class="form-group">
-		        <!-- Upload Picture 输入框 -->
-		        <label for="pictureInput">Upload Picture:</label>
-		        <input type="file" id="pictureInput" name="image" accept="image/*" style="display: none;" class="fileBtn" onchange="fileBtn(this)">
-	        </div>
-	
-	        <!-- 图片预览框 -->
-	        <div id="picturePreview">
+			<br />
+
+			<div class="form-group">
+				<!-- Upload Picture 输入框 -->
+				<label for="pictureInput">Upload Picture:</label>
+				<input type="file" id="pictureInput" name="image" accept="image/*" style="display: none;"
+					class="fileBtn" onchange="fileBtn(this)">
+			</div>
+
+			<!-- 图片预览框 -->
+			<div id="picturePreview">
 				<img th:src="@{'/images/' + ${recipe.image}}" alt="Recipe Image">
 			</div>
 	        <br />
@@ -142,20 +150,22 @@
 				<tr th:each="tag, index : *{tags}">
 					<td th:text="*{tags[__${index.index}__]}">
 					</td>
-					<input type="hidden" th:name="tags[__${index.index}__]" class="tagText" th:value="*{tags[__${index.index}__]}"/>
+					<input type="hidden" th:name="tags[__${index.index}__]" class="tagText"
+						th:value="*{tags[__${index.index}__]}" />
 					<td>
-						<button type="button" th:id="'tagsDelete' + ${index.index}" onclick="removeStep(this)">Delete</button>
+						<button type="button" th:id="'tagsDelete' + ${index.index}"
+							onclick="removeStep(this)">Delete</button>
 					</td>
 				</tr>
 			</table>
-	        <div id="tagsContainer">
-	    		<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)" placeholder="Enter tag here">
-	    		<div id="tagDropdown"></div>
-	        </div>
-			
+			<div id="tagsContainer">
+				<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)" placeholder="Enter tag here">
+				<div id="tagDropdown"></div>
+			</div>
+
 			<br />
 			<br />
-			
+
 			<label>Set Recipe as: </label>
 			<div class="form-group">
 		    	<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}">
@@ -192,10 +202,10 @@
 						} else {
 							ingredientIdsEle.value = ingredientIdsStr + "," + newIngredientId;
 						}
-				        console.log("ingredientIdsEle.value: " + ingredientIdsEle.value);
-				        addRow(newIngredient, newIngredientId);
-				        addIngredientInput.value = "";
-				    }
+						console.log("ingredientIdsEle.value: " + ingredientIdsEle.value);
+						addRow(newIngredient, newIngredientId);
+						addIngredientInput.value = "";
+					}
 					fetchingIngredientSpan.textContent = "";
 				});
 			})
@@ -207,22 +217,22 @@
 				addStepInput.value = "";
 			})
 		});
-		
-		function addItem(newIngredient, callback){
+
+		function addItem(newIngredient, callback) {
 			console.log("add item function");
 			let xhr = new XMLHttpRequest();
-		    xhr.open("POST", "/recipe/addItem");
-		    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
-		    xhr.onreadystatechange = function () {
-		        if (xhr.readyState == 4) {
-		            if (xhr.status == 200) {
-		                console.log("response ok");
-		                let data = JSON.parse(xhr.responseText);
-		                let statusMessage = data.statusMessage;
-		                const ingredientsError = document.getElementById("ingredientsError");
-		                if (statusMessage){
+			xhr.open("POST", "/recipe/addItem");
+			xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState == 4) {
+					if (xhr.status == 200) {
+						console.log("response ok");
+						let data = JSON.parse(xhr.responseText);
+						let statusMessage = data.statusMessage;
+						const ingredientsError = document.getElementById("ingredientsError");
+						if (statusMessage) {
 							console.log("status message: " + data.statusMessage);
-							if (statusMessage === "NOT_FOUND"){
+							if (statusMessage === "NOT_FOUND") {
 								ingredientsError.textContent = "Ingredient does not exist, please check and re-enter.";
 								callback("Error saving item", null);
 							} else {
@@ -232,35 +242,35 @@
 						} else {
 							let newIngredientId = data.id;
 							ingredientsError.textContent = ""; // clear the error
-		                	callback(null, newIngredientId);
+							callback(null, newIngredientId);
 						}
-		            } else {
-		                callback("Error saving item", null);
-		            }
-		        }
-		    }
-		    let data = {
-		        "ingredientName": newIngredient,
-		    }
-		    xhr.send(JSON.stringify(data));
+					} else {
+						callback("Error saving item", null);
+					}
+				}
+			}
+			let data = {
+				"ingredientName": newIngredient,
+			}
+			xhr.send(JSON.stringify(data));
 		}
-		
-        function addRow(ingredientName, ingredientId) {
-	        console.log("add row function");
+
+		function addRow(ingredientName, ingredientId) {
+			console.log("add row function");
 			console.log("ingredientName: " + ingredientName);
 			const itemTable = document.getElementById("itemTable");
 			var newRow = itemTable.insertRow(-1);
 			var cell1 = newRow.insertCell(0);
 			cell1.className = "itemText";
 			cell1.innerHTML = ingredientName;
-	        
-	        var cell2 = newRow.insertCell(1);
-	        var deleteButton = document.createElement("button");
-	        deleteButton.type = "button";
-	        deleteButton.textContent = "Delete";
-	        deleteButton.id = ingredientId;
-	        
-	        deleteButton.onclick = function(e) {
+
+			var cell2 = newRow.insertCell(1);
+			var deleteButton = document.createElement("button");
+			deleteButton.type = "button";
+			deleteButton.textContent = "Delete";
+			deleteButton.id = ingredientId;
+
+			deleteButton.onclick = function (e) {
 				var deleteButton = e.target;
 				console.log(deleteButton);
 				var ingredientId = this.id;
@@ -269,56 +279,56 @@
 				var row = deleteButton.closest("tr");
 				row.remove();
 			};
-	        cell2.appendChild(deleteButton);
-	    }
-    
-        function removeItem(id) {
-		    const ingredientIdsEle = document.getElementById("ingredientIds");
-		    var ingredientIdsStr = ingredientIdsEle.value;
-	        if (ingredientIdsEle.value.length == 1){
+			cell2.appendChild(deleteButton);
+		}
+
+		function removeItem(id) {
+			const ingredientIdsEle = document.getElementById("ingredientIds");
+			var ingredientIdsStr = ingredientIdsEle.value;
+			if (ingredientIdsEle.value.length == 1) {
 				ingredientIdsEle.value = "";
 			} else {
 				ingredientIdsEle.value = ingredientIdsStr.replace(id, "");
 			}
 			console.log("ingredingredientIdsEle.value: " + ingredientIdsEle.value);
 		}
-		
-		function removeIngredient(ingredientId, button){
+
+		function removeIngredient(ingredientId, button) {
 			removeItem(ingredientId);
 			var deleteButton = button;
 			var row = deleteButton.closest("tr");
 			row.remove();
 		}
-    
-        function addStep(newStep) {
-            const stepsTable = document.getElementById("stepsTable");
-            var count = stepsTable.getElementsByTagName("tr").length;
-            var lastRowInputName;
+
+		function addStep(newStep) {
+			const stepsTable = document.getElementById("stepsTable");
+			var count = stepsTable.getElementsByTagName("tr").length;
+			var lastRowInputName;
 			var lastRowStepIndex = -1;
-            if (count > 0) {
-	            var lastRowInputName = stepsTable.querySelector("tr:last-child input[name^='steps']").getAttribute("name");
+			if (count > 0) {
+				var lastRowInputName = stepsTable.querySelector("tr:last-child input[name^='steps']").getAttribute("name");
 				var lastRowStepIndex = parseInt(lastRowInputName.match(/\[(\d+)\]/)[1]);
 			}
 			var newRow = stepsTable.insertRow(-1);
 			var cell1 = newRow.insertCell(0);
 			cell1.className = "stepText";
 			cell1.innerHTML = newStep;
-			
+
 			var input = document.createElement("input");
 			input.type = "hidden";
 			input.name = "steps[" + (lastRowStepIndex + 1) + "]";
 			input.value = newStep;
 			cell1.appendChild(input);
-	        
-	        // 创建删除按钮
-	        var cell2 = newRow.insertCell(1);
-	        var deleteButton = document.createElement("button");
-	        deleteButton.type = "button";
-	        deleteButton.textContent = "Delete";
-	        deleteButton.id = "stepsDelete" + (lastRowStepIndex + 1);
-	        
-	        // 删除
-	        deleteButton.onclick = function(e) {
+
+			// 创建删除按钮
+			var cell2 = newRow.insertCell(1);
+			var deleteButton = document.createElement("button");
+			deleteButton.type = "button";
+			deleteButton.textContent = "Delete";
+			deleteButton.id = "stepsDelete" + (lastRowStepIndex + 1);
+
+			// 删除
+			deleteButton.onclick = function (e) {
 				var deleteButton = e.target;
 				console.log(deleteButton);
 				var stepId = this.id;
@@ -328,50 +338,50 @@
 				var row = deleteButton.closest("tr");
 				row.remove();
 			};
-	        cell2.appendChild(deleteButton);
-        }
-        
-        function removeStep(deleteButton){
+			cell2.appendChild(deleteButton);
+		}
+
+		function removeStep(deleteButton) {
 			var row = deleteButton.closest("tr");
 			row.remove();
 		}
 
-	    function getMatchingTags(keyword) {				
-		    var dropdown = document.getElementById("tagDropdown");
-		    if(keyword.trim() === "") { // Check if input value is empty
+		function getMatchingTags(keyword) {
+			var dropdown = document.getElementById("tagDropdown");
+			if (keyword.trim() === "") { // Check if input value is empty
 				dropdown.innerHTML = "";
 				return;
 			}
-		    // 使用Ajax向服务器请求匹配的Tag选项
-		    // 请确保你的服务器地址和端口正确
-		    fetch("/getTags?keyword=" + keyword)
-		        .then(response => response.json())
-		        .then(tags => {
-		            // 清空下拉菜单
-		            dropdown.innerHTML = "";
-		
-		            // 将匹配的Tag选项添加到下拉菜单中
-		            tags.slice(0, 5).forEach(tag => {
-		                var option = document.createElement("div");
-		                option.textContent = tag;
-		                option.onclick = function () {
-		                    selectTag(tag); 
-		                    //clear drop down after selection
-					        dropdown.innerHTML = "";
-		                };
-		                dropdown.appendChild(option);
-		            });
-		        });
+			// 使用Ajax向服务器请求匹配的Tag选项
+			// 请确保你的服务器地址和端口正确
+			fetch("/getTags?keyword=" + keyword)
+				.then(response => response.json())
+				.then(tags => {
+					// 清空下拉菜单
+					dropdown.innerHTML = "";
+
+					// 将匹配的Tag选项添加到下拉菜单中
+					tags.slice(0, 5).forEach(tag => {
+						var option = document.createElement("div");
+						option.textContent = tag;
+						option.onclick = function () {
+							selectTag(tag);
+							//clear drop down after selection
+							dropdown.innerHTML = "";
+						};
+						dropdown.appendChild(option);
+					});
+				});
 		}
-		
+
 		function selectTag(tag) {
-		    const tagsTable = document.getElementById("tagsTable");
-		    var count = tagsTable.getElementsByTagName("tr").length;
-		    console.log("tag tr count: " + count);
-            var lastRowInputName;
+			const tagsTable = document.getElementById("tagsTable");
+			var count = tagsTable.getElementsByTagName("tr").length;
+			console.log("tag tr count: " + count);
+			var lastRowInputName;
 			var lastRowTagIndex = -1;
-            if (count > 0) {
-	            var lastRowInputName = tagsTable.querySelector("tr:last-child input[name^='tags']").getAttribute("name");
+			if (count > 0) {
+				var lastRowInputName = tagsTable.querySelector("tr:last-child input[name^='tags']").getAttribute("name");
 				var lastRowTagIndex = parseInt(lastRowInputName.match(/\[(\d+)\]/)[1]);
 				console.log("lastRowTagIndex: " + lastRowTagIndex);
 			}
@@ -379,22 +389,22 @@
 			var cell1 = newRow.insertCell(0);
 			cell1.className = "tags";
 			cell1.innerHTML = tag;
-			
+
 			var input = document.createElement("input");
 			input.type = "hidden";
 			input.name = "tags[" + (lastRowTagIndex + 1) + "]";
 			input.value = tag;
 			cell1.appendChild(input);
-	        
-	        // 创建删除按钮
-	        var cell2 = newRow.insertCell(1);
-	        var deleteButton = document.createElement("button");
-	        deleteButton.type = "button";
-	        deleteButton.textContent = "Delete";
-	        deleteButton.id = "tagsDelete" + (lastRowTagIndex + 1);
-	        
-	        // 删除
-	        deleteButton.onclick = function(e) {
+
+			// 创建删除按钮
+			var cell2 = newRow.insertCell(1);
+			var deleteButton = document.createElement("button");
+			deleteButton.type = "button";
+			deleteButton.textContent = "Delete";
+			deleteButton.id = "tagsDelete" + (lastRowTagIndex + 1);
+
+			// 删除
+			deleteButton.onclick = function (e) {
 				var deleteButton = e.target;
 				console.log(deleteButton);
 				var tagId = this.id;
@@ -404,44 +414,45 @@
 				var row = deleteButton.closest("tr");
 				row.remove();
 			};
-	        cell2.appendChild(deleteButton);
+			cell2.appendChild(deleteButton);
 		}
-    
-        function selectFromFile() {
-            document.getElementById("pictureInput").click();
+
+		function selectFromFile() {
+			document.getElementById("pictureInput").click();
 		}
 
 		// 当文件选择框内容改变时触发
-		document.getElementById("pictureInput").addEventListener("change", function() {
-    		uploadAndPreview();
+		document.getElementById("pictureInput").addEventListener("change", function () {
+			uploadAndPreview();
 		});
 
 		function uploadAndPreview() {
-		    var pictureInput = document.getElementById("pictureInput");
-		    var picturePreview = document.getElementById("picturePreview");
-		
-		    // 清空图片预览框
-		    picturePreview.innerHTML = "";
-		
-		    // 获取用户选择的文件
-		    var file = pictureInput.files[0];
-		
-		    // 创建一个 FileReader 对象
-		    var reader = new FileReader();
-		
-		    // 设置文件加载完成后的回调函数
-		    reader.onload = function (e) {
-		        // 创建一个 <img> 元素用于显示预览图片
-		        var img = document.createElement("img");
-		        img.src = e.target.result;
-		        img.style.maxWidth = "300px";  // 设置图片最大宽度
-		        img.style.maxHeight = "300px"; // 设置图片最大高度
-		        picturePreview.appendChild(img);  // 将图片添加到预览框
-		    };
-		
-		    // 读取文件内容
-		    reader.readAsDataURL(file);
+			var pictureInput = document.getElementById("pictureInput");
+			var picturePreview = document.getElementById("picturePreview");
+
+			// 清空图片预览框
+			picturePreview.innerHTML = "";
+
+			// 获取用户选择的文件
+			var file = pictureInput.files[0];
+
+			// 创建一个 FileReader 对象
+			var reader = new FileReader();
+
+			// 设置文件加载完成后的回调函数
+			reader.onload = function (e) {
+				// 创建一个 <img> 元素用于显示预览图片
+				var img = document.createElement("img");
+				img.src = e.target.result;
+				img.style.maxWidth = "300px";  // 设置图片最大宽度
+				img.style.maxHeight = "300px"; // 设置图片最大高度
+				picturePreview.appendChild(img);  // 将图片添加到预览框
+			};
+
+			// 读取文件内容
+			reader.readAsDataURL(file);
 		}   
-    </script>
+	</script>
 </body>
+
 </html>
