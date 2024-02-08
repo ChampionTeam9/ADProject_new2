@@ -97,6 +97,7 @@ public class Recipe {
 		this.status = Status.PUBLIC;
 		this.steps = new ArrayList<>();
 		this.rating = 0.0;
+		this.numberOfRating = 0;
 	}
 
 	// constructor
