@@ -130,6 +130,9 @@ public class RecipeController {
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
 			@RequestParam("timeUnit") String timeUnit, @RequestParam("image") MultipartFile pictureFile,
 			@RequestParam("ingredientIds") String ingredientIds, Model model) {
+		if (bindingResult.hasErrors()) {
+			return "/RecipeViews/createRecipesPage";
+		}
 		// If preparation time entered in hours, convert to mins
 		if (timeUnit.equals("hours")) {
 			int preparationTime = recipe.getPreparationTime();

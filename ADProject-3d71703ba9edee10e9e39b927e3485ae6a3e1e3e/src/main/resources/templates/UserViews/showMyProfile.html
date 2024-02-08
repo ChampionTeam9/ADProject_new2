@@ -19,21 +19,37 @@
 		<div class="container" style="width: 60%;">
 			<h2>My Profile</h2>
 			<br />
-			<form action="/user/saveProfile" method="post">
+			<form action="/user/saveProfile" method="post" th:object="${member}">
+				<input type="hidden" th:field="*{id}" />
+				<input type="hidden" th:field="*{username}" />
+				<input type="hidden" th:field="*{password}" />
+				<input type="hidden" th:field="*{age}" />
+				<input type="hidden" th:field="*{memberStatus}" />
+				<input type="hidden" th:field="*{calorieIntake}" />
+				<input type="hidden" th:field="*{registrationDate}" />
+				
 				<div class="form-group">
 					<label for="birthdate">Birthdate:</label>
-					<input type="date" id="birthdate" name="birthdate" placeholder="Enter your birthdate" required>
+					<input type="date" id="birthdate" name="birthdate" th:value="${#temporals.format(member.birthdate, 'yyyy-MM-dd')}" required>
 				</div>
 				<div class="form-group">
 					<label for="gender">Gender:
-					<select>
+					<select id="gender" name="gender" th:field="*{gender}" required>
 						<option value="" disabled selected>Select your gender</option>
 						<option value="Male">Male</option>
-						<option value="Male">Female</option>
+						<option value="Female">Female</option>
 					</select>
 					</label>
 				</div>
-				<button type="submit" value="Login" style="margin-right: 15px;">Login</button> <button type="button" onclick="window.location.href='/user/register'">Register</button>
+				<div class="form-group">
+					<label for="height">Height (in cm):</label>
+					<input type="number" id="height" name="height" th:field="*{height}" required>
+				</div>
+				<div class="form-group">
+					<label for="height">Weight (in kg):</label>
+					<input type="number" id="weight" name="weight" step=".1" th:field="*{weight}" required>
+				</div>
+				<button type="submit" value="Save">Save</button>
 			</form>
 		</div>
 	</body>
