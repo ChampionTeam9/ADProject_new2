@@ -237,7 +237,7 @@ public class RecipeController {
 			ingredientService.saveIngredient(ingredient);
 		}
 		recipeService.deleteRecipe(id);
-		return "redirect:/recipe/view/myRecipes";
+		return "redirect:/user/member/myRecipeList";
 	}
 
 	@GetMapping("/edit/{id}")

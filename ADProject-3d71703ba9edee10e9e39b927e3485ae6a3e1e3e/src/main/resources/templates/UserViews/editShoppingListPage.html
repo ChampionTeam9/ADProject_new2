@@ -125,13 +125,14 @@
 		<div class="custom-container">
 			<div th:replace="fragments/navbar"></div>
 		</div>
-		<div class="custom-container">
+		<div class="container" style="width: 60%;">
 			<div>
 				<h2>Edit Shopping List</h2>
 			</div>
+			<br />
 			<div>
 				<input type="text" placeholder="Enter an item and click Add" id="addIngredientInput" />
-				<button type="button" id="addBtn">Add</button>
+				<button type="button" id="addBtn" class="button-style">Add</button>
 			</div>
 			<br />
 			<table id="itemTable">
@@ -145,9 +146,9 @@
 				</tr>
 			</table>
 			<br />
-			<button type="button" id="clearSelectedBtn">Clear Selected</button>
-			<button type="button" id="clearAllBtn">Clear All</button>
-			<button type="button" id="backBtn" onclick="window.location.href='/user/shoppingList/view'">Back to Shopping List</button>
+			<button type="button" id="clearSelectedBtn" class="button-style">Clear Selected</button>
+			<button type="button" id="clearAllBtn" class="button-style">Clear All</button>
+			<button type="button" id="backBtn" onclick="window.location.href='/user/shoppingList/view'" class="button-style">Back to Shopping List</button>
 		</div>
 	</body>
 </html>

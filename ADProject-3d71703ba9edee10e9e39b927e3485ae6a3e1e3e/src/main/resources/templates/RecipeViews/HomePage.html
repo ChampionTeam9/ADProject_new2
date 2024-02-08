@@ -1,60 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Recipe Search with Debounce</title>
-	<link href="/style.css" rel="stylesheet" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-</head>
-
-<body>
-	<div class="custom-container">
-		<div th:replace="fragments/navbar"></div>
-	</div>
-	<form id="searchForm" action="/recipe/search" method="post">
-		<input type="text" id="searchInput" name="query" placeholder="Please enter the recipe" required>
-		<!-- 隐藏字段用于存储搜索类型 -->
-		<input type="hidden" id="searchType" name="type" value="all">
-		<button type="submit">Search</button>
-	</form>
-	<!-- 搜索类型按钮 -->
-	<button onclick="setSearchType('tag')">Tag</button>
-	<button onclick="setSearchType('name')">Name</button>
-	<button onclick="setSearchType('description')">Description</button>
-
-	<script>
-		function setSearchType(type) {
-			document.getElementById('searchType').value = type; // 更新隐藏字段的值
-			document.getElementById('searchForm').submit(); // 提交表单
+	<head>
+		<meta charset="UTF-8">
+		<title>Home</title>
+		<link href="/style.css" rel="stylesheet" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+	</head>
+	<style>
+		a {
+		    color: rgb(0, 0, 0);
+		    text-decoration: none;
 		}
-	</script>
+	</style>
 
 	<body>
+		<div class="custom-container">
+			<div th:replace="fragments/navbar"></div>
+		</div>
 		<div class="container" style="text-align: center;">
+			<form id="searchForm" action="/recipe/search" method="post">
+			<input type="text" id="searchInput" name="query" placeholder="Enter your search query" style="width: 60%;" required>
+			<!-- 隐藏字段用于存储搜索类型 -->
+			<input type="hidden" id="searchType" name="type" value="all">
+			<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
+			</form>
+			<!-- 搜索类型按钮 -->
+			<button onclick="setSearchType('tag')" class="button-style">Tag</button>
+			<button onclick="setSearchType('name')" class="button-style">Name</button>
+			<button onclick="setSearchType('description')" class="button-style">Description</button>
 			<div class="row">
 				<div th:each="recipe : ${results}" class="col-md-3">
 					<div class="card mt-5" style="width: 18rem;">
 						<div class="card" style="width: 18rem;">
-							<a th:href="@{/recipe/view/{id}(id=${recipe.id})}">
+							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
 								<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}"
-									alt="Recipe Image">
+									alt="Recipe Image" style="width: 100%; height: 200px; object-fit: cover;">
 							</a>
 							<div class="card-body">
 								<h5 class="card-title">
-									<a th:href="@{/recipe/view/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
 								</h5>
 								<p class="card-text" th:text="${recipe.description}"></p>
 							</div>
 							<ul class="list-group list-group-flush">
-								<!--
-							<li class="list-group-item" ><a th:href="@{/user/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a></li>
-							-->
-								<li class="list-group-item">
-									<button type="button" class="button-style" th:id="${recipe.id}"
-										onclick="window.location.href='/recipe/detail/' + this.id">Detail</button>
+								<li class="list-group-item" >
+									<div class="user-profile" style="display: flex; align-items: center; justify-content: center;">
+										<img src="user.png" style="width: 24px; height: 24px; margin-right: 8px;">
+										<a th:href="@{/user/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a>
+									</div>
 								</li>
 							</ul>
 						</div>
@@ -62,7 +58,11 @@
 				</div>
 			</div>
 		</div>
-
+	<script>
+	function setSearchType(type) {
+		document.getElementById('searchType').value = type; // 更新隐藏字段的值
+		document.getElementById('searchForm').submit(); // 提交表单
+	}
+	</script>
 	</body>
-
 </html>

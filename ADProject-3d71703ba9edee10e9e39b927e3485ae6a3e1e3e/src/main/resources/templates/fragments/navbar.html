@@ -139,11 +139,6 @@
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="/recipe/search/make-ahead">Make-Ahead</a>
 					</div>
-				<li class="nav-item dropdown no-caret">
-					<a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						<img src="/search.png" style="width: 25px; height: 25px;">
-					</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
@@ -152,7 +147,7 @@
 					</a>
 
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/user/profile">My Profile</a>
+						<a class="dropdown-item" href="/user/myProfile">My Profile</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="/user/member/myRecipeList">My Recipes</a>
 						<div class="dropdown-divider"></div>
@@ -162,13 +157,16 @@
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="/user/shoppingList/view">Shopping List</a>
 						<div class="dropdown-divider"></div>
-						<div class="dropdown-item" id="user-name-display"></div>
-						
-						<a class="dropdown-item" href="/user/login" id="login-logout-item">login</a>
+						<div th:if="${session.userId} != null">
+							<a class="dropdown-item" href="/user/logout">Logout</a>
+						</div>
+						<div th:if="${session.userId} == null">
+							<a class="dropdown-item" href="/user/login">Login</a>
+						</div>
 					</div>
 				</li>
 
-
+				<!--
 				<script src="/listener.js">
 
 					document.addEventListener('DOMContentLoaded', function () {
@@ -176,6 +174,7 @@
 					});
 				</script>
 				<script src="/login_logout.js"></script>
+				-->
 
 			</ul>
 		</div>
