@@ -32,6 +32,7 @@
 				<label for="password">Password:</label>
 				<input type="password" id="password" name="password" placeholder="Enter your password" required>
 			</div>
+			<p style="color: red;" th:if="${errorMessage}" th:text="${errorMessage}"></p>
 			<button type="submit" value="Login" style="margin-right: 15px;">Login</button> <button type="button" onclick="window.location.href='/user/register'">Register</button>
 		</form>
 	</div>

@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -129,9 +130,15 @@ public class RecipeController {
 
 	@PostMapping("/create")
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
-			@RequestParam("timeUnit") String timeUnit, @RequestParam("image") MultipartFile pictureFile,
-			@RequestParam("ingredientIds") String ingredientIds, Model model) {
+			@RequestParam("timeUnit") String timeUnit, @RequestParam("pictureInput") MultipartFile pictureFile,
+			@RequestParam("ingredientIds") String ingredientIds, Model model, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
+			System.out.println("Binding error at recipe creation");
+			// Print out binding errors
+            System.out.println("Binding errors:");
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                System.out.println(error.getDefaultMessage());
+            }
 			return "/RecipeViews/createRecipesPage";
 		}
 		// If preparation time entered in hours, convert to mins
@@ -170,10 +177,7 @@ public class RecipeController {
 			recipe.setImage(existingRecipe.getImage());
 		}
 
-		// Member member =
-		// memberService.getMemberById((int)sessionObj.getAttribute("userId"));
-		// Hardcode first
-		Member member = userService.getMemberById(1);
+		Member member = userService.getMemberById((Integer)sessionObj.getAttribute("userId"));
 		recipe.setMember(member);
 
 		recipeService.createRecipe(recipe);
