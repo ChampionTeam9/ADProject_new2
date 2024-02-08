@@ -14,9 +14,8 @@ public abstract class User {
 	@Size(min = 3, message = "username must be at least 3 characters")
 	private String username;
 	@Column
-	@Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*\\p{Punct}).{8,}$", message = "password must be at least 8 characters,"
-			+ "password must have at least one number," + "password must have at least one letter,"
-			+ "password must have at least one punctuation.")
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*\\p{Punct}).{8,}$", message = "Password must be at least 8 characters long, "
+			+ "contains a number and have at least one punctuation.")
 	private String password;
 	@Enumerated(EnumType.STRING)
 	private Status status;
