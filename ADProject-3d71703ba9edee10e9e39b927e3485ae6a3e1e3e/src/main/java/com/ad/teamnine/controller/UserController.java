@@ -1,8 +1,5 @@
 package com.ad.teamnine.controller;
 
-import java.nio.channels.SeekableByteChannel;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,8 +32,6 @@ import jakarta.validation.Valid;
 public class UserController {
 	@Autowired
 	private RecipeService recipeService;
-	@Autowired
-	private IngredientService ingredientService;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -208,7 +203,7 @@ public class UserController {
 	    if (bindingResult.hasErrors()) {
 	        return "/UserViews/register";
 	    }
-	    inMember.setStatus(Status.CREATED);
+	    inMember.setMemberStatus(Status.CREATED);
 	    userService.saveMember(inMember);
 	    httpSession.setAttribute("userId", inMember.getId());
 	    return "redirect:/";
@@ -226,19 +221,22 @@ public class UserController {
 	// Show my profile for updating of personal information
 	@GetMapping("/myProfile")
 	public String viewMemberProfile(HttpSession sessionObj, Model model) {
-		Integer id = null;
-		Object userIdObj = sessionObj.getAttribute("userId");
-		if (userIdObj != null && userIdObj instanceof Integer) {
-		    id = (Integer) userIdObj;
-		}
-		else {
-			return "redirect:/user/login";
-		}
+		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
 		model.addAttribute("member", member);
 		// Get all recipes for the user
 		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 		return "UserViews/showMyProfile";
+	}
+	
+	// Save my profile
+	@PostMapping("/saveProfile")
+	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return "UserViews/showMyProfile";
+		}
+		userService.saveMember(member);
+		return "redirect:/user/myProfile";
 	}
 	
 	// Look at other's profile
@@ -352,14 +350,7 @@ public class UserController {
 	
 	@GetMapping("/member/savedList")
 	public String showSavedList(Model model,HttpSession sessionObj) {
-		Integer id = null;
-		Object userIdObj = sessionObj.getAttribute("userId");
-		if (userIdObj != null && userIdObj instanceof Integer) {
-		    id = (Integer) userIdObj;
-		}
-		else {
-			return "redirect:/user/login";
-		}
+		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getSavedRecipes();
 		model.addAttribute("recipes", recipes);
@@ -368,15 +359,8 @@ public class UserController {
 
 	@GetMapping("/member/myRecipeList")
 	public String showMyRecipeList(Model model,HttpSession sessionObj) {
-//		Integer id = null;
-//		Object userIdObj = sessionObj.getAttribute("userId");
-//		if (userIdObj != null && userIdObj instanceof Integer) {
-//		    id = (Integer) userIdObj;
-//		}
-//		else {
-//			return "redirect:/user/login";
-//		}
-		Member member = userService.getMemberById(1);
+		Integer id = (Integer) sessionObj.getAttribute("userId");
+		Member member = userService.getMemberById(id);
 		List<Recipe> recipes = member.getAddedRecipes();
 		model.addAttribute("recipes", recipes);
 		return "UserViews/showMyRecipePage";
@@ -384,14 +368,7 @@ public class UserController {
 	
 	@GetMapping("/member/myReview")
 	public String showMyReviewList(Model model,HttpSession sessionObj) {
-		Integer id = null;
-		Object userIdObj = sessionObj.getAttribute("userId");
-		if (userIdObj != null && userIdObj instanceof Integer) {
-		    id = (Integer) userIdObj;
-		}
-		else {
-			return "redirect:/user/login";
-		}
+		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
 		List<Review> reviews = member.getReviews();
 		model.addAttribute("reviews", reviews);
@@ -423,8 +400,4 @@ public class UserController {
 		session.removeAttribute("userId");
 		return "redirect:/";
 	}
-	
-
-	
-
 }

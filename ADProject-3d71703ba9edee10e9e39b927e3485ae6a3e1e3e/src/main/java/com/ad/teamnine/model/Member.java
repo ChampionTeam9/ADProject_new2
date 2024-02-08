@@ -40,7 +40,7 @@ public class Member extends User{
 		this.prefenceList = prefenceList;
 	}
 	
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ShoppingListItem> shoppingList;
 	
 	@ManyToMany(mappedBy = "membersWhoSave")
@@ -74,6 +74,8 @@ public class Member extends User{
 		reviews = new ArrayList<>();
 		reports = new ArrayList<>();
 		reportsToMember = new ArrayList<>();
+		this.memberStatus = Status.CREATED;
+		this.setRegistrationDate(LocalDate.now());
 	}
 
 	public Double getHeight() {
@@ -195,6 +197,14 @@ public class Member extends User{
 
 	public void setMemberStatus(Status memberStatus) {
 		this.memberStatus = memberStatus;
+	}
+
+	public LocalDate getRegistrationDate() {
+		return registrationDate;
+	}
+
+	public void setRegistrationDate(LocalDate registrationDate) {
+		this.registrationDate = registrationDate;
 	}
 	
 }
