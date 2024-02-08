@@ -17,15 +17,6 @@ public abstract class User {
 	@Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*\\p{Punct}).{8,}$", message = "Password must be at least 8 characters long, "
 			+ "contains a number and have at least one punctuation.")
 	private String password;
-	@Enumerated(EnumType.STRING)
-	private Status status;
-	public Status getStatus() {
-		return status;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
 
 	public User() {}
 	
