@@ -4,39 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <link href="/style.css" rel="stylesheet"/>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+	<style>
+	button {
+		border-radius: 4px;
+	}
+	</style>
 </head>
 <body>
+	<div class="custom-container">
+		<div th:replace="fragments/navbar"></div>
+	</div>
 
-<h1>User Profile</h1>
-
-
-<div>
-    <!-- 添加 member 的空值检查 -->
-    <!-- <img th:if="${member != null}" th:src="${member.avatarUrl}" alt="Avatar"> -->
-    <p>ID: <span th:if="${member != null}" th:text="${member.id}"></span></p>
-    
-    <!-- 添加 report 按钮 -->
-            <a th:href="@{/report/reportMember/{id}(id=${member.id})}">
-                <button type="button">Report</button>
-            </a>
-</div> 
-
-
-<h2>Recipes</h2>
-
-<div th:if="${recipes != null}">
-    <div th:each="recipe : ${recipes}">
-        <!-- 添加 recipe 及其 imageUrl 的空值检查 -->
-        <div th:if="${recipe != null}">
-            <a th:href="@{/recipe/view/{id}(id=${recipe.id})}">
-                <img th:if="${recipe.image != null}" th:src="${recipe.image}" alt="Recipe Image">
-            </a>
-            <span th:text="${recipe.name}"></span>
-            
-            
-        </div>
-    </div>
-</div>
-
+	<h2 style="text-align: center;">User Profile</h2>
+	<br />
+	<div style="text-align: center;">
+		<img src="/user.png" style="width: 100px; height: 100px; margin-bottom: 15px;">
+		<p th:text="${member.username}"></p>
+		<p>Member ID: <span th:if="${member != null}" th:text="${member.id}"></span></p>
+		<button type="button" class="button-style" th:id="${member.id}"
+									onclick="window.location.href='/report/reportMember/' + this.id">Report</button>
+	</div>
+	<br />
+	<h4 style="text-align: center;">Recipes created by <span th:text="${member.username}"></span>:</h4>
+	<div class="container" style="text-align: center;">
+		<p style="text-align: center;" th:if="${#lists.isEmpty(member.addedRecipes)}">No Recipes Created</p>
+		<div th:if="${not #lists.isEmpty(member.addedRecipes)}">
+			<div class="row">
+				<div th:each="recipe : ${member.addedRecipes}" class="col-md-3">
+					<div class="card mt-5" style="width: 18rem;">
+						<div class="card" style="width: 18rem;">
+							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
+								<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}"
+									alt="Recipe Image" style="width: 100%; height: 200px; object-fit: cover;">
+							</a>
+							<div class="card-body">
+								<h5 class="card-title">
+									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+								</h5>
+								<p class="card-text" th:text="${recipe.description}"></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

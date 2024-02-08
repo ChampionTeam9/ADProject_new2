@@ -239,14 +239,11 @@ public class UserController {
 		return "redirect:/user/myProfile";
 	}
 	
-	// Look at other's profile
+	// Look at others' profile
 	@GetMapping("/profile/{id}")
 	public String viewUserProfile(@PathVariable("id") Integer memberId,HttpSession sessionObj, Model model) {
 		Member member = userService.getMemberById(memberId);
 		model.addAttribute("member", member);
-		// Get all recipes for the user
-		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
-
 		return "UserViews/userProfile";
 	}
 
