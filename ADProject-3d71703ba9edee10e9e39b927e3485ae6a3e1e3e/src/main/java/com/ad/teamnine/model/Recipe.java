@@ -30,6 +30,8 @@ public class Recipe {
 	@Column
 	private Integer numberOfSaved;
 	@Column
+	private Integer numberOfRating;
+	@Column
 	private Integer preparationTime;
 	@Column
 	private Integer servings;
@@ -72,7 +74,8 @@ public class Recipe {
 
 	@ManyToOne
 	private Member member;
-
+	@ManyToMany
+	private List<Member> membersWhoSave;
 	public Recipe() {
 		ingredients = new ArrayList<>();
 		tags = new ArrayList<>();
@@ -181,6 +184,14 @@ public class Recipe {
 
 	public void setSteps(List<String> steps) {
 		this.steps = steps;
+	}
+
+	public Integer getNumberOfRating() {
+		return numberOfRating;
+	}
+
+	public void setNumberOfRating(Integer numberOfRating) {
+		this.numberOfRating = numberOfRating;
 	}
 
 	public String getNotes() {
@@ -301,6 +312,22 @@ public class Recipe {
 
 	public void setFat(Double fat) {
 		this.fat = fat;
+	}
+
+	public List<RecipeReport> getRecipesToReport() {
+		return recipesToReport;
+	}
+
+	public void setRecipesToReport(List<RecipeReport> recipesToReport) {
+		this.recipesToReport = recipesToReport;
+	}
+
+	public List<Member> getMembersWhoSave() {
+		return membersWhoSave;
+	}
+
+	public void setMembersWhoSave(List<Member> membersWhoSave) {
+		this.membersWhoSave = membersWhoSave;
 	}
 
 	public Double getSaturatedFat() {

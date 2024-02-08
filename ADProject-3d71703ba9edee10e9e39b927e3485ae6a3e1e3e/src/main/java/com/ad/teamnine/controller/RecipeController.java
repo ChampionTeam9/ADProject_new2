@@ -40,9 +40,9 @@ public class RecipeController {
 	@GetMapping("/save/{id}")
 	public String saveRecipe(@PathVariable Integer id, HttpSession sessionObj) {
 		Recipe recipe = recipeService.getRecipeById(id);
-		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
+		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
 		recipeService.saveRecipe(recipe, member);
-		return "redirect:/recipe/detail/"+id; 
+		return "redirect:/recipe/detail/" + id;
 	}
 
 	@GetMapping("/unsubscribe/{id}")
@@ -50,7 +50,7 @@ public class RecipeController {
 		Recipe recipe = recipeService.getRecipeById(id);
 		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
 		recipeService.unsubscribeRecipe(recipe, member);
-		return "redirect:/recipe/detail/"+id; 
+		return "redirect:/recipe/detail/" + id;
 	}
 
 	@GetMapping("/review/{id}")
@@ -126,6 +126,7 @@ public class RecipeController {
 		System.out.println("id: " + id);
 		return ResponseEntity.ok(response);
 	}
+
 	@PostMapping("/create")
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
 			@RequestParam("timeUnit") String timeUnit, @RequestParam("image") MultipartFile pictureFile,
@@ -249,14 +250,22 @@ public class RecipeController {
 		model.addAttribute("recipe", recipe);
 		return "/RecipeViews/updateRecipesPage";
 	}
-	
+
 	@GetMapping("/detail/{id}")
-	public String viewRecipe(@PathVariable("id") Integer id, Model model) {
-	    Recipe recipe = recipeService.getRecipeById(id);
-	    model.addAttribute("recipe", recipe);
-	    // get number of people who rated 
-	    int numberOfUsersRatings = recipeService.getNumberOfUsersRatings(id);
-	    model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
-	    return "RecipeViews/recipeDetailPage";
+	public String viewRecipe(@PathVariable("id") Integer id, Model model, HttpSession sessionObj) {
+		Recipe recipe = recipeService.getRecipeById(id);
+		model.addAttribute("recipe", recipe);
+		// get number of people who rated
+		int numberOfUsersRatings = recipeService.getRecipeById(id).getNumberOfRating();
+		model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
+		if (sessionObj.getAttribute("userId") != null) {
+			Integer userId = (int) sessionObj.getAttribute("userId");
+			Member member = userService.getMemberById(userId);
+			Boolean ifsave = !member.getSavedRecipes().contains(recipe);
+			model.addAttribute("ifsave", ifsave);
+		} else {
+			model.addAttribute("ifsave", true);
+		}
+		return "RecipeViews/recipeDetailPage";
 	}
 }
