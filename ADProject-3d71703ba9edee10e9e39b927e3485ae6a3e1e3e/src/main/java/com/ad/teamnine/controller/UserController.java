@@ -389,7 +389,8 @@ public class UserController {
 	            return "redirect:/";
 	        }
 	    } else {
-	        return "redirect:/user/login";
+	    	model.addAttribute("errorMessage", "Incorrect username or password, please try again");
+	        return "UserViews/login";
 	    }
 	}
 	@GetMapping("/logout")

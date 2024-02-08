@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -132,6 +133,15 @@ public class RecipeController {
 			@RequestParam("timeUnit") String timeUnit, @RequestParam("image") MultipartFile pictureFile,
 			@RequestParam("ingredientIds") String ingredientIds, Model model) {
 		if (bindingResult.hasErrors()) {
+			System.out.println("Binding error at recipe creation");
+			if (pictureFile == null) {
+				model.addAttribute("errorMessage", "Image must not be blank");
+			}
+			// Print out binding errors
+            System.out.println("Binding errors:");
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                System.out.println(error.getDefaultMessage());
+            }
 			return "/RecipeViews/createRecipesPage";
 		}
 		// If preparation time entered in hours, convert to mins

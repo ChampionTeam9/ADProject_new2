@@ -52,24 +52,40 @@ public class AdProjectApplication {
 			Recipe recipe2 = new Recipe(2, "recipe2Name", "recipe2Description", member1);
 			recipe2.getIngredients().add(ingredient1);
 			recipe2.getIngredients().add(ingredient2);
+			recipe2.setPreparationTime(30);
+			recipe2.setServings(4);
+			recipe2.setNotes("This is the notes of recipe 1");
+			recipe2.getSteps().add("Cut the bananas and mix well with flour");
 			recipe2.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
 			recipeRepo.save(recipe2);
 			
 			Recipe recipe3 = new Recipe(3, "recipe3Name", "recipe3Description", member1);
 			recipe3.getIngredients().add(ingredient1);
 			recipe3.getIngredients().add(ingredient2);
+			recipe3.setPreparationTime(30);
+			recipe3.setServings(4);
+			recipe3.setNotes("This is the notes of recipe 1");
+			recipe3.getSteps().add("Cut the bananas and mix well with flour");
 			recipe3.setImage("816befd0-f0bf-4e87-b991-2f01269dd55b_download2.jpg");
 			recipeRepo.save(recipe3);
 			
 			Recipe recipe4 = new Recipe(4, "recipe4Name", "recipe4Description", member1);
 			recipe4.getIngredients().add(ingredient1);
 			recipe4.getIngredients().add(ingredient2);
+			recipe4.setPreparationTime(30);
+			recipe4.setServings(4);
+			recipe4.setNotes("This is the notes of recipe 1");
+			recipe4.getSteps().add("Cut the bananas and mix well with flour");
 			recipe4.setImage("816befd0-f0bf-4e87-b991-2f01269dd55b_download2.jpg");
 			recipeRepo.save(recipe4);
 			
 			Recipe recipe5 = new Recipe(5, "recipe5Name", "recipe5Description", member1);
 			recipe5.getIngredients().add(ingredient1);
 			recipe5.getIngredients().add(ingredient2);
+			recipe5.setPreparationTime(30);
+			recipe5.setServings(4);
+			recipe5.setNotes("This is the notes of recipe 1");
+			recipe5.getSteps().add("Cut the bananas and mix well with flour");
 			recipe5.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
 			recipeRepo.save(recipe5);
 			

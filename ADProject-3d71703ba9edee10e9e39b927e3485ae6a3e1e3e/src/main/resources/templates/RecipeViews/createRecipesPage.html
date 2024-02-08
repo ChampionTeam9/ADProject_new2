@@ -21,7 +21,7 @@
 		<div class="container" style="width: 60%;">
 		    <h2>Add Recipe</h2>
 		    <br />
-		    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm">
+		    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm" onsubmit="return validateForm()">
 				<input type="hidden" id="ingredientIds" name="ingredientIds" value=""/>
 				
 				<div class="form-group">
@@ -65,7 +65,9 @@
 						<button type="button" id="addIngredientBtn" class="button-style">Add</button>
 						<span id="ingredientsError" style="color: red;"></span>
 						<span id="fetchingIngredient" style="color: grey;"></span>
+						<span th:if="${#fields.hasErrors('ingredients')}" th:errors="*{ingredients}" class="text-danger"></span>
 			        </div>
+			        <div id="ingredientsErrorMessage" style="color: red;"></div>
 		        </div>
 		        <br />
 		        <br />
@@ -79,6 +81,7 @@
 			        <div name="stepsInput">
 			            <input type="text" placeholder="Enter a step" id="addStepInput" style="width: 93%;"/>
 						<button type="button" id="addStepBtn" class="button-style">Add</button>
+						<span th:if="${#fields.hasErrors('steps')}" th:errors="*{steps}" class="text-danger"></span>
 			        </div>
 		        </div>
 		        <br />
@@ -98,9 +101,9 @@
 		        <div class="form-group">
 			        <!-- Upload Picture 输入框 -->
 			        <label for="pictureInput">Upload Picture:</label>
-			        <input type="file" id="pictureInput" name="image" accept="image/*" style="display: none;" class="fileBtn" onchange="fileBtn(this)">
+			        <input type="file" name="pictureInput" id="pictureInput" accept="image/*" style="display: none;" class="fileBtn" onchange="fileBtn(this)">
 		        </div>
-		        
+		        <div id="pictureInputErrorMessage" style="color: red;"></div>
 		        <!-- 图片预览框 -->
 		        <div id="picturePreview"></div>
 				<br />
@@ -142,6 +145,8 @@
 				const fetchingIngredientSpan = document.getElementById("fetchingIngredient");
 				const ingredientsError = document.getElementById("ingredientsError");
 				addIngredientBtn.addEventListener("click", (event) => {
+					var ingredientsErrorMessage = document.getElementById('ingredientsErrorMessage');
+					ingredientsErrorMessage.innerText = "";
 					ingredientsError.textContent = "";
 					fetchingIngredientSpan.textContent = "Fetching Ingredient...";
 					var newIngredient = addIngredientInput.value;
@@ -169,6 +174,9 @@
 				const addStepBtn = document.getElementById("addStepBtn");
 				addStepBtn.addEventListener("click", (event) => {
 					var newStep = addStepInput.value;
+					if (newStep.trim() === ""){
+						return;
+					}
 					addStep(newStep);
 					addStepInput.value = "";
 				})
@@ -396,6 +404,31 @@
 			    // 读取文件内容
 			    reader.readAsDataURL(file);
 			}   
+			
+			function validateForm() {
+				// Check if image uploaded
+		        var fileInput = document.getElementById('pictureInput');
+		        var pictureInputErrorMessage = document.getElementById('pictureInputErrorMessage');
+		        if (fileInput.files.length === 0) {
+		            pictureInputErrorMessage.innerText = 'Please select a picture to upload.';
+		            console.log('Validation failed: no file selected');
+		            return false; // Prevent form submission
+		        }
+		        // Clear any previous error message
+		        pictureInputErrorMessage.innerText = "";
+		        
+		        // Check if ingredients is empty
+		        var ingredientIdsValue = document.getElementById('ingredientIds').value;
+		        var ingredientsErrorMessage = document.getElementById('ingredientsErrorMessage');
+		        ingredientIdsValue = ingredientIdsValue.replace(/,/g, '');
+		        if (ingredientIdsValue.trim() === '') {
+					ingredientsErrorMessage.innerText = 'Please enter at least 1 ingredient.';
+					console.log('Validation failed: no ingredients selected');
+		            return false;
+				}
+				ingredientsErrorMessage.innerText = "";
+		        return true;
+			}
 	    </script>
 	</body>
 </html>

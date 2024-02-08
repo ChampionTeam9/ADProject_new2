@@ -15,6 +15,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Recipe {
@@ -22,8 +25,10 @@ public class Recipe {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@Column
+	@NotBlank(message = "Name is required")
 	private String name;
 	@Column(length = 500)
+	@NotBlank(message = "Description is required")
 	private String description;
 	@Column
 	private Double rating;
@@ -32,8 +37,10 @@ public class Recipe {
 	@Column
 	private Integer numberOfRating;
 	@Column
+	@NotNull(message = "Preparation Time is required")
 	private Integer preparationTime;
 	@Column
+	@NotNull(message = "Servings is required")
 	private Integer servings;
 	@Column
 	private Integer numberOfSteps;
@@ -60,6 +67,7 @@ public class Recipe {
 	@Column
 	private Double saturatedFat;
 	@ElementCollection
+	@NotEmpty(message = "At least 1 step is required")
 	private List<String> steps;
 
 	@ManyToMany(mappedBy = "recipes")
