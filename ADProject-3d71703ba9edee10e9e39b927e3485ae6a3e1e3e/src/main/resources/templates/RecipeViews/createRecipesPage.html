@@ -25,26 +25,26 @@
 				<input type="hidden" id="ingredientIds" name="ingredientIds" value=""/>
 				
 				<div class="form-group">
-			        <label for="nameInput">Recipe Name:</label>
-			        <input type="text" id="nameInput" name="name" th:field="*{name}" required> 
+			        <label for="nameInput" style="font-weight: bold;">Recipe Name:</label>
+			        <input type="text" id="nameInput" name="name" th:field="*{name}" placeholder="Enter recipe name" required> 
 			    </div>
 		        <br />
 		
 				<div class="form-group">
-			        <label for="descriptionInput">Description:</label>
-			        <input type="text" id="descriptionInput" name="description" th:field="*{description}" required>  
+			        <label for="descriptionInput" style="font-weight: bold;">Description:</label>
+			        <textarea cols="40" rows="5" id="descriptionInput" name="description" th:field="*{description}" placeholder="Enter recipe description" required></textarea>  
 			    </div>    
 		        <br />
 		        
 		        <div class="form-group">
-			        <label for="servingsInput">Servings:</label>
+			        <label for="servingsInput" style="font-weight: bold;">Servings:</label>
 			        <input type="number" id="servingsInput" name="servings" required min="1" step="1" th:field="*{servings}">
 			        <!-- min="1" 表示最小值为1，step="1" 表示步长为1，即只能输入整数 -->
 		        </div>
 		        <br />
 		        
 		        <div class="form-group">
-			        <label for="preparationTimeInput" style="width: 100%;">Preparation Time:</label>
+			        <label for="preparationTimeInput" style="width: 100%; font-weight: bold;">Preparation Time:</label>
 			        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1" th:field="*{preparationTime}" style="width: 80%;">
 			        
 			        <!-- 添加按钮或下拉列表来选择时间单位 -->
@@ -59,7 +59,7 @@
 		        <br />
 		        
 		        <div class="form-group">
-			        <label for="ingredientsInput">Ingredients:</label>
+			        <label for="ingredientsInput" style="font-weight: bold;">Ingredients:</label>
 			        <div name="ingredientsInput">
 			            <input type="text" placeholder="Enter an ingredient" id="addIngredientInput" style="width: 93%;"/>
 						<button type="button" id="addIngredientBtn" class="button-style">Add</button>
@@ -70,13 +70,13 @@
 			        <div id="ingredientsErrorMessage" style="color: red;"></div>
 		        </div>
 		        <br />
-		        <table id="itemTable" class="table table-borderless">
+		        <table id="itemTable" class="table table-hover" style="width: 100%; table-layout: fixed; text-align: center;">
 				</table>
 		        <br />
 		        <br />
 		        
 		        <div class="form-group">
-			        <label for="stepsInput">Steps:</label>
+			        <label for="stepsInput" style="font-weight: bold;">Steps:</label>
 			        <div name="stepsInput">
 			            <input type="text" placeholder="Enter a step" id="addStepInput" style="width: 93%;"/>
 						<button type="button" id="addStepBtn" class="button-style">Add</button>
@@ -84,13 +84,13 @@
 			        </div>
 		        </div>
 		        <br />
-		        <table id="stepsTable" class="table table-borderless">
+		        <table id="stepsTable" class="table table-hover" style="width: 100%; table-layout: fixed; text-align: center;">
 				</table>
 		        <br />
 		        <br />
 		        
 		        <div class="form-group">
-					<label for="notesInput">Notes:</label>
+					<label for="notesInput" style="font-weight: bold;">Notes:</label>
 					<textarea name="notesInput" cols="40" rows="5" th:field="*{notes}" placeholder="Add any additional remarks for your recipe here"></textarea>
 				</div>
 				<br />
@@ -98,7 +98,7 @@
 		        
 		        <div class="form-group">
 			        <!-- Upload Picture 输入框 -->
-			        <label for="pictureInput">Upload Picture:</label>
+			        <label for="pictureInput" style="font-weight: bold;">Upload Picture:</label>
 			        <input type="file" name="pictureInput" id="pictureInput" accept="image/*" style="display: none;">
 		        </div>
 		        <div id="pictureInputErrorMessage" style="color: red;"></div>
@@ -111,7 +111,7 @@
 				<br />
 		        
 				<!-- Tags 输入框 --> 
-		        <label for="tagsInput">Tags:</label>
+		        <label for="tagsInput" style="font-weight: bold;">Tags:</label>
 		        <br />
 		        <table id="tagsTable" class="table table-borderless">
 				</table>
@@ -123,7 +123,7 @@
 				<br />
 				<br />
 				
-				<label>Set Recipe as: </label>
+				<label style="font-weight: bold;">Set Recipe as: </label>
 				<div class="form-group">
 			    	<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}" required>
 			    	<label for="public" style="margin-right: 15px;">Public</label>
@@ -224,16 +224,23 @@
 				console.log("ingredientName: " + ingredientName);
 				const itemTable = document.getElementById("itemTable");
 				var newRow = itemTable.insertRow(-1);
-				var cell1 = newRow.insertCell(0);
+				var cell0 = newRow.insertCell(0);
+				cell0.innerHTML = "&bull;";
+				cell0.style.width = "10%";
+				
+				var cell1 = newRow.insertCell(1);
 				cell1.className = "itemText";
 				cell1.innerHTML = ingredientName;
+				cell1.style.textAlign = "left";
+				cell1.style.width = "70%";
 		        
 		        // 创建删除按钮
-		        var cell2 = newRow.insertCell(1);
+		        var cell2 = newRow.insertCell(2);
 		        var deleteButton = document.createElement("button");
 		        deleteButton.type = "button";
 		        deleteButton.textContent = "Delete";
 		        deleteButton.id = ingredientId;
+		        deleteButton.classList.add("btn", "btn-outline-success", "btn-sm");
 		        
 		        // 删除
 		        deleteButton.onclick = function(e) {
@@ -262,16 +269,24 @@
 	        function addStep(newStep) {
 	            const stepsTable = document.getElementById("stepsTable");
 	            var count = stepsTable.getElementsByTagName("tr").length;
+	            var nextCount = count + 1;
 	            var lastRowInputName;
 				var lastRowStepIndex = -1;
 	            if (count > 0) {
 		            var lastRowInputName = stepsTable.querySelector("tr:last-child input[name^='steps']").getAttribute("name");
 					var lastRowStepIndex = parseInt(lastRowInputName.match(/\[(\d+)\]/)[1]);
 				}
+				
 				var newRow = stepsTable.insertRow(-1);
-				var cell1 = newRow.insertCell(0);
+				var cell0 = newRow.insertCell(0);
+				cell0.innerHTML = nextCount;
+				cell0.style.width = "10%";
+				
+				var cell1 = newRow.insertCell(1);
 				cell1.className = "stepText";
 				cell1.innerHTML = newStep;
+				cell1.style.textAlign = "left";
+				cell1.style.width = "70%";
 				
 				var input = document.createElement("input");
 				input.type = "hidden";
@@ -280,11 +295,12 @@
 				cell1.appendChild(input);
 		        
 		        // 创建删除按钮
-		        var cell2 = newRow.insertCell(1);
+		        var cell2 = newRow.insertCell(2);
 		        var deleteButton = document.createElement("button");
 		        deleteButton.type = "button";
 		        deleteButton.textContent = "Delete";
 		        deleteButton.id = "stepsDelete" + (lastRowStepIndex + 1);
+		        deleteButton.classList.add("btn", "btn-outline-success", "btn-sm");
 		        
 		        // 删除
 		        deleteButton.onclick = function(e) {
@@ -296,9 +312,19 @@
 					console.log("delete button stepId: " + stepId);
 					var row = deleteButton.closest("tr");
 					row.remove();
+					resetCountCol();
 				};
 		        cell2.appendChild(deleteButton);
 	        }
+	        
+	        function resetCountCol(){
+				const rows = document.querySelectorAll("#stepsTable tr");
+				rows.forEach((row, index) => {
+					// Update the count column (assuming it's the first <td> element)
+					const countCell = row.querySelector('td:first-child');
+					countCell.textContent = index + 1;
+				});
+			}
 	
 		    function getMatchingTags(keyword) {				
 			    var dropdown = document.getElementById("tagDropdown");
@@ -354,6 +380,7 @@
 		        deleteButton.type = "button";
 		        deleteButton.textContent = "Delete";
 		        deleteButton.id = "tagsDelete" + (lastRowTagIndex + 1);
+		        deleteButton.classList.add("btn", "btn-outline-success", "btn-sm");
 		        
 		        // 删除
 		        deleteButton.onclick = function(e) {

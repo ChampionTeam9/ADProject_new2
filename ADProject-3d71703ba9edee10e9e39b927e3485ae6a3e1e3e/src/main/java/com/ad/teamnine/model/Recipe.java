@@ -83,12 +83,14 @@ public class Recipe {
 	private Member member;
 	@ManyToMany
 	private List<Member> membersWhoSave;
+	
 	public Recipe() {
 		ingredients = new ArrayList<>();
 		tags = new ArrayList<>();
 		reviews = new ArrayList<>();
 		recipesToReport = new ArrayList<>();
 		numberOfSaved = 0;
+		this.numberOfRating = 0;
 	}
 
 	public Recipe(String name, String description, Member member) {
