@@ -1,6 +1,8 @@
 package com.ad.teamnine.controller;
 
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -36,7 +38,11 @@ public class APIController {
 	IngredientService ingredientService;
 	@Autowired
 	RecipeService recipeService;
+	@Autowired
+	ReviewService reviewService;
 	
+	Map<Integer, Integer> csvIdToDbIdRecipe = new HashMap<>();
+	Map<Integer, Integer> csvIdToDbIdMember = new HashMap<>();
 
 	public APIController(CsvService csvService) {
 		this.csvService = csvService;
@@ -48,7 +54,12 @@ public class APIController {
 			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
+//			List<String[]> results = csvService.readCsvWithDecoder(path, Charset.forName("ISO-8859-1"));
 			saveEntities(results);
+			URI uri2 = ClassLoader.getSystemResource("interactions_test2.csv").toURI();
+			Path path2 = Paths.get(uri2);
+			List<String[]> results2 = csvService.readCsv(path2);
+			saveInteractions(results2);
 			return results;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,8 +107,12 @@ public class APIController {
 			System.out.println(currRecipe[0]);
 			// Create member
 			int memberId = Integer.parseInt(currRecipe[3]);
-			Member member = userService.getMemberById(memberId);
-			if (member == null) {
+			Member member = null;
+			// In case member already exists
+			if (csvIdToDbIdMember.containsKey(memberId)) {
+				member = userService.getMemberById(csvIdToDbIdMember.get(memberId));
+			}
+			else {
 				// Randomise their attributes as not provided in dataset
 				String username = "member" + memberId;
 				String password = "member" + memberId + "Password!";
@@ -115,8 +130,9 @@ public class APIController {
 		        	gender  = "Male";
 		        else 
 		        	gender = "Female";
-				member = new Member(memberId, username, password, height, weight, birthdate, gender);
-				userService.saveMember(member);
+				member = new Member(username, password, height, weight, birthdate, gender);
+				Member savedMember = userService.saveMember(member);
+				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}
 			// Create recipe ingredients
 			String ingredientsString = currRecipe[12];
@@ -157,13 +173,13 @@ public class APIController {
 			double fat = Double.parseDouble(currRecipe[19]);
 			double saturatedFat = Double.parseDouble(currRecipe[23]);
 			List<String> steps = Arrays.asList(extractItems(currRecipe[8]));
-			Recipe recipe = new Recipe(recipeId, recipeName, recipeDescription, recipeRating, preparationTime, servings,
+			Recipe recipe = new Recipe(recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
 			recipe.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
 			recipe.setNumberOfRating(numberOfRating);
-			recipeService.createRecipe(recipe);
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
+			csvIdToDbIdRecipe.put(recipeId, savedRecipe.getId());
 
 			// Save recipes to ingredients
 			for (Ingredient ingredient : ingredientsToAdd) {
@@ -194,6 +210,33 @@ public class APIController {
 		}
 		return itemsArr;
 	}
+	
+	public void saveInteractions(List<String[]> interactions) {
+		for (int i = 1; i < interactions.size(); i++) {
+			String[] currInteraction = interactions.get(i);
+			int memberId = Integer.parseInt(currInteraction[0]);
+			Member member = null;
+			// Get member from Db if exists
+			if (csvIdToDbIdMember.containsKey(memberId)) {
+				member = userService.getMemberById(csvIdToDbIdMember.get(memberId));
+			}
+			else {
+				member = new Member();
+				member.setUsername("member" + memberId);
+				member.setPassword("member" + memberId + "Password!");
+				member = userService.saveMember(member);
+				csvIdToDbIdMember.put(memberId, member.getId());
+			}
+			int recipeId = Integer.parseInt(currInteraction[1]);
+			// Get recipe from Db
+			Recipe recipe = recipeService.getRecipeById(csvIdToDbIdRecipe.get(recipeId));
+			int rating = Integer.parseInt(currInteraction[3]);
+			String comment = currInteraction[4];
+			Review review = new Review(rating, comment, member, recipe);
+			reviewService.saveReview(review);
+		}
+	}
+	
 	@GetMapping("/user/status")
 	@ResponseBody
 	public Map<String, Object> getUserStatus(HttpSession session) {

@@ -419,6 +419,6 @@ public class UserController {
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.removeAttribute("userId");
-		return "redirect:/";
+		return "redirect:/user/login";
 	}
 }

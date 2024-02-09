@@ -9,9 +9,9 @@ import jakarta.persistence.*;
 
 @Entity
 public class Member extends User{
-	@Column
+	@Column(scale=1)
 	private Double height;
-	@Column
+	@Column(scale=1)
 	private Double weight;
 	@Column
 	private Integer age;
@@ -19,9 +19,8 @@ public class Member extends User{
 	private LocalDate birthdate;
 	@Column
 	private String gender;
-	@Column
+	@Column(scale=1)
 	private Double calorieIntake;
-	
 	@Column
 	private LocalDate registrationDate;
 	
@@ -60,8 +59,8 @@ public class Member extends User{
 	
 	public Member() {}
 	
-	public Member(int id, String username, String password, double height, double weight, LocalDate birthdate, String gender) {
-		super(id, username, password);
+	public Member(String username, String password, double height, double weight, LocalDate birthdate, String gender) {
+		super(username, password);
 		this.height = height;
 		this.weight = weight;
 		this.birthdate = birthdate;
