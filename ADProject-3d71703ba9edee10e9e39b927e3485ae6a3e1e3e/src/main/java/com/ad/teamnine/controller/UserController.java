@@ -38,10 +38,9 @@ public class UserController {
 	private ShoppingListItemService shoppingListItemService;
 
 	// Show page for adding ingredients to shopping list
-	@GetMapping("/shoppingList/add")
-	public String addShoppingListIngredient(Model model) {
-		// To get from query string after integretion, hard code first
-		Recipe recipe = recipeService.getRecipeById(1);
+	@GetMapping("/shoppingList/add/{id}")
+	public String addShoppingListIngredient(Model model, @RequestParam("id") int recipeId) {
+		Recipe recipe = recipeService.getRecipeById(recipeId);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
 		List<String> ingredientNames = new ArrayList<>();
@@ -157,7 +156,7 @@ public class UserController {
 	public String receivePreference(@RequestParam(value = "tags", required = false) List<String> tags,
 			HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
-		Member member = new Member();
+		Member member = userService.getMemberById((int)session.getAttribute("userId"));
 		if (oldTags == null) {
 			member.setPrefenceList(tags);
 			userService.saveMember(member);
@@ -205,7 +204,7 @@ public class UserController {
 		inMember.setMemberStatus(Status.CREATED);
 		userService.saveMember(inMember);
 		httpSession.setAttribute("userId", inMember.getId());
-		return "redirect:/";
+		return "redirect:/user/setPreference";
 	}
 
 	@PostMapping("/checkIfUsernameAvailable")
@@ -325,13 +324,13 @@ public class UserController {
 		return "ReportViews/recipeReportDetails";
 	}
 
-	@PostMapping("/admin/recipeReport/{id}/approve")
+	@GetMapping("/admin/recipeReport/{id}/approve")
 	public String approveRecipeReport(@PathVariable(value = "id") Integer id) {
 		userService.approveRecipeReport(id);
 		return "redirect:/user/admin/recipeReport";
 	}
 
-	@PostMapping("/admin/recipeReport/{id}/reject")
+	@GetMapping("/admin/recipeReport/{id}/reject")
 	public String rejectRecipeReport(@PathVariable(value = "id") Integer id) {
 		userService.rejectRecipeReport(id);
 		return "redirect:/user/admin/recipeReport";
@@ -353,13 +352,13 @@ public class UserController {
 		return "ReportViews/memberReportDetails";
 	}
 
-	@PostMapping("/admin/memberReport/{id}/approve")
+	@GetMapping("/admin/memberReport/{id}/approve")
 	public String approveMemberReport(@PathVariable(value = "id") Integer id) {
 		userService.approveMemberReport(id);
 		return "redirect:/user/admin/memberReport";
 	}
 
-	@PostMapping("/admin/memberReport/{id}/reject")
+	@GetMapping("/admin/memberReport/{id}/reject")
 	public String rejectMemberReport(@PathVariable(value = "id") Integer id) {
 		userService.rejectMemberReport(id);
 		return "redirect:/user/admin/memberReport";

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public abstract class Report {
@@ -17,6 +18,7 @@ public abstract class Report {
 	@ManyToOne
 	private Member member;
 	@Column
+	@NotBlank(message = "Reason is required")
 	private String reason;
 	@Enumerated(EnumType.STRING)
 	private Status status;

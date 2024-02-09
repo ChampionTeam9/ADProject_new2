@@ -117,8 +117,8 @@ public class APIController {
 				String username = "member" + memberId;
 				String password = "member" + memberId + "Password!";
 				Random rnd = new Random();
-				Double height = 140 + (190 - 140) * rnd.nextDouble();
-				Double weight = 45 + (90 - 50) * rnd.nextDouble();
+				Double height = Math.round((140 + (190 - 140) * rnd.nextDouble()) * 10.0) / 10.0;
+				Double weight = Math.round((45 + (90 - 50) * rnd.nextDouble()) * 10.0) / 10.0;
 				LocalDate startDate = LocalDate.of(1950, 1, 1);
 		        LocalDate endDate = LocalDate.of(2005, 12, 31);
 		        long startEpochDay = startDate.toEpochDay();
