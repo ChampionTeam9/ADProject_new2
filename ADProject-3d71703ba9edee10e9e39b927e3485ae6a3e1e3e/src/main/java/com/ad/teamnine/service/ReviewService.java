@@ -20,6 +20,10 @@ public class ReviewService {
 		reviewRepo.save(review);
 		Recipe recipe = review.getRecipe();
 		recipe.setNumberOfRating(recipe.getNumberOfRating() + 1);
+		// Update mean rating of recipe
+		double meanRating = reviewRepo.getMeanRating(recipe.getId());
+		double roundedMeanRating = Math.round(meanRating * 10.0) / 10.0;
+		recipe.setRating(roundedMeanRating);
 		recipeRepo.save(recipe);
 		return;
 	}
