@@ -204,7 +204,7 @@ public class UserController {
 		inMember.setMemberStatus(Status.CREATED);
 		userService.saveMember(inMember);
 		httpSession.setAttribute("userId", inMember.getId());
-		return "redirect:/";
+		return "redirect:/user/setPreference";
 	}
 
 	@PostMapping("/checkIfUsernameAvailable")
@@ -324,13 +324,13 @@ public class UserController {
 		return "ReportViews/recipeReportDetails";
 	}
 
-	@PostMapping("/admin/recipeReport/{id}/approve")
+	@GetMapping("/admin/recipeReport/{id}/approve")
 	public String approveRecipeReport(@PathVariable(value = "id") Integer id) {
 		userService.approveRecipeReport(id);
 		return "redirect:/user/admin/recipeReport";
 	}
 
-	@PostMapping("/admin/recipeReport/{id}/reject")
+	@GetMapping("/admin/recipeReport/{id}/reject")
 	public String rejectRecipeReport(@PathVariable(value = "id") Integer id) {
 		userService.rejectRecipeReport(id);
 		return "redirect:/user/admin/recipeReport";
@@ -352,13 +352,13 @@ public class UserController {
 		return "ReportViews/memberReportDetails";
 	}
 
-	@PostMapping("/admin/memberReport/{id}/approve")
+	@GetMapping("/admin/memberReport/{id}/approve")
 	public String approveMemberReport(@PathVariable(value = "id") Integer id) {
 		userService.approveMemberReport(id);
 		return "redirect:/user/admin/memberReport";
 	}
 
-	@PostMapping("/admin/memberReport/{id}/reject")
+	@GetMapping("/admin/memberReport/{id}/reject")
 	public String rejectMemberReport(@PathVariable(value = "id") Integer id) {
 		userService.rejectMemberReport(id);
 		return "redirect:/user/admin/memberReport";
