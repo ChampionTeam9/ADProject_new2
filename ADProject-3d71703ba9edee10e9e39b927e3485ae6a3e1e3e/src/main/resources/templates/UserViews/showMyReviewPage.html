@@ -17,32 +17,25 @@
 	<div class="container" style="width: 60%;">
 		<h2>My Review List</h2>
 	</div>
-	<div class="container" style="text-align: center;">
+	<div class="container" style="text-align: center; width: 70%;">
 		<p style="text-align: center;" th:if="${#lists.isEmpty(reviews)}">No Reviews Yet</p>
 		<table class="table table-hover" th:if="${not #lists.isEmpty(reviews)}">
 			<thead>
 				<tr>
 					<th scope="col">#</th>
 					<th scope="col">ID</th>
+					<th scope="col">Recipe</th>
 					<th scope="col">Rating</th>
 					<th scope="col">Comment</th>
-					<th scope="col">Recipe</th>
-					<th scope="col">Recipe Detail</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr scope="row" th:each="review,iterStat : ${reviews}">
 					<td th:text="${iterStat.count}">1</td>
 					<td th:text="${review.id}">Review ID</td>
+					<td><a href="recipeDetailPage.html" th:href="@{/recipe/detail/}+${review.recipe.id}"><span th:text="${review.recipe.name}"></span></a></td>
 					<td th:text="${review.rating}">Rating</td>
 					<td th:text="${review.comment}">Comment</td>
-					<td th:text="${review.recipe.getName()}">Recipe Name</td>
-					<td>
-						<button type="button" th:id="${review.recipe.getId()}"
-							onclick="window.location.href='/recipe/detail/' + this.id">
-							Click
-						</button>
-					</td>
 				</tr>
 			</tbody>
 		</table>

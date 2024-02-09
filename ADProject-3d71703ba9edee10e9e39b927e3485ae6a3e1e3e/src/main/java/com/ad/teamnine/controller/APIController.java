@@ -223,6 +223,7 @@ public class APIController {
 			else {
 				member = new Member();
 				member.setUsername("member" + memberId);
+				member.setPassword("member" + memberId + "Password!");
 				member = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, member.getId());
 			}
