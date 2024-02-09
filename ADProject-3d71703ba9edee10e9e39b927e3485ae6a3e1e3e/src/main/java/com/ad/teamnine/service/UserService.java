@@ -113,8 +113,8 @@ public class UserService {
 	}
 
 	// Save member
-	public void saveMember(Member member) {
-		memberRepo.save(member);
+	public Member saveMember(Member member) {
+		return memberRepo.save(member);
 	}
 
 	// get all unique tags

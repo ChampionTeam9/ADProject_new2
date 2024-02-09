@@ -14,12 +14,21 @@ public class Review {
 	private Integer id;
 	@Column
 	private Integer rating;
-	@Column
+	@Column(length = 800)
 	private String comment;
 	@ManyToOne
 	private Member member;
 	@ManyToOne
 	private Recipe recipe;
+	
+	public Review() {}
+	
+	public Review(int rating, String comment, Member member, Recipe recipe) {
+		this.rating = rating;
+		this.comment = comment;
+		this.member = member;
+		this.recipe = recipe;
+	}
 	
 	// getter and setter
 	public Integer getId() {

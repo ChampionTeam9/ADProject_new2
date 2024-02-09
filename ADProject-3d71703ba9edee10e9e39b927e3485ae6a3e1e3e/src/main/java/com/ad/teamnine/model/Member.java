@@ -60,8 +60,8 @@ public class Member extends User{
 	
 	public Member() {}
 	
-	public Member(int id, String username, String password, double height, double weight, LocalDate birthdate, String gender) {
-		super(id, username, password);
+	public Member(String username, String password, double height, double weight, LocalDate birthdate, String gender) {
+		super(username, password);
 		this.height = height;
 		this.weight = weight;
 		this.birthdate = birthdate;

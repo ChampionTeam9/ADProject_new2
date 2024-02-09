@@ -28,7 +28,6 @@ public class Recipe {
 	@NotBlank(message = "Name is required")
 	private String name;
 	@Column(length = 500)
-	@NotBlank(message = "Description is required")
 	private String description;
 	@Column
 	private Double rating;
@@ -92,8 +91,7 @@ public class Recipe {
 		numberOfSaved = 0;
 	}
 
-	public Recipe(int id, String name, String description, Member member) {
-		this.id = id;
+	public Recipe(String name, String description, Member member) {
 		this.name = name;
 		this.description = description;
 		ingredients = new ArrayList<>();
@@ -109,10 +107,10 @@ public class Recipe {
 	}
 
 	// constructor
-	public Recipe(int id, String name, String description, double rating, int preparationTime, int servings,
+	public Recipe(String name, String description, double rating, int preparationTime, int servings,
 			int numberOfSteps, Member member, double calories, double protein, double carbohydrate, double sugar,
 			double sodium, double fat, double saturatedFat, List<String> steps) {
-		this(id, name, description, member);
+		this(name, description, member);
 		this.rating = rating;
 		this.numberOfSaved = 0;
 		this.preparationTime = preparationTime;

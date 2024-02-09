@@ -27,4 +27,8 @@ public class ReviewService {
 		recipeRepo.save(recipe);
 		return;
 	}
+	
+	public void saveReview(Review review) {
+		reviewRepo.save(review);
+	}
 }

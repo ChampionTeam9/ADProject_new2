@@ -1,8 +1,9 @@
 package com.ad.teamnine.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,4 +33,21 @@ public class CsvService {
 	    }
 	    return list;
     }
+
+	public List<String[]> readCsvWithDecoder(Path filePath, Charset charset) throws IOException, CsvException {
+		List<String[]> list = new ArrayList<>();
+	    try (Reader reader = Files.newBufferedReader(filePath, charset)) {
+	        try (CSVReader csvReader = new CSVReader(reader)) {
+	            String[] line;
+	            int i = 1;
+	            while ((line = csvReader.readNext()) != null) {
+	            	System.out.println(i);
+	            	System.out.println(line);
+	                list.add(line);
+	                i++;
+	            }
+	        }
+	    }
+	    return list;
+	}
 }
