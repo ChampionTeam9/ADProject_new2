@@ -9,9 +9,9 @@ import jakarta.persistence.*;
 
 @Entity
 public class Member extends User{
-	@Column(scale=1)
+	@Column
 	private Double height;
-	@Column(scale=1)
+	@Column
 	private Double weight;
 	@Column
 	private Integer age;
@@ -19,7 +19,7 @@ public class Member extends User{
 	private LocalDate birthdate;
 	@Column
 	private String gender;
-	@Column(scale=1)
+	@Column
 	private Double calorieIntake;
 	@Column
 	private LocalDate registrationDate;
@@ -187,7 +187,7 @@ public class Member extends User{
 		else {
 			BMR = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
 		}
-		return BMR;
+		return (Math.round(BMR * 10) / 10.0);
 	}
 	
 	public Status getMemberStatus() {

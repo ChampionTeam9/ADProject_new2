@@ -38,10 +38,9 @@ public class UserController {
 	private ShoppingListItemService shoppingListItemService;
 
 	// Show page for adding ingredients to shopping list
-	@GetMapping("/shoppingList/add")
-	public String addShoppingListIngredient(Model model) {
-		// To get from query string after integretion, hard code first
-		Recipe recipe = recipeService.getRecipeById(1);
+	@GetMapping("/shoppingList/add/{id}")
+	public String addShoppingListIngredient(Model model, @RequestParam("id") int recipeId) {
+		Recipe recipe = recipeService.getRecipeById(recipeId);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
 		List<String> ingredientNames = new ArrayList<>();
@@ -157,7 +156,7 @@ public class UserController {
 	public String receivePreference(@RequestParam(value = "tags", required = false) List<String> tags,
 			HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
-		Member member = new Member();
+		Member member = userService.getMemberById((int)session.getAttribute("userId"));
 		if (oldTags == null) {
 			member.setPrefenceList(tags);
 			userService.saveMember(member);
