@@ -93,3 +93,7 @@ th, td {
     display: flex;
     align-items: center;
 }
+.star {
+  cursor: pointer;
+  color: darkgrey;
+}

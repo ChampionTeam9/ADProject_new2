@@ -61,7 +61,7 @@ public class RecipeController {
 		// sessionObj.getAttribute("userId"));
 		Member member = userService.getMemberById(1);
 		Review review = new Review();
-		review.setmember(member);
+		review.setMember(member);
 		review.setRecipe(recipe);
 		model.addAttribute("review", review);
 		return "/ReviewViews/createReviewPage";

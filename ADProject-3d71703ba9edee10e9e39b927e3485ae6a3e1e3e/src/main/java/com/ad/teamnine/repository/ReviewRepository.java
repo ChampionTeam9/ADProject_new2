@@ -13,4 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review,Integer>{
 	@Query("SELECT COUNT(r) FROM Review r WHERE r.recipe.id = :recipeId")
     int getNumberOfUsersRatings(@Param("recipeId") int recipeId);
 
+	@Query("SELECT AVG(r.rating) FROM Review r WHERE r.recipe.id = :recipeId")
+	double getMeanRating(@Param("recipeId")Integer recipeId);
 }

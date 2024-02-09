@@ -16,23 +16,48 @@
 		<div th:replace="fragments/navbar"></div>
 	</div>
 	<div class="container" style="width: 60%;">
-		<h1>Review Form</h1>
-
+		<h2>Review Form</h2>
+		<br />
 		<form action="/review/create" method="post" th:object="${review}">
 			<div class="form-group">
-				<label for="rating">Rating:</label>
-				<input type="number" id="rating" name="rating" th:field="*{rating}" min="1" max="5" required>
+				<label for="rating">Rating:</label><br/>
+				<div class="star-rating">
+					<span class="star" style="color: darkgrey;" onclick="updateRating(1)">&#9733;</span>
+					<span class="star" style="color: darkgrey;" onclick="updateRating(2)">&#9733;</span>
+					<span class="star" style="color: darkgrey;" onclick="updateRating(3)">&#9733;</span>
+					<span class="star" style="color: darkgrey;" onclick="updateRating(4)">&#9733;</span>
+					<span class="star" style="color: darkgrey;" onclick="updateRating(5)">&#9733;</span>
+					<input type="hidden" id="rating" name="rating" th:value="${rating}">
+				</div>
 			</div>
 			<br>
 			<div class="form-group">
 				<label for="comment">Comment:</label>
 				<textarea id="comment" name="comment" th:field="*{comment}" rows="4" cols="50" required></textarea>
 			</div>
-			<input type="hidden" id="memberId" name="memberId" th:field="*{member.id}">
-			<input type="hidden" id="recipeId" name="recipeId" th:field="*{recipe.id}">
+			<input type="hidden" id="recipeId" name="recipeId" th:value="*{recipe.id}">
 			<br>
 			<input type="submit" value="Submit Review">
 		</form>
+		<script>
+			let stars = document.getElementsByClassName("star");
+			let output = document.getElementById("output");
+ 
+			function updateRating(n) {
+			    remove();
+			    for (let i = 0; i < n; i++) {
+			        stars[i].style.color = "gold"; 
+			    }
+			    document.getElementById("rating").value = n;
+			}
+ 
+			// To remove the pre-applied styling
+			function remove() {
+			    for (let i = 0; i < 5; i++) {
+			        stars[i].style.color = "darkgrey"; 
+			    }
+			}
+		</script>
 	</div>
 </body>
 
