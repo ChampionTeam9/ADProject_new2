@@ -1,5 +1,7 @@
 package com.ad.teamnine.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,14 +16,18 @@ public class Review {
 	private Integer id;
 	@Column
 	private Integer rating;
-	@Column(length = 800)
+	@Column(length = 1200)
 	private String comment;
+	@Column
+	private LocalDate reviewDate;
 	@ManyToOne
 	private Member member;
 	@ManyToOne
 	private Recipe recipe;
 	
-	public Review() {}
+	public Review() {
+		setReviewDate(LocalDate.now());
+	}
 	
 	public Review(int rating, String comment, Member member, Recipe recipe) {
 		this.rating = rating;
@@ -61,5 +67,10 @@ public class Review {
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
-	
+	public LocalDate getReviewDate() {
+		return reviewDate;
+	}
+	public void setReviewDate(LocalDate reviewDate) {
+		this.reviewDate = reviewDate;
+	}
 }

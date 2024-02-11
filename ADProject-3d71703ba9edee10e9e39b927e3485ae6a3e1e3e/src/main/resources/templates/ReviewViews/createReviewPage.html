@@ -35,13 +35,14 @@
 				<label for="comment">Comment:</label>
 				<textarea id="comment" name="comment" th:field="*{comment}" rows="4" cols="50" required></textarea>
 			</div>
-			<input type="hidden" id="recipeId" name="recipeId" th:value="*{recipe.id}">
+			<input type="hidden" id="recipe" name="recipe" th:field="*{recipe}">
 			<br>
 			<input type="submit" value="Submit Review">
 		</form>
 		<script>
 			let stars = document.getElementsByClassName("star");
 			let output = document.getElementById("output");
+			document.getElementById("rating").value = 0;
  
 			function updateRating(n) {
 			    remove();

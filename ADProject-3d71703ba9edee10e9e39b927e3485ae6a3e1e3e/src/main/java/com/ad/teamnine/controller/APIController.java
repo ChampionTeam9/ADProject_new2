@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,12 +52,12 @@ public class APIController {
 	@GetMapping("/readCsv")
 	public List<String[]> readCsv() {
 		try {
-			URI uri = ClassLoader.getSystemResource("test2.csv").toURI();
+			URI uri = ClassLoader.getSystemResource("test.csv").toURI();
 			Path path = Paths.get(uri);
 			List<String[]> results = csvService.readCsv(path);
 //			List<String[]> results = csvService.readCsvWithDecoder(path, Charset.forName("ISO-8859-1"));
 			saveEntities(results);
-			URI uri2 = ClassLoader.getSystemResource("interactions_test2.csv").toURI();
+			URI uri2 = ClassLoader.getSystemResource("interactions_test.csv").toURI();
 			Path path2 = Paths.get(uri2);
 			List<String[]> results2 = csvService.readCsv(path2);
 			saveInteractions(results2);
@@ -102,9 +103,10 @@ public class APIController {
 	}
 
 	public void saveEntities(List<String[]> recipes) {
+		System.out.println("recipes size = " + recipes.size());
 		for (int i = 1; i < recipes.size(); i++) {
 			String[] currRecipe = recipes.get(i);
-			System.out.println(currRecipe[0]);
+			System.out.println(i + ": " + currRecipe[0]);
 			// Create member
 			int memberId = Integer.parseInt(currRecipe[3]);
 			Member member = null;
@@ -178,6 +180,8 @@ public class APIController {
 			recipe.setTags(tagsList);
 			recipe.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
 			recipe.setNumberOfRating(numberOfRating);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+			recipe.setSubmittedDate(LocalDate.parse(currRecipe[4], formatter));
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
 			csvIdToDbIdRecipe.put(recipeId, savedRecipe.getId());
 
@@ -191,7 +195,7 @@ public class APIController {
 
 	public String[] extractIngredients(String ingredientsString) {
 		// Split the string based on commas within double quotes
-		String[] ingredientsArr = ingredientsString.substring(1, ingredientsString.length() - 1).split("\",\"");
+		String[] ingredientsArr = ingredientsString.substring(1, ingredientsString.length() - 1).split("','");
 		for (int i = 0; i < ingredientsArr.length; i++) {
 			ingredientsArr[i] = ingredientsArr[i].trim();
 			ingredientsArr[i] = ingredientsArr[i].replaceAll("\\s+", " ");
@@ -233,6 +237,9 @@ public class APIController {
 			int rating = Integer.parseInt(currInteraction[3]);
 			String comment = currInteraction[4];
 			Review review = new Review(rating, comment, member, recipe);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDate reviewDate = LocalDate.parse(currInteraction[2], formatter);
+			review.setReviewDate(reviewDate);
 			reviewService.saveReview(review);
 		}
 	}

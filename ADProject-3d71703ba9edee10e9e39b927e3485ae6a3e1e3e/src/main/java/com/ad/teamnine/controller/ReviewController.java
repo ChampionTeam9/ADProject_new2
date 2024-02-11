@@ -22,13 +22,10 @@ public class ReviewController {
 	}
 	
 	@PostMapping("/create")
-	public String createReview(@ModelAttribute("review") Review review, HttpSession sessionObj,
-			@RequestParam("recipeId") int recipeId) {
+	public String createReview(@ModelAttribute("review") Review review, HttpSession sessionObj) {
 		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
-		Recipe recipe = recipeService.getRecipeById(recipeId);
 		review.setMember(member);
-		review.setRecipe(recipe);
 		reviewService.createReview(review);
-		return "redirect:/";
+		return "redirect:/recipe/detail/" + review.getRecipe().getId();
 	}
 }

@@ -122,8 +122,8 @@
 		<div class="page-divide-container">
 			<div class="two-thirds-column" style="margin-right: 30px;">
 				<div>
-					<h3 style="margin-right: 10px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button"
-							onclick="window.location.href='/user/shoppingList/add'"
+					<h3 style="margin-right: 10px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button" th:id="${recipe.id}"
+							onclick="window.location.href='/user/shoppingList/add/' + this.id"
 							style="height: 30px; font-size: 14px;">Add to Shopping List</button></h3>
 					<ul th:each="ingredient : ${recipe.ingredients}">
 						<li th:text="${ingredient.foodText}"></li>
@@ -194,9 +194,14 @@
 				<div th:each="review : ${recipe.reviews}">
 					<div class="card mt-2">
 						<div class="card-body">
-							<div class="user-profile" style="display: flex;">
-								<img src="/user.png" style="width: 40px; height: 40px; margin-right: 8px;">
-								<h5 class="card-title" th:text="${review.member.username}">Name</h5>
+							<div class="user-profile" style="display: flex; justify-content: space-between;">
+								<div class="user-profile" style="display: flex;">
+									<img src="/user.png" style="width: 40px; height: 40px; margin-right: 8px;">
+									<h5 class="card-title" th:text="${review.member.username}">Name</h5>
+								</div>
+								<div>
+									<span th:text="${review.reviewDate}">Date</span>
+								</div>
 							</div>
 							<div class="star-rating" style="margin-left: 48px;">
 								<span class="star"
