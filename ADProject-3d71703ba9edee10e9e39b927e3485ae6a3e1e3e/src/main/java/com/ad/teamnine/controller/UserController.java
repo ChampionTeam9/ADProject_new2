@@ -39,7 +39,7 @@ public class UserController {
 
 	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add/{id}")
-	public String addShoppingListIngredient(Model model, @RequestParam("id") int recipeId) {
+	public String addShoppingListIngredient(Model model, @PathVariable("id") int recipeId) {
 		Recipe recipe = recipeService.getRecipeById(recipeId);
 		model.addAttribute("recipe", recipe);
 		AddIngredientForm addIngredientForm = new AddIngredientForm();
@@ -411,7 +411,7 @@ public class UserController {
 			}
 		} else {
 			model.addAttribute("errorMessage", "Incorrect username or password, please try again");
-			return "redirect:/user/login";
+			return "UserViews/login";
 		}
 	}
 

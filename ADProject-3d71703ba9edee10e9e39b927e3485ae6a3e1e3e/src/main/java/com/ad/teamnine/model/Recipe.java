@@ -1,5 +1,6 @@
 package com.ad.teamnine.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +28,7 @@ public class Recipe {
 	@Column
 	@NotBlank(message = "Name is required")
 	private String name;
-	@Column(length = 500)
+	@Column(length = 800)
 	private String description;
 	@Column
 	private Double rating;
@@ -65,8 +66,12 @@ public class Recipe {
 	private Double fat;
 	@Column
 	private Double saturatedFat;
+	@Column
+	private LocalDate submittedDate;
+	
 	@ElementCollection
 	@NotEmpty(message = "At least 1 step is required")
+	@Column(length = 500)
 	private List<String> steps;
 
 	@ManyToMany(mappedBy = "recipes")
@@ -90,25 +95,20 @@ public class Recipe {
 		reviews = new ArrayList<>();
 		recipesToReport = new ArrayList<>();
 		numberOfSaved = 0;
-		this.numberOfRating = 0;
+		numberOfRating = 0;
+		submittedDate = LocalDate.now();
 	}
 
 	public Recipe(String name, String description, Member member) {
+		this();
 		this.name = name;
 		this.description = description;
-		ingredients = new ArrayList<>();
-		tags = new ArrayList<>();
-		reviews = new ArrayList<>();
-		recipesToReport = new ArrayList<>();
 		this.member = member;
-		numberOfSaved = 0;
-		this.status = Status.PUBLIC;
-		this.steps = new ArrayList<>();
+		status = Status.PUBLIC;
+		steps = new ArrayList<>();
 		this.rating = 0.0;
-		this.numberOfRating = 0;
 	}
 
-	// constructor
 	public Recipe(String name, String description, double rating, int preparationTime, int servings,
 			int numberOfSteps, Member member, double calories, double protein, double carbohydrate, double sugar,
 			double sodium, double fat, double saturatedFat, List<String> steps) {
@@ -376,4 +376,12 @@ public class Recipe {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+	public LocalDate getSubmittedDate() {
+		return submittedDate;
+	}
+
+	public void setSubmittedDate(LocalDate submittedDate) {
+		this.submittedDate = submittedDate;
+	}
 }

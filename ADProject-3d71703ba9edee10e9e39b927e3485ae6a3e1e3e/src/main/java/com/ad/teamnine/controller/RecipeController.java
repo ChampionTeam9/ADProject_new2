@@ -57,11 +57,7 @@ public class RecipeController {
 	@GetMapping("/review/{id}")
 	public String reviewRecipe(@PathVariable Integer id, HttpSession sessionObj, Model model) {
 		Recipe recipe = recipeService.getRecipeById(id);
-		// Member member = userService.getMemberById((int)
-		// sessionObj.getAttribute("userId"));
-		Member member = userService.getMemberById(1);
 		Review review = new Review();
-		review.setMember(member);
 		review.setRecipe(recipe);
 		model.addAttribute("review", review);
 		return "/ReviewViews/createReviewPage";

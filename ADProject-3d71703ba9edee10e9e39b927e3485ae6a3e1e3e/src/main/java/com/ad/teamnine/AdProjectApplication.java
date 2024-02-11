@@ -30,9 +30,6 @@ public class AdProjectApplication {
 			Member member1 = new Member("member1Username", "member1Password!", 170, 65.3, date1, "Male");
 			memberRepo.save(member1);
 			
-			Member member2 = new Member("member2Username", "member2Password!", 160, 53.0, date1, "Female");
-			memberRepo.save(member2);
-			
 			Ingredient ingredient1 = new Ingredient("1 whole banana", 1.26, 102.97, 26.38, 14.11, 1.16, 0.38, 0.13);
 			ingrRepo.save(ingredient1);
 			
@@ -50,59 +47,12 @@ public class AdProjectApplication {
 			recipe1.getTags().add("cuisine");
 			recipe1.getTags().add("easy");
 			recipeRepo.save(recipe1);
-
-			Recipe recipe2 = new Recipe("recipe2Name", "recipe2Description", member1);
-			recipe2.getIngredients().add(ingredient1);
-			recipe2.getIngredients().add(ingredient2);
-			recipe2.setPreparationTime(30);
-			recipe2.setServings(4);
-			recipe2.setNotes("This is the notes of recipe 1");
-			recipe2.getSteps().add("Cut the bananas and mix well with flour");
-			recipe2.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
-			recipeRepo.save(recipe2);
-			
-			Recipe recipe3 = new Recipe("recipe3Name", "recipe3Description", member1);
-			recipe3.getIngredients().add(ingredient1);
-			recipe3.getIngredients().add(ingredient2);
-			recipe3.setPreparationTime(30);
-			recipe3.setServings(4);
-			recipe3.setNotes("This is the notes of recipe 1");
-			recipe3.getSteps().add("Cut the bananas and mix well with flour");
-			recipe3.setImage("816befd0-f0bf-4e87-b991-2f01269dd55b_download2.jpg");
-			recipeRepo.save(recipe3);
-			
-			Recipe recipe4 = new Recipe("recipe4Name", "recipe4Description", member1);
-			recipe4.getIngredients().add(ingredient1);
-			recipe4.getIngredients().add(ingredient2);
-			recipe4.setPreparationTime(30);
-			recipe4.setServings(4);
-			recipe4.setNotes("This is the notes of recipe 1");
-			recipe4.getSteps().add("Cut the bananas and mix well with flour");
-			recipe4.setImage("816befd0-f0bf-4e87-b991-2f01269dd55b_download2.jpg");
-			recipeRepo.save(recipe4);
-			
-			Recipe recipe5 = new Recipe("recipe5Name", "recipe5Description", member1);
-			recipe5.getIngredients().add(ingredient1);
-			recipe5.getIngredients().add(ingredient2);
-			recipe5.setPreparationTime(30);
-			recipe5.setServings(4);
-			recipe5.setNotes("This is the notes of recipe 1");
-			recipe5.getSteps().add("Cut the bananas and mix well with flour");
-			recipe5.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
-			recipeRepo.save(recipe5);
 			
 			ingredient1.getRecipes().add(recipe1);
-			ingredient1.getRecipes().add(recipe2);
-			ingredient1.getRecipes().add(recipe3);
-			ingredient1.getRecipes().add(recipe4);
-			ingredient1.getRecipes().add(recipe5);
 			ingredient2.getRecipes().add(recipe1);
-			ingredient2.getRecipes().add(recipe2);
-			ingredient2.getRecipes().add(recipe3);
-			ingredient2.getRecipes().add(recipe4);
-			ingredient2.getRecipes().add(recipe5);
 			ingrRepo.save(ingredient1);
 			ingrRepo.save(ingredient2);
+			
 			Admin admin1 = new Admin();
 			admin1.setId(3);
 			admin1.setPassword("Admin1password!");
