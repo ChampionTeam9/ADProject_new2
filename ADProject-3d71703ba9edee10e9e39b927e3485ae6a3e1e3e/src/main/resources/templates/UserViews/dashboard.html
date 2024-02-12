@@ -59,7 +59,7 @@
 					legend: {display: false},
 					title: {
 						display: true,
-						text: "Recipes Submitted per Month"
+						text: "Recipes Submitted in 2003"
 					}
 	    		}
 			});
@@ -72,13 +72,12 @@
 			console.log(xValues);
 			const yValues = JSON.parse(document.getElementById("recipeCountByTag").value);
 			console.log(yValues);
-			var barColors = ["red", "green", "blue", "orange", "purple", "yellow", "pink", "cyan", "magenta", "brown", "teal"];
 			new Chart("tagChart", {
 				type: "horizontalBar",
 				data: {
 					labels: xValues,
 					datasets: [{
-						backgroundColor: barColors,
+						backgroundColor: "#5cb85c",
 						data: yValues
 					}]
 				},
