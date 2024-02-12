@@ -19,7 +19,7 @@
 			</div>
 			<br />
 			<div>
-				<p>Showing ingredients for <a href="viewRecipePage.html" th:href="@{/recipe/view/}+${recipe.id}"><span th:text="${recipe.name}">recipe name</span></a></p>
+				<p>Showing ingredients for <a href="viewRecipePage.html" th:href="@{/recipe/detail/}+${recipe.id}"><span th:text="${recipe.name}">recipe name</span></a></p>
 				<p>Edit the fields to change the quantity as needed</p>
 			</div>
 			<form th:action="@{/user/shoppingList/add}" th:object="${addIngredientForm}" method="post">

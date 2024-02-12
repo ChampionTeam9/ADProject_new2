@@ -169,7 +169,7 @@ public class UserController {
 			member.setPrefenceList(combinedTags);
 			userService.saveMember(member);
 		}
-		return "/RecipeViews/HomePage";
+		return "redirect:/";
 	}
 
 	// refresh tags on the website
@@ -231,7 +231,8 @@ public class UserController {
 
 	// Save my profile
 	@PostMapping("/saveProfile")
-	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult) {
+	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult, 
+			Model model, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			return "UserViews/showMyProfile";
 		}

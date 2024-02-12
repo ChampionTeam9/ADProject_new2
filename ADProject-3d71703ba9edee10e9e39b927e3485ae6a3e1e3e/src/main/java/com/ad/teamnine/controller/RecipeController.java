@@ -72,7 +72,7 @@ public class RecipeController {
 
 	// search by title name
 	@PostMapping("/search")
-	public String searchRecipe(@RequestParam("query") String query, @RequestParam("type") String type, Model model) {
+	public String searchRecipe(@RequestParam("query") String query, @RequestParam("searchtype") String type, Model model) {
 		List<Recipe> results;
 		switch (type) {
 		case "tag":
