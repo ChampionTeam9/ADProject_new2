@@ -1,9 +1,12 @@
 package com.ad.teamnine.repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ad.teamnine.model.Member;
@@ -21,4 +24,10 @@ public interface RecipeRepository extends JpaRepository<Recipe,Integer>{
     List<Recipe> findByDescriptionContaining(String description);
 	
 	List<Recipe> findByMember(Member member);
+	
+	@Query("SELECT r FROM Recipe r WHERE FUNCTION('YEAR', r.submittedDate) = :year ORDER BY r.submittedDate")
+	List<Recipe> getAllRecipesByYear(@Param("year") int year);
+	
+	@Query("SELECT t, COUNT(r) AS recipeCount FROM Recipe r JOIN r.tags t GROUP BY t ORDER BY recipeCount DESC")
+	List<Object[]> getRecipeCountByTag();
 }
