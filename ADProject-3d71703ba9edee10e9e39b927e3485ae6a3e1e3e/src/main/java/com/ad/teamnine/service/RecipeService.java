@@ -1,11 +1,13 @@
 package com.ad.teamnine.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -171,5 +173,13 @@ public class RecipeService {
 
 	public List<Recipe> getAllRecipesByMember(Member member) {
 		return recipeRepo.findByMember(member);
+	}
+	
+	public List<Recipe> getAllRecipesByYear(int year){
+		return recipeRepo.getAllRecipesByYear(year);
+	}
+	
+	public List<Object[]> getRecipeCountByTag(){
+		return recipeRepo.getRecipeCountByTag();
 	}
 }
