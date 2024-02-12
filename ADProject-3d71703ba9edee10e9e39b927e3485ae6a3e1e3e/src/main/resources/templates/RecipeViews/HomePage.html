@@ -22,15 +22,14 @@
 		</div>
 		<div class="container" style="text-align: center;">
 			<form id="searchForm" action="/recipe/search" method="post">
-			<input type="text" id="searchInput" name="query" placeholder="Enter your search query" style="width: 60%;" required>
-			<!-- 隐藏字段用于存储搜索类型 -->
-			<input type="hidden" id="searchType" name="type" value="all">
-			<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
+				<input type="text" id="searchInput" name="query" placeholder="Enter your search query" style="width: 60%;" required>
+				<select name="searchtype" style="width: 10%;">
+					<option value="name">Name</option>
+					<option value="description">Description</option>
+					<option value="tag">Tag</option>
+				</select>
+				<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
 			</form>
-			<!-- 搜索类型按钮 -->
-			<button onclick="setSearchType('tag')" class="button-style">Tag</button>
-			<button onclick="setSearchType('name')" class="button-style">Name</button>
-			<button onclick="setSearchType('description')" class="button-style">Description</button>
 			<div class="row">
 				<div th:each="recipe : ${results}" class="col-md-3">
 					<div class="card mt-5" style="width: 18rem;">
@@ -48,7 +47,7 @@
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item" >
 									<div class="user-profile" style="display: flex; align-items: center; justify-content: center;">
-										<img src="user.png" style="width: 24px; height: 24px; margin-right: 8px;">
+										<img src="/user.png" style="width: 24px; height: 24px; margin-right: 8px;">
 										<a th:href="@{/user/profile/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}"></a>
 									</div>
 								</li>
@@ -59,10 +58,6 @@
 			</div>
 		</div>
 	<script>
-	function setSearchType(type) {
-		document.getElementById('searchType').value = type; // 更新隐藏字段的值
-		document.getElementById('searchForm').submit(); // 提交表单
-	}
 	</script>
 	</body>
 </html>
