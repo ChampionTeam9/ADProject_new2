@@ -189,15 +189,15 @@
 		<div>
 			<br />
 			<h3>Reviews</h3>
-			<p style="text-align: center;" th:if="${#lists.isEmpty(recipe.reviews)}">No Reviews Yet</p>
-			<div th:if="${not #lists.isEmpty(recipe.reviews)}">
-				<div th:each="review : ${recipe.reviews}">
+			<p style="text-align: center;" th:if="${#lists.isEmpty(reviews)}">No Reviews Yet</p>
+			<div th:if="${not #lists.isEmpty(reviews)}">
+				<div th:each="review : ${reviews}">
 					<div class="card mt-2">
 						<div class="card-body">
 							<div class="user-profile" style="display: flex; justify-content: space-between;">
 								<div class="user-profile" style="display: flex;">
 									<img src="/user.png" style="width: 40px; height: 40px; margin-right: 8px;">
-									<h5 class="card-title" th:text="${review.member.username}">Name</h5>
+									<a th:href="@{/user/profile/{id}(id=${review.member.id})}"><h5 class="card-title" th:text="${review.member.username}">Name</h5></a>
 								</div>
 								<div>
 									<span th:text="${review.reviewDate}">Date</span>

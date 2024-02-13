@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.Recipe;
+import com.ad.teamnine.model.Review;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe,Integer>{
 
@@ -30,4 +31,7 @@ public interface RecipeRepository extends JpaRepository<Recipe,Integer>{
 	
 	@Query("SELECT t, COUNT(r) AS recipeCount FROM Recipe r JOIN r.tags t GROUP BY t ORDER BY recipeCount DESC")
 	List<Object[]> getRecipeCountByTag();
+	
+	@Query("SELECT r FROM Review r WHERE r.recipe = :recipe ORDER BY r.reviewDate DESC")
+	List<Review> getReviewsByRecipe(@Param("recipe") Recipe recipe);
 }

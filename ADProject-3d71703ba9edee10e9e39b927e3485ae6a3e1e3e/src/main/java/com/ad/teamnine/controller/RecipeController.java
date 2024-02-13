@@ -33,6 +33,8 @@ public class RecipeController {
 	private UserService userService;
 	@Autowired
 	IngredientService ingredientService;
+	@Autowired
+	ReviewService reviewService;
 
 	public RecipeController(RecipeService recipeService, UserService userService) {
 		this.recipeService = recipeService;
@@ -278,6 +280,9 @@ public class RecipeController {
 		// get number of people who rated
 		int numberOfUsersRatings = recipeService.getRecipeById(id).getNumberOfRating();
 		model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
+		// get reviews ordered by review date
+		List<Review> reviews = reviewService.getReviewsByRecipe(recipe);
+		model.addAttribute("reviews", reviews);
 		if (sessionObj.getAttribute("userId") != null) {
 			Integer userId = (int) sessionObj.getAttribute("userId");
 			Member member = userService.getMemberById(userId);
