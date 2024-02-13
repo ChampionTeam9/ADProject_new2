@@ -1,6 +1,7 @@
 package com.ad.teamnine.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -167,7 +168,7 @@ public class UserController {
 			member.setPrefenceList(combinedTags);
 			userService.saveMember(member);
 		}
-		return "/RecipeViews/HomePage";
+		return "redirect:/";
 	}
 
 	// refresh tags on the website
@@ -229,7 +230,8 @@ public class UserController {
 
 	// Save my profile
 	@PostMapping("/saveProfile")
-	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult) {
+	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult, 
+			Model model, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			return "UserViews/showMyProfile";
 		}
@@ -247,6 +249,49 @@ public class UserController {
 
 	@GetMapping("/admin/dashboard")
 	public String getDashboard(Model model) {
+		// Get data to plot number of recipes submitted per month in a certain year
+		int year = 2003;
+		List<Recipe> recipesByYear = recipeService.getAllRecipesByYear(year);
+		List<String> months = new ArrayList <>();
+		Collections.addAll(months, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+		// Initialize list with 0s for each month
+		List<Integer> recipeCountByMonth = new ArrayList<>(Collections.nCopies(12, 0));
+		for (Recipe recipe : recipesByYear) {
+			int monthIndex = recipe.getSubmittedDate().getMonthValue() - 1;
+			recipeCountByMonth.set(monthIndex, recipeCountByMonth.get(monthIndex) + 1);
+		}
+		model.addAttribute("months", months);
+		model.addAttribute("recipeCountByMonth", recipeCountByMonth);
+		
+		// Get data to plot top 10 tags
+		List<Object[]> tagCounts = recipeService.getRecipeCountByTag();
+		List<String> tags = new ArrayList<>();
+		List<Long> recipeCountByTag = new ArrayList<>();
+		System.out.println("size = " + tagCounts.size());
+		Long tenthTagCount = 0L;
+		for (int i = 0; i < tagCounts.size(); i ++) {
+			Object[] tagCount = tagCounts.get(i);
+			String tag = (String) tagCount[0];
+			Long recipeCount = (Long) tagCount[1];
+			if (i < 10) {
+				tags.add(tag);
+				recipeCountByTag.add(recipeCount);
+				tenthTagCount = recipeCount;
+			}
+			else {
+				// Include tag if recipeCount is same as tenthTagCount
+				if (recipeCount.equals(tenthTagCount)) {
+			        tags.add(tag);
+			        recipeCountByTag.add(recipeCount);
+			    } else {
+			        break;
+			    }
+			}
+		}
+		model.addAttribute("tags", tags);
+		model.addAttribute("recipeCountByTag", recipeCountByTag);
+		
+		
 //	    List<Object[]> dailyData = userService.getDailyMemberData();
 //	    List<String> dates = new ArrayList<>();
 //	    List<Integer> newUsers = new ArrayList<>();

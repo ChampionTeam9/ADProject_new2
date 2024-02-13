@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpSession;
 public class SecurityInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
-		System.out.println("pre-handle");
 		HttpSession session = request.getSession();
 		Integer userId = (Integer) session.getAttribute("userId");
 		if (userId == null) {
