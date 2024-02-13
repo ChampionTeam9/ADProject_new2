@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe</title>
+	<link href="/style.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <style>
+		button {
+			border-radius: 4px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="custom-container">
+		<div th:replace="fragments/navbar"></div>
+	</div>
+	<div class="container" style="width: 60%;">
+	    <h2>Edit Recipe</h2>
+	    <form th:action="@{/recipe/create}" th:object="${recipe}" method="post" enctype="multipart/form-data" id="recipeForm" onsubmit="return validateForm(event)">
+			<input type="hidden" id="ingredientIds" name="ingredientIds" th:value="${#strings.arrayJoin(recipe.ingredients.![id], ',')}"/>
+			<input type="hidden" name="id" th:field="*{id}" />
+			<input type="hidden" name="calories" th:field="*{calories}" />
+			<input type="hidden" name="carbohydrate" th:field="*{carbohydrate}" />
+			<input type="hidden" name="fat" th:field="*{fat}" />
+			<input type="hidden" name="healthScore" th:field="*{healthScore}" />
+			<input type="hidden" name="numberOfSaved" th:field="*{numberOfSaved}" />
+			<input type="hidden" name="protein" th:field="*{protein}" />
+			<input type="hidden" name="rating" th:field="*{rating}" />
+			<input type="hidden" name="saturatedFat" th:field="*{saturatedFat}" />
+			<br />
+			
+			<div class="form-group">
+				<label for="nameInput" style="font-weight: bold;">Recipe Name:</label>
+				<input type="text" id="nameInput" name="name" th:field="*{name}" placeholder="Enter recipe name" required>
+			</div>
+			<br />
+
+			<div class="form-group">
+		        <label for="descriptionInput" style="font-weight: bold;">Description:</label>
+		        <textarea id="descriptionInput" name="description" cols="40" rows="5" th:field="*{description}" placeholder="Enter recipe description" required></textarea>
+		    </div>    
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="servingsInput" style="font-weight: bold;">Servings:</label>
+		        <input type="number" id="servingsInput" name="servings" required min="1" step="1" th:field="*{servings}">
+		        <!-- min="1" 表示最小值为1，step="1" 表示步长为1，即只能输入整数 -->
+	        </div>
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="preparationTimeInput" style="width: 100%; font-weight: bold;">Preparation Time:</label>
+		        <input type="number" id="preparationTimeInput" name="preparationTime" required min="1" step="1" th:field="*{preparationTime}" style="width: 80%;">
+		        
+		        <!-- 添加按钮或下拉列表来选择时间单位 -->
+		        <label for="timeUnit" style="font-weight: bold;"></label>
+		        <select id="timeUnit" name="timeUnit" style="width: 18%;">
+		            <option value="minutes">Minutes</option>
+		            <option value="hours">Hours</option>
+		        </select>
+	        </div>
+	        
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="ingredientsInput" style="font-weight: bold;">Ingredients:</label>
+		        <div name="ingredientsInput">
+		            <input type="text" placeholder="Enter an ingredient and click Add" id="addIngredientInput" style="width: 93%;"/>
+					<button type="button" id="addIngredientBtn">Add</button>
+					<span id="ingredientsError" style="color: red;"></span>
+					<span id="fetchingIngredient" style="color: grey;"></span>
+		        </div>
+		        <div id="ingredientsErrorMessage" style="color: red;"></div>
+	        </div>
+	        <br />
+	        <table id="itemTable" class="table table-hover" style="width: 100%; table-layout: fixed; text-align: center;">
+				<tr th:each="ingredient, index : *{ingredients}">
+					<td style="width: 10%;">&bull;</td>
+					<td th:text="*{ingredients[__${index.index}__].foodText}" style="width: 70%; text-align: left;">
+					</td>
+					<td>
+						<button type="button" th:id="*{ingredients[__${index.index}__].id}"
+							onclick="removeIngredient(this.id, this)" class="btn btn-outline-success btn-sm">Delete</button>
+					</td>
+				</tr>
+			</table>
+	        <br />
+	        <br />
+	        
+	        <div class="form-group">
+		        <label for="stepsInput" style="font-weight: bold;">Steps:</label>
+		        <div name="stepsInput">
+		            <input type="text" placeholder="Enter a step and click Add" id="addStepInput" style="width: 93%;"/>
+					<button type="button" id="addStepBtn">Add</button>
+					<div id="stepsErrorMessage" style="color: red;"></div>
+		        </div>
+	        </div>
+	        <br />
+	        <table id="stepsTable" class="table table-hover" style="width: 100%; table-layout: fixed; text-align: center;">
+				<tr th:each="step, index : *{steps}">
+					<td th:text="*{__${index.index + 1}__}" style="width: 10%;" ></td>
+					<td th:text="*{steps[__${index.index}__]}" style="width: 70%; text-align: left;">
+					</td>
+					<input type="hidden" th:name="'steps[' + ${index.index} + ']'"
+						th:value="*{steps[__${index.index}__]}" />
+					<td>
+						<button type="button" th:id="'stepsDelete' + ${index.index}"
+							th:name="'steps[' + ${index.index} + ']'" onclick="removeStep(this)" class="btn btn-outline-success btn-sm">Delete</button>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+
+			<div class="form-group">
+				<label for="notesInput" style="font-weight: bold;">Notes:</label>
+				<textarea name="notesInput" cols="40" rows="5" th:field="*{notes}"
+					placeholder="Add any additional remarks for your recipe here"></textarea>
+			</div>
+			<br />
+			<br />
+
+			<div class="form-group">
+				<!-- Upload Picture 输入框 -->
+				<label for="pictureInput" style="font-weight: bold;">Upload Picture:</label>
+				<input type="file" id="pictureInput" name="pictureInput" accept="image/*" style="display: none;">
+			</div>
+			<div id="pictureInputErrorMessage" style="color: red;"></div>
+			<!-- 图片预览框 -->
+			<div id="picturePreview">
+				<img th:src="@{'/images/' + ${recipe.image}}" alt="Recipe Image">
+			</div>
+	        <br />
+	        <button type="button" onclick="selectFromFile()">Select Picture</button>
+			<br />
+			<br />
+			<br />
+	        
+			<!-- Tags 输入框 --> 
+	        <label for="tagsInput" style="font-weight: bold;">Tags:</label>
+	        <br />
+	        <table id="tagsTable" class="table table-borderless">
+				<tr th:each="tag, index : *{tags}">
+					<td th:text="*{tags[__${index.index}__]}">
+					</td>
+					<input type="hidden" th:name="tags[__${index.index}__]" class="tagText"
+						th:value="*{tags[__${index.index}__]}" />
+					<td>
+						<button type="button" th:id="'tagsDelete' + ${index.index}"
+							onclick="removeStep(this)" class="btn btn-outline-success btn-sm">Delete</button>
+					</td>
+				</tr>
+			</table>
+			<div id="tagsContainer">
+				<input type="text" id="newTagInput" oninput="getMatchingTags(this.value)" placeholder="Enter tag here">
+				<div id="tagDropdown"></div>
+			</div>
+
+			<br />
+			<br />
+
+			<label style="font-weight: bold;">Set Recipe as: </label>
+			<div class="form-group">
+		    	<input type="radio" id="public" name="status" th:value="${T(com.ad.teamnine.model.Status).PUBLIC}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PUBLIC}" required>
+		    	<label for="public" style="margin-right: 15px;">Public</label>
+		    	<input type="radio" id="private" name="status" th:value="${T(com.ad.teamnine.model.Status).PRIVATE}" th:checked="${recipe.status == T(com.ad.teamnine.model.Status).PRIVATE}" required>
+				<label for="private">Private</label>
+			</div>
+	
+	    	<br />    
+	        <button type="submit" value="Save" >Save</button>
+	    </form>
+    </div>
+    <script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+			const ingredientIdsEle = document.getElementById("ingredientIds");
+			const addIngredientInput = document.getElementById("addIngredientInput");
+			const addIngredientBtn = document.getElementById("addIngredientBtn");
+			const fetchingIngredientSpan = document.getElementById("fetchingIngredient");
+			const ingredientsError = document.getElementById("ingredientsError");
+			addIngredientBtn.addEventListener("click", (event) => {
+				var ingredientsErrorMessage = document.getElementById('ingredientsErrorMessage');
+				ingredientsErrorMessage.innerText = "";
+				ingredientsError.textContent = "";
+				fetchingIngredientSpan.textContent = "Fetching Ingredient...";
+				var newIngredient = addIngredientInput.value;
+				addItem(newIngredient, function (error, newIngredientId) {
+				    if (error) {
+				        console.error(error);
+				        fetchingIngredientSpan.textContent = "";
+					    return;
+				    } else {
+				        console.log("New Ingredient ID:", newIngredientId);
+				        var ingredientIdsStr = ingredientIdsEle.value;
+				        if (ingredientIdsEle.value == ""){
+							ingredientIdsEle.value = newIngredientId;
+						} else {
+							ingredientIdsEle.value = ingredientIdsStr + "," + newIngredientId;
+						}
+						console.log("ingredientIdsEle.value: " + ingredientIdsEle.value);
+						addRow(newIngredient, newIngredientId);
+						addIngredientInput.value = "";
+					}
+					fetchingIngredientSpan.textContent = "";
+				});
+			})
+			const addStepInput = document.getElementById("addStepInput");
+			const addStepBtn = document.getElementById("addStepBtn");
+			addStepBtn.addEventListener("click", (event) => {
+				var stepsErrorMessage = document.getElementById('stepsErrorMessage');
+				stepsErrorMessage.innerText = "";
+				var newStep = addStepInput.value;
+				addStep(newStep);
+				addStepInput.value = "";
+			})
+		});
+
+		function addItem(newIngredient, callback) {
+			console.log("add item function");
+			let xhr = new XMLHttpRequest();
+			xhr.open("POST", "/recipe/addItem");
+			xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState == 4) {
+					if (xhr.status == 200) {
+						console.log("response ok");
+						let data = JSON.parse(xhr.responseText);
+						let statusMessage = data.statusMessage;
+						const ingredientsError = document.getElementById("ingredientsError");
+						if (statusMessage) {
+							console.log("status message: " + data.statusMessage);
+							if (statusMessage === "NOT_FOUND") {
+								ingredientsError.textContent = "Ingredient does not exist, please check and re-enter.";
+								callback("Error saving item", null);
+							} else {
+								ingredientsError.textContent = "Quantity is missing, please check and re-enter.";
+								callback("Error saving item", null);
+							}
+						} else {
+							let newIngredientId = data.id;
+							ingredientsError.textContent = ""; // clear the error
+							callback(null, newIngredientId);
+						}
+					} else {
+						callback("Error saving item", null);
+					}
+				}
+			}
+			let data = {
+				"ingredientName": newIngredient,
+			}
+			xhr.send(JSON.stringify(data));
+		}
+
+		function addRow(ingredientName, ingredientId) {
+			console.log("add row function");
+			console.log("ingredientName: " + ingredientName);
+			const itemTable = document.getElementById("itemTable");
+			var newRow = itemTable.insertRow(-1);
+			var cell0 = newRow.insertCell(0);
+			cell0.innerHTML = "&bull;";
+			
+			var cell1 = newRow.insertCell(1);
+			cell1.className = "itemText";
+			cell1.innerHTML = ingredientName;
+			cell1.style.textAlign = "left";
+
+			var cell2 = newRow.insertCell(2);
+			var deleteButton = document.createElement("button");
+			deleteButton.type = "button";
+			deleteButton.textContent = "Delete";
+			deleteButton.id = ingredientId;
+			deleteButton.classList.add("btn", "btn-outline-success", "btn-sm");
+
+			deleteButton.onclick = function (e) {
+				var deleteButton = e.target;
+				console.log(deleteButton);
+				var ingredientId = this.id;
+				console.log("delete button ingredientID: " + ingredientId);
+				removeItem(ingredientId);
+				var row = deleteButton.closest("tr");
+				row.remove();
+			};
+			cell2.appendChild(deleteButton);
+		}
+
+		function removeItem(id) {
+			const ingredientIdsEle = document.getElementById("ingredientIds");
+			var ingredientIdsStr = ingredientIdsEle.value;
+			if (ingredientIdsEle.value.length == 1) {
+				ingredientIdsEle.value = "";
+			} else {
+				ingredientIdsEle.value = ingredientIdsStr.replace(id, "");
+			}
+			console.log("ingredingredientIdsEle.value: " + ingredientIdsEle.value);
+		}
+
+		function removeIngredient(ingredientId, button) {
+			removeItem(ingredientId);
+			var deleteButton = button;
+			var row = deleteButton.closest("tr");
+			row.remove();
+		}
+
+		function addStep(newStep) {
+			const stepsTable = document.getElementById("stepsTable");
+			var count = stepsTable.getElementsByTagName("tr").length;
+			var nextCount = count + 1;
+			var lastRowInputName;
+			var lastRowStepIndex = -1;
+			if (count > 0) {
+				var lastRowInputName = stepsTable.querySelector("tr:last-child input[name^='steps']").getAttribute("name");
+				var lastRowStepIndex = parseInt(lastRowInputName.match(/\[(\d+)\]/)[1]);
+			}
+			var newRow = stepsTable.insertRow(-1);
+			var cell0 = newRow.insertCell(0);
+				cell0.innerHTML = nextCount;
+			
+			var cell1 = newRow.insertCell(1);
+			cell1.className = "stepText";
+			cell1.innerHTML = newStep;
+			cell1.style.textAlign = "left";
+
+			var input = document.createElement("input");
+			input.type = "hidden";
+			input.name = "steps[" + (lastRowStepIndex + 1) + "]";
+			input.value = newStep;
+			cell1.appendChild(input);
+
+			// 创建删除按钮
+			var cell2 = newRow.insertCell(2);
+			var deleteButton = document.createElement("button");
+			deleteButton.type = "button";
+			deleteButton.textContent = "Delete";
+			deleteButton.id = "stepsDelete" + (lastRowStepIndex + 1);
+			deleteButton.classList.add("btn", "btn-outline-success", "btn-sm");
+
+			// 删除
+			deleteButton.onclick = function (e) {
+				var deleteButton = e.target;
+				console.log(deleteButton);
+				var stepId = this.id;
+				console.log("delete button stepId: " + stepId);
+				stepId = parseInt(stepId.substring(11));
+				console.log("delete button stepId: " + stepId);
+				var row = deleteButton.closest("tr");
+				row.remove();
+				resetCountCol();
+			};
+			cell2.appendChild(deleteButton);
+		}
+
+		function removeStep(deleteButton) {
+			var row = deleteButton.closest("tr");
+			row.remove();
+			resetCountCol();
+		}
+		
+		function resetCountCol(){
+			const rows = document.querySelectorAll("#stepsTable tr");
+			rows.forEach((row, index) => {
+				// Update the count column (assuming it's the first <td> element)
+				const countCell = row.querySelector('td:first-child');
+				countCell.textContent = index + 1;
+			});
+		}
+
+		function getMatchingTags(keyword) {
+			var dropdown = document.getElementById("tagDropdown");
+			if (keyword.trim() === "") { // Check if input value is empty
+				dropdown.innerHTML = "";
+				return;
+			}
+			// 使用Ajax向服务器请求匹配的Tag选项
+			// 请确保你的服务器地址和端口正确
+			fetch("/getTags?keyword=" + keyword)
+				.then(response => response.json())
+				.then(tags => {
+					// 清空下拉菜单
+					dropdown.innerHTML = "";
+
+					// 将匹配的Tag选项添加到下拉菜单中
+					tags.slice(0, 5).forEach(tag => {
+						var option = document.createElement("div");
+						option.textContent = tag;
+						option.onclick = function () {
+							selectTag(tag);
+							//clear drop down after selection
+							dropdown.innerHTML = "";
+						};
+						dropdown.appendChild(option);
+					});
+				});
+		}
+
+		function selectTag(tag) {
+			const tagsTable = document.getElementById("tagsTable");
+			var count = tagsTable.getElementsByTagName("tr").length;
+			console.log("tag tr count: " + count);
+			var lastRowInputName;
+			var lastRowTagIndex = -1;
+			if (count > 0) {
+				var lastRowInputName = tagsTable.querySelector("tr:last-child input[name^='tags']").getAttribute("name");
+				var lastRowTagIndex = parseInt(lastRowInputName.match(/\[(\d+)\]/)[1]);
+				console.log("lastRowTagIndex: " + lastRowTagIndex);
+			}
+			var newRow = tagsTable.insertRow(-1);
+			var cell1 = newRow.insertCell(0);
+			cell1.className = "tags";
+			cell1.innerHTML = tag;
+
+			var input = document.createElement("input");
+			input.type = "hidden";
+			input.name = "tags[" + (lastRowTagIndex + 1) + "]";
+			input.value = tag;
+			cell1.appendChild(input);
+
+			// 创建删除按钮
+			var cell2 = newRow.insertCell(1);
+			var deleteButton = document.createElement("button");
+			deleteButton.type = "button";
+			deleteButton.textContent = "Delete";
+			deleteButton.id = "tagsDelete" + (lastRowTagIndex + 1);
+			deleteButton.classList.add("btn", "btn-outline-success", "btn-sm");
+
+			// 删除
+			deleteButton.onclick = function (e) {
+				var deleteButton = e.target;
+				console.log(deleteButton);
+				var tagId = this.id;
+				console.log("delete button tagId: " + tagId);
+				tagId = parseInt(tagId.substring(10));
+				console.log("delete button tagId: " + tagId);
+				var row = deleteButton.closest("tr");
+				row.remove();
+			};
+			cell2.appendChild(deleteButton);
+		}
+
+		function selectFromFile() {
+			document.getElementById("pictureInput").click();
+		}
+
+		// 当文件选择框内容改变时触发
+		document.getElementById("pictureInput").addEventListener("change", function () {
+			uploadAndPreview();
+		});
+
+		function uploadAndPreview() {
+			var pictureInput = document.getElementById("pictureInput");
+			var picturePreview = document.getElementById("picturePreview");
+
+			// 清空图片预览框
+			picturePreview.innerHTML = "";
+
+			// 获取用户选择的文件
+			var file = pictureInput.files[0];
+
+			// 创建一个 FileReader 对象
+			var reader = new FileReader();
+
+			// 设置文件加载完成后的回调函数
+			reader.onload = function (e) {
+				// 创建一个 <img> 元素用于显示预览图片
+				var img = document.createElement("img");
+				img.src = e.target.result;
+				img.style.maxWidth = "300px";  // 设置图片最大宽度
+				img.style.maxHeight = "300px"; // 设置图片最大高度
+				picturePreview.appendChild(img);  // 将图片添加到预览框
+			};
+
+			// 读取文件内容
+			reader.readAsDataURL(file);
+		}   
+		
+		function validateForm(event) {
+			console.log("validateForm() called");
+			
+			// Check if ingredients is empty
+	        var ingredientIdsValue = document.getElementById('ingredientIds').value;
+	        var ingredientsErrorMessage = document.getElementById('ingredientsErrorMessage');
+	        ingredientIdsValue = ingredientIdsValue.replace(/,/g, '');
+	        if (ingredientIdsValue.trim() === '') {
+				event.preventDefault();
+				ingredientsErrorMessage.innerText = 'Please enter at least 1 ingredient.';
+				console.log('Validation failed: no ingredients selected');
+	            return false;
+			}
+			
+			// Check if steps is empty
+			const stepsTable = document.getElementById("stepsTable");
+			var count = stepsTable.getElementsByTagName("tr").length;
+			var stepsErrorMessage = document.getElementById('stepsErrorMessage');
+			if (count === 0){
+				event.preventDefault();
+				stepsErrorMessage.innerText = 'Please enter at least 1 step.';
+				console.log('Validation failed: no steps added');
+	            return false;
+			}
+			
+			// Check if image uploaded
+	        var fileInput = document.getElementById('pictureInput');
+	        var pictureInputErrorMessage = document.getElementById('pictureInputErrorMessage');
+	        if (fileInput.files.length === 0) {
+				event.preventDefault();
+	            pictureInputErrorMessage.innerText = 'Please select a picture to upload.';
+	            console.log('Validation failed: no file selected');
+	            return false; // Prevent form submission
+	        }
+	        // Clear any previous error message
+	        pictureInputErrorMessage.innerText = "";
+	        
+			console.log("validation passes");
+			ingredientsErrorMessage.innerText = "";
+	        return true;
+		}
+	</script>
+</body>
+
+</html>
