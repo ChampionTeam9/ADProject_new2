@@ -50,11 +50,14 @@
 							th:style="'color: ' + (${recipe.rating} >= 5 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
 					</div>
 					&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; <span th:text="${recipe.rating}"></span>&nbsp;&nbsp;&nbsp;
-					(<span th:text="${numberOfUserRatings}"></span> Reviews)
+					| &nbsp;&nbsp;&nbsp;<span th:text="${numberOfUserRatings}"></span> Reviews &nbsp;&nbsp;&nbsp; |
+					&nbsp;&nbsp;&nbsp;
+					<span th:text="${recipe.numberOfSaved}"></span> Saved
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td th:if="${ifAdmin}"></td>
+				<td th:unless="${ifAdmin}">
 					<button type="button" th:id="${recipe.id}"
 						onclick="window.location.href='/recipe/review/' + this.id">
 						Review
@@ -65,15 +68,14 @@
 					<button type="button" th:id="${recipe.id}" th:unless="${ifsave}"
 						onclick="window.location.href='/recipe/unsubscribe/' + this.id">Unsave
 					</button>&nbsp;&nbsp;
-					(<span th:text="${recipe.numberOfSaved}"></span> Saved)
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<b>Recipe Id: </b><span th:text="${recipe.id}"></span>&nbsp;&nbsp;
-					<button type="button" th:id="${recipe.id}"
-					onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
-				</td>	
+					<button type="button" th:id="${recipe.id}" th:unless="${ifAdmin}"
+						onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -103,7 +105,8 @@
 		<div class="page-divide-container">
 			<div class="two-thirds-column" style="margin-right: 30px;">
 				<div>
-					<h3 style="margin-right: 10px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button" th:id="${recipe.id}"
+					<h3 style="margin-right: 10px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button"
+							th:unless="${ifAdmin}" th:id="${recipe.id}"
 							onclick="window.location.href='/user/shoppingList/add/' + this.id"
 							style="height: 30px; font-size: 14px;">Add to Shopping List</button></h3>
 					<ul th:each="ingredient : ${recipe.ingredients}">
@@ -125,7 +128,7 @@
 				<div>
 					<h3>Health Score</h3>
 					<h4 th:text="${recipe.healthScore} + ' / 6'" style="text-align: center;" id="healthScoreText"></h4>
-					<input type="hidden" th:value="${recipe.healthScore}" id="healthScore"/>
+					<input type="hidden" th:value="${recipe.healthScore}" id="healthScore" />
 				</div>
 				<br />
 				<div>
@@ -179,7 +182,9 @@
 							<div class="user-profile" style="display: flex; justify-content: space-between;">
 								<div class="user-profile" style="display: flex;">
 									<img src="/user.png" style="width: 40px; height: 40px; margin-right: 8px;">
-									<a th:href="@{/user/profile/{id}(id=${review.member.id})}"><h5 class="card-title" th:text="${review.member.username}">Name</h5></a>
+									<a th:href="@{/user/profile/{id}(id=${review.member.id})}">
+										<h5 class="card-title" th:text="${review.member.username}">Name</h5>
+									</a>
 								</div>
 								<div>
 									<span th:text="${review.reviewDate}">Date</span>
@@ -197,7 +202,8 @@
 								<span class="star"
 									th:style="'color: ' + (${review.rating} >= 5 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
 							</div>
-							<p class="card-text" style="margin-left: 48px;" th:text="${review.comment}">Review Content</p>
+							<p class="card-text" style="margin-left: 48px;" th:text="${review.comment}">Review Content
+							</p>
 						</div>
 					</div>
 				</div>
@@ -205,21 +211,21 @@
 		</div>
 	</div>
 	<script>
-		document.addEventListener("DOMContentLoaded", function() {
+		document.addEventListener("DOMContentLoaded", function () {
 			var healthScore = parseInt(document.getElementById("healthScore").value);
 			console.log("healthScore: " + healthScore);
 			var healthScoreText = document.getElementById("healthScoreText");
-				if (healthScore >= 4) {
-		            healthScoreText.style.color = "green";
-		            console.log("green");
-		        } else if (healthScore >= 2 && healthScore <= 3) {
-		            healthScoreText.style.color = "orange";
-		            console.log("orange");
-		        } else {
-		            healthScoreText.style.color = "red";
-		            console.log("red");
-		        }
-			});
+			if (healthScore >= 4) {
+				healthScoreText.style.color = "green";
+				console.log("green");
+			} else if (healthScore >= 2 && healthScore <= 3) {
+				healthScoreText.style.color = "orange";
+				console.log("orange");
+			} else {
+				healthScoreText.style.color = "red";
+				console.log("red");
+			}
+		});
 	</script>
 </body>
 

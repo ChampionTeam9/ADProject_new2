@@ -252,6 +252,12 @@ public class UserController {
 	public String viewUserProfile(@PathVariable("id") Integer memberId, HttpSession sessionObj, Model model) {
 		Member member = userService.getMemberById(memberId);
 		model.addAttribute("member", member);
+		if(sessionObj.getAttribute("userId")!=null&&sessionObj.getAttribute("userType").equals("admin")) {
+			model.addAttribute("ifAdmin",true);
+		}
+		else {
+			model.addAttribute("ifAdmin",false);
+		}
 		return "UserViews/userProfile";
 	}
 
