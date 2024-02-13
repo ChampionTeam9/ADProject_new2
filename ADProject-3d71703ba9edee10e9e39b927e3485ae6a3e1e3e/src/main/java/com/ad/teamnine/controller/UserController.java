@@ -38,7 +38,8 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private ShoppingListItemService shoppingListItemService;
-
+	@Autowired
+	private EmailService emailService;
 	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add/{id}")
 	public String addShoppingListIngredient(Model model, @PathVariable("id") int recipeId) {
@@ -63,7 +64,7 @@ public class UserController {
 			return "UserViews/addShoppingListIngredientPage";
 		}
 		// Get member's shopping list
-		Member member = userService.getMemberById((int)sessionObj.getAttribute("userId"));
+		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
 		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		List<String> ingredientNames = addIngredientForm.getIngredientNames();
 		List<Integer> selectedIngredients = addIngredientForm.getSelectedIngredients();
@@ -158,7 +159,7 @@ public class UserController {
 	public String receivePreference(@RequestParam(value = "tags", required = false) List<String> tags,
 			HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
-		Member member = userService.getMemberById((int)session.getAttribute("userId"));
+		Member member = userService.getMemberById((int) session.getAttribute("userId"));
 		if (oldTags == null) {
 			member.setPrefenceList(tags);
 			userService.saveMember(member);
@@ -198,15 +199,22 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String registerMember(@Valid @ModelAttribute("member") Member inMember, BindingResult bindingResult,
+	public String registerMember(@Valid @ModelAttribute("member") Member newMember, BindingResult bindingResult,
 			Model model, HttpSession httpSession) {
 		if (bindingResult.hasErrors()) {
 			return "/UserViews/register";
 		}
-		inMember.setMemberStatus(Status.CREATED);
-		userService.saveMember(inMember);
-		httpSession.setAttribute("userId", inMember.getId());
-		return "redirect:/user/setPreference";
+		newMember.setMemberStatus(Status.CREATED);
+		if (newMember.getEmail() == null || newMember.getEmail().isEmpty()) {
+			userService.saveMember(newMember);
+			httpSession.setAttribute("userId", newMember.getId());
+			return "redirect:/user/setPreference";
+		}
+		String code = EmailService.generateVerificationCode();
+		emailService.SendEmailVerificationCodeToMember(newMember,code);
+		model.addAttribute("newMember",newMember);
+		model.addAttribute("verifyCode",code);
+		return "UserViews/verificationMailBoxPage";
 	}
 
 	@PostMapping("/checkIfUsernameAvailable")
@@ -229,8 +237,8 @@ public class UserController {
 
 	// Save my profile
 	@PostMapping("/saveProfile")
-	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult, 
-			Model model, HttpSession sessionObj) {
+	public String saveProfile(@ModelAttribute("member") @Valid Member member, BindingResult bindingResult, Model model,
+			HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			return "UserViews/showMyProfile";
 		}
@@ -248,6 +256,12 @@ public class UserController {
 		model.addAttribute("member", member);
 		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
 		model.addAttribute("recipes", publicRecipes);
+		if(sessionObj.getAttribute("userId")!=null&&sessionObj.getAttribute("userType").equals("admin")) {
+			model.addAttribute("ifAdmin",true);
+		}
+		else {
+			model.addAttribute("ifAdmin",false);
+		}
 		return "UserViews/userProfile";
 	}
 
@@ -256,7 +270,7 @@ public class UserController {
 		// Get data to plot number of recipes submitted per month in a certain year
 		int year = 2003;
 		List<Recipe> recipesByYear = recipeService.getAllRecipesByYear(year);
-		List<String> months = new ArrayList <>();
+		List<String> months = new ArrayList<>();
 		Collections.addAll(months, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
 		// Initialize list with 0s for each month
 		List<Integer> recipeCountByMonth = new ArrayList<>(Collections.nCopies(12, 0));
@@ -266,14 +280,14 @@ public class UserController {
 		}
 		model.addAttribute("months", months);
 		model.addAttribute("recipeCountByMonth", recipeCountByMonth);
-		
+
 		// Get data to plot top 10 tags
 		List<Object[]> tagCounts = recipeService.getRecipeCountByTag();
 		List<String> tags = new ArrayList<>();
 		List<Long> recipeCountByTag = new ArrayList<>();
 		System.out.println("size = " + tagCounts.size());
 		Long tenthTagCount = 0L;
-		for (int i = 0; i < tagCounts.size(); i ++) {
+		for (int i = 0; i < tagCounts.size(); i++) {
 			Object[] tagCount = tagCounts.get(i);
 			String tag = (String) tagCount[0];
 			Long recipeCount = (Long) tagCount[1];
@@ -281,21 +295,19 @@ public class UserController {
 				tags.add(tag);
 				recipeCountByTag.add(recipeCount);
 				tenthTagCount = recipeCount;
-			}
-			else {
+			} else {
 				// Include tag if recipeCount is same as tenthTagCount
 				if (recipeCount.equals(tenthTagCount)) {
-			        tags.add(tag);
-			        recipeCountByTag.add(recipeCount);
-			    } else {
-			        break;
-			    }
+					tags.add(tag);
+					recipeCountByTag.add(recipeCount);
+				} else {
+					break;
+				}
 			}
 		}
 		model.addAttribute("tags", tags);
 		model.addAttribute("recipeCountByTag", recipeCountByTag);
-		
-		
+
 //	    List<Object[]> dailyData = userService.getDailyMemberData();
 //	    List<String> dates = new ArrayList<>();
 //	    List<Integer> newUsers = new ArrayList<>();
@@ -329,7 +341,7 @@ public class UserController {
 		try {
 			int id = Integer.parseInt(query);
 			Member member = userService.getMemberById(id);
-			if(!member.equals(null)) {
+			if (!member.equals(null)) {
 				members.add(member);
 			}
 		} catch (Exception e) {
@@ -369,7 +381,7 @@ public class UserController {
 	public String showRecipeReportDetails(@PathVariable(value = "id") Integer id, Model model) {
 		RecipeReport report = userService.getRecipeReportById(id);
 		model.addAttribute("report", report);
-		model.addAttribute("recipe",report.getRecipeReported());
+		model.addAttribute("recipe", report.getRecipeReported());
 		return "ReportViews/recipeReportDetails";
 	}
 
@@ -473,5 +485,15 @@ public class UserController {
 	public String logout(HttpSession session) {
 		session.removeAttribute("userId");
 		return "redirect:/user/login";
+	}
+
+	@PostMapping("/verifyEmail")
+	public String verifyEmail(@ModelAttribute("member") Member member,HttpSession httpSession) {
+		userService.saveMember(member);
+		httpSession.setAttribute("userId", member.getId());
+		if(member.getPerfenceList() == null ||member.getPerfenceList().isEmpty()) {
+			return "redirect:/user/setPreference";
+		}
+		return "redirect:/";
 	}
 }
