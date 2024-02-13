@@ -1,5 +1,7 @@
 package com.ad.teamnine.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,9 @@ public class ReviewService {
 	
 	public void saveReview(Review review) {
 		reviewRepo.save(review);
+	}
+	
+	public List<Review> getReviewsByRecipe(Recipe recipe){
+		return recipeRepo.getReviewsByRecipe(recipe);
 	}
 }

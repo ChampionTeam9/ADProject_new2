@@ -36,7 +36,7 @@
 			<div style="align-items: center;">
 				<div style="position: relative;">
 					<input type="text" id="searchInput" name="query" placeholder="Enter your search query"
-						style="width: 60%;" required>
+						th:value="${query}" style="width: 60%;">
 					<button id="toggleButton" type="button" class="button-style">☰</button>
 					<div id="filterMenu" class="filter-menu" style="text-align: left;">
 						<input type="checkbox" id="filter1" name="filter1"><label for="filter1">&nbsp;&nbsp;Health Score
@@ -45,45 +45,69 @@
 							calorie intake</label>
 					</div>
 					<select name="searchtype" style="width: 8%;">
-						<option value="name">Name</option>
-						<option value="description">Description</option>
-						<option value="tag">Tag</option>
+<<<<<<< HEAD
+						<option value="name" th:selected="${searchtype == 'name'}">Name</option>
+						<option value="description" th:selected="${searchtype == 'description'}">Description</option>
+						<option value="tag" th:selected="${searchtype == 'tag'}">Tag</option>
 					</select>
 					<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
+					<input type="hidden" id="pageNo" name="pageNo" />
 				</div>
 			</div>
-		</form>
-		<div class="row">
-			<div th:each="recipe : ${results}" class="col-md-3">
-				<div class="card mt-5" style="width: 18rem;">
-					<div class="card" style="width: 18rem;">
-						<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
-							<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}"
-								alt="Recipe Image" style="width: 100%; height: 200px; object-fit: cover;">
-						</a>
-						<div class="card-body" style="min-height: 105px;">
-							<h5 class="card-title">
-								<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
-							</h5>
-							<p class="card-text text-truncate" style="max-height: 3.6em; overflow: hidden;"
-								th:text="${recipe.description}"></p>
+			<div class="row" th:if="${not #lists.isEmpty(results)}">
+				<div th:each="recipe : ${results}" class="col-md-3">
+					<div class="card mt-5" style="width: 18rem;">
+						<div class="card" style="width: 18rem;">
+							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
+								<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}"
+									alt="Recipe Image" style="width: 100%; height: 200px; object-fit: cover;">
+							</a>
+							<div class="card-body" style="min-height: 105px;">
+								<h5 class="card-title">
+									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+								</h5>
+								<p class="card-text text-truncate" style="max-height: 3.6em; overflow: hidden;" th:text="${recipe.description}"></p>
+							</div>
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item">
+									<div class="user-profile"
+										style="display: flex; align-items: center; justify-content: center;">
+										<img src="/user.png" style="width: 24px; height: 24px; margin-right: 8px;">
+										<a th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
+											th:text="${recipe.member.username}"></a>
+									</div>
+								</li>
+							</ul>
 						</div>
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item">
-								<div class="user-profile"
-									style="display: flex; align-items: center; justify-content: center;">
-									<img src="/user.png" style="width: 24px; height: 24px; margin-right: 8px;">
-									<a th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
-										th:text="${recipe.member.username}"></a>
-								</div>
-							</li>
-						</ul>
 					</div>
 				</div>
 			</div>
-		</div>
+			<br />
+			<div style="text-align: center;">
+				<input type="hidden" th:value="${request}" id="requestURI" />
+				<span>
+					<th:block th:with="prevPage=${currentPage-1}">
+						<a name="previous" id="previous" th:href="${request} + '?pageNo=' + ${prevPage} + '&pageSize=' + ${pageSize}">Previous</a>
+				</span>&emsp;
+				<span>Page <span th:text="${currentPage + 1}"></span> of <span
+						th:text="${totalPages}"></span></span>&emsp;
+				<span>
+					<th:block th:with="nextPage=${currentPage+1}">
+						<a name="next" id="next" th:href="${request} + '?pageNo=' + ${nextPage} + '&pageSize=' + ${pageSize}">Next</a>
+				</span>
+			</div>
+			<div style="text-align: center;">
+				<label for="pageSize" class="col-form-label">Recipes per page:</label>
+				<div>
+					<select name="pageSize" id="pageSize" style="width: 5%;">
+						<option th:each="size : ${#numbers.sequence(12, 36, 12)}" th:value="${size}" th:text="${size}"
+							th:selected="${size == pageSize}"></option>
+					</select>
+				</div>
+			</div>
+		</form>
 	</div>
-	<script>
+	<script th:inline="javascript">
 		document.getElementById("toggleButton").addEventListener("click", function () {
 			toggleMenu();
 		});
@@ -91,6 +115,60 @@
 			var menu = document.getElementById("filterMenu");
 			menu.style.display = menu.style.display === "block" ? "none" : "block";
 		}
+
+		const previousElement = document.getElementById("previous");
+		const nextElement = document.getElementById("next");
+		const pageSizeDropDown = document.getElementById("pageSize");
+		const currentPage = /*[[${currentPage}]]*/ 0;
+		const totalPages = /*[[${totalPages}]]*/ 0;
+		console.log("currentPage: " + currentPage);
+		console.log("totalPages: " + totalPages);
+		if (currentPage === 0) {
+			previousElement.removeAttribute("href");
+			previousElement.style.color = "gray";
+		}
+		if (currentPage === (totalPages - 1)) {
+			nextElement.removeAttribute("href");
+			nextElement.style.color = "gray";
+		}
+
+		pageSizeDropDown.addEventListener("change", function () {
+			if (requestURI === "/recipe/search") {
+				document.getElementById("pageNo").value = 0;
+				document.getElementById("pageSize").value = pageSizeDropDown.value;
+				document.getElementById("searchForm").submit();
+			} else {
+				window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=0";
+			}
+		})
+
+		var requestURI = document.getElementById("requestURI").value;
+		console.log("requestURI: " + requestURI);
+
+		previousElement.addEventListener("click", function (event) {
+			event.preventDefault();
+			if (requestURI === "/recipe/search") {
+				document.getElementById("pageNo").value = currentPage - 1;
+				document.getElementById("pageSize").value = pageSizeDropDown.value;
+				document.getElementById("searchForm").submit();
+			} else {
+				window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=" + (currentPage - 1);
+			}
+		});
+
+		nextElement.addEventListener("click", function (event) {
+			event.preventDefault();
+			if (requestURI === "/recipe/search") {
+				document.getElementById("pageNo").value = currentPage + 1;
+				console.log(document.getElementById("pageNo").value);
+				document.getElementById("pageSize").value = pageSizeDropDown.value;
+				console.log(document.getElementById("pageSize").value);
+				document.getElementById("searchForm").submit();
+			} else {
+				console.log("else printed");
+				window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=" + (currentPage + 1);
+			}
+		});
 	</script>
 </body>
 
