@@ -46,6 +46,7 @@ public class AdProjectApplication {
 			recipe1.getSteps().add("Cut the bananas and mix well with flour");
 			recipe1.getTags().add("cuisine");
 			recipe1.getTags().add("easy");
+			recipe1.setHealthScore(3);
 			recipeRepo.save(recipe1);
 			
 			ingredient1.getRecipes().add(recipe1);
