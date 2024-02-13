@@ -31,10 +31,10 @@
 	<br />
 	<h4 style="text-align: center;">Recipes created by <span th:text="${member.username}"></span>:</h4>
 	<div class="container" style="text-align: center;">
-		<p style="text-align: center;" th:if="${#lists.isEmpty(member.addedRecipes)}">No Recipes Created</p>
-		<div th:if="${not #lists.isEmpty(member.addedRecipes)}">
+		<p style="text-align: center;" th:if="${#lists.isEmpty(recipes)}">No Recipes Created</p>
+		<div th:if="${not #lists.isEmpty(recipes)}">
 			<div class="row">
-				<div th:each="recipe : ${member.addedRecipes}" class="col-md-3">
+				<div th:each="recipe : ${recipes}" class="col-md-3">
 					<div class="card mt-5" style="width: 18rem;">
 						<div class="card" style="width: 18rem;">
 							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">

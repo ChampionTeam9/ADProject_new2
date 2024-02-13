@@ -223,8 +223,6 @@ public class UserController {
 		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
 		model.addAttribute("member", member);
-		// Get all recipes for the user
-		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 		return "UserViews/showMyProfile";
 	}
 
@@ -244,6 +242,8 @@ public class UserController {
 	public String viewUserProfile(@PathVariable("id") Integer memberId, HttpSession sessionObj, Model model) {
 		Member member = userService.getMemberById(memberId);
 		model.addAttribute("member", member);
+		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
+		model.addAttribute("recipes", publicRecipes);
 		return "UserViews/userProfile";
 	}
 

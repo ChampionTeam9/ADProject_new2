@@ -190,8 +190,8 @@ public class RecipeService {
 		return matchingTags;
 	}
 
-	public List<Recipe> getAllRecipesByMember(Member member) {
-		return recipeRepo.findByMember(member);
+	public List<Recipe> getAllRecipesByMember(Member member, Status status) {
+		return recipeRepo.findByMember(member, status);
 	}
 	
 	public List<Recipe> getAllRecipesByYear(int year){
