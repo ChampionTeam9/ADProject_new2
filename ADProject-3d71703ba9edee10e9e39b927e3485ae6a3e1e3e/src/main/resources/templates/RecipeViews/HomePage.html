@@ -66,8 +66,7 @@
 								<h5 class="card-title">
 									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
 								</h5>
-								<p class="card-text text-truncate" style="max-height: 3.6em; overflow: hidden;"
-									th:text="${recipe.description}"></p>
+								<p class="card-text text-truncate" style="max-height: 3.6em; overflow: hidden;" th:text="${recipe.description}"></p>
 							</div>
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item">
@@ -80,16 +79,6 @@
 								</li>
 							</ul>
 						</div>
-						<ul class="list-group list-group-flush">
-							<li class="list-group-item">
-								<div class="user-profile"
-									style="display: flex; align-items: center; justify-content: center;">
-									<img src="/user.png" style="width: 24px; height: 24px; margin-right: 8px;">
-									<a th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
-										th:text="${recipe.member.username}"></a>
-								</div>
-							</li>
-						</ul>
 					</div>
 				</div>
 			</div>
