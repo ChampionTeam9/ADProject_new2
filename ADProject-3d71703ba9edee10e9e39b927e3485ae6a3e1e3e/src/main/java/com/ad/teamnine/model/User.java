@@ -1,8 +1,7 @@
 package com.ad.teamnine.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
  
 @Entity
 @Table(name="Users")
@@ -17,6 +16,17 @@ public abstract class User {
 	@Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*\\p{Punct}).{8,}$", message = "Password must be at least 8 characters long, "
 			+ "contains a number and have at least one punctuation.")
 	private String password;
+	@Column
+	@Email(message = "Invalid email format")
+	private String email;
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public User() {}
 	

@@ -23,6 +23,7 @@ import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.RecipeReport;
 import com.ad.teamnine.model.Status;
 import com.ad.teamnine.model.User;
+import com.ad.teamnine.repository.AdminRepository;
 import com.ad.teamnine.repository.MemberReportRepository;
 import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.RecipeReportRepository;
@@ -237,7 +238,6 @@ public class UserService {
 
 	public String getUsernameById(Integer userId) {
 		return getUserById(userId).getUsername();
-
 	}
 
 	public User getUserById(Integer id) {
