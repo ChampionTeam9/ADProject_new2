@@ -59,22 +59,29 @@
 		</dependency>
 		<dependency>
 			<groupId>com.opencsv</groupId>
-		    <artifactId>opencsv</artifactId>
-		    <version>5.8</version>
+			<artifactId>opencsv</artifactId>
+			<version>5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>1.6.2</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
