@@ -13,6 +13,7 @@ import com.ad.teamnine.repository.ReportRepository;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 @Service
 public class EmailService {
@@ -123,9 +124,9 @@ public class EmailService {
 					message.setSubject("One new report is created!");
 					// 设置邮件内容
 					message.setText("Dear admin, There is a new " + reportType + " created by member \""
-							+ report.getMember().getUsername() + "\",\n" 
-							+ "The number of reports pending for approval : "+reportRepo.countByStatus(Status.PENDING)+",\n"
-							+ "Please login to check!");
+							+ report.getMember().getUsername() + "\",\n"
+							+ "The number of reports pending for approval : " + reportRepo.countByStatus(Status.PENDING)
+							+ ",\n" + "Please login to check!");
 					// 发送邮件
 					Transport.send(message);
 					System.out.println("Email sent successfully!");
@@ -134,5 +135,48 @@ public class EmailService {
 				}
 			}
 		}
+	}
+	public void SendEmailVerificationCodeToMember(Member member,String code) {
+		String recipientEmail = member.getEmail();
+		final String username = "zhangten0131@gmail.com"; // 发送邮件的邮箱地址
+		final String password = "c o s f uvao ofrk etnj"; // 邮箱密码或授权码
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+		Session session = Session.getInstance(props, new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
+
+		try {
+			// 创建 MimeMessage 对象
+			Message message = new MimeMessage(session);
+			// 设置发件人
+			message.setFrom(new InternetAddress(username));
+			// 设置收件人
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+			// 设置邮件主题
+			message.setSubject("Email Verify");
+			// 设置邮件内容
+			message.setText("Your Email Verification Code is :"+code);
+			Transport.send(message);
+
+			System.out.println("Email sent successfully!");
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public static String generateVerificationCode() {
+		int codeLength = 4;
+		Random random = new Random();
+		StringBuilder codeBuilder = new StringBuilder();
+		for (int i = 0; i < codeLength; i++) {
+			int digit = random.nextInt(10);
+			codeBuilder.append(digit);
+		}
+		return codeBuilder.toString();
 	}
 }
