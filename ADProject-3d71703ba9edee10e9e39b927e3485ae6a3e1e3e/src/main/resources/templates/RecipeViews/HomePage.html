@@ -45,6 +45,7 @@
 							calorie intake</label>
 					</div>
 					<select name="searchtype" style="width: 8%;">
+<<<<<<< HEAD
 						<option value="name" th:selected="${searchtype == 'name'}">Name</option>
 						<option value="description" th:selected="${searchtype == 'description'}">Description</option>
 						<option value="tag" th:selected="${searchtype == 'tag'}">Tag</option>
@@ -79,6 +80,16 @@
 								</li>
 							</ul>
 						</div>
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item">
+								<div class="user-profile"
+									style="display: flex; align-items: center; justify-content: center;">
+									<img src="/user.png" style="width: 24px; height: 24px; margin-right: 8px;">
+									<a th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
+										th:text="${recipe.member.username}"></a>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>

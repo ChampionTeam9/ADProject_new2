@@ -132,7 +132,7 @@ public class APIController {
 		        	gender  = "Male";
 		        else 
 		        	gender = "Female";
-				member = new Member(username, password, height, weight, birthdate, gender);
+				member = new Member(username, password, height, weight, birthdate, gender,null);
 				Member savedMember = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}

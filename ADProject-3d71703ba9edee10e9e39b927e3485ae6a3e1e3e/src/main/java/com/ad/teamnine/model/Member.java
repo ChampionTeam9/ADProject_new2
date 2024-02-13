@@ -59,7 +59,7 @@ public class Member extends User{
 	
 	public Member() {}
 	
-	public Member(String username, String password, double height, double weight, LocalDate birthdate, String gender) {
+	public Member(String username, String password, double height, double weight, LocalDate birthdate, String gender, String email) {
 		super(username, password);
 		this.height = height;
 		this.weight = weight;
@@ -67,6 +67,7 @@ public class Member extends User{
 		this.age = calculateAge();
 		this.gender = gender;
 		this.calorieIntake = calculateCalorieIntake();
+		this.setEmail(email);
 		shoppingList = new ArrayList<>();
 		savedRecipes = new ArrayList<>();
 		addedRecipes = new ArrayList<>();
