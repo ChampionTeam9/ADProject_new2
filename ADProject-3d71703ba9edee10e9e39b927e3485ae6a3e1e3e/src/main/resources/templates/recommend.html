@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Recommender</title>
+</head>
+<body>
+    <h1>Recipe Recommender</h1>
+    <label for="recipeName">Enter Recipe Name:</label>
+    <input type="text" id="recipeName">
+    <button onclick="getRecommendations()">Get Recommendations</button>
+
+    <h2>Recommendations:</h2>
+    <ul id="recommendationList">
+        <li th:each="recommendation : ${recommendations}" th:text="${recommendation}"></li>
+    </ul>
+
+    <script th:inline="javascript">
+        function getRecommendations() {
+            var recipeName = document.getElementById('recipeName').value;
+            var data = { "recipe_name": recipeName };
+
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                showRecommendations(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function showRecommendations(data) {
+            var recommendationList = document.getElementById('recommendationList');
+            recommendationList.innerHTML = '';
+
+            data.content_recommendations.forEach(function(recommendation) {
+                var listItem = document.createElement('li');
+                listItem.textContent = recommendation;
+                recommendationList.appendChild(listItem);
+            });
+
+            data.svd_recommendations.forEach(function(recommendation) {
+                var listItem = document.createElement('li');
+                listItem.textContent = recommendation;
+                recommendationList.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>

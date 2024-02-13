@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>My Profile</title>
+	<link href="/style.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+	<style>
+		button {
+			border-radius: 4px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="custom-container">
+		<div th:replace="fragments/navbar"></div>
+	</div>
+	<div class="container" style="width: 60%;">
+		<h2>My Profile</h2>
+		<br />
+		<form action="/user/saveProfile" method="post" th:object="${member}" id="profileForm">
+			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:field="*{age}" />
+			<input type="hidden" th:field="*{memberStatus}" />
+			<input type="hidden" th:field="*{calorieIntake}" />
+			<input type="hidden" th:field="*{registrationDate}" />
+
+			<div class="form-group">
+				<label for="username">Username:</label>
+				<input type="text" id="username" name="username" th:field="*{username}" required>
+				<input type="hidden" id="initialUsername" th:value="${member.username}" />
+				<span id="userAlrExistError" style="color: red;"></span>
+			</div>
+			<div class="form-group">
+				<label for="password">Password:</label>
+				<input type="password" id="password" name="password" th:value="*{password}" required>
+				<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red;"></span>
+			</div>
+			<div class="form-group">
+				<label for="email">Email:</label>
+				<input type="text" id="email" name="email" th:value="*{email}">
+				<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red;"></span>
+			</div>
+			<div class="form-group">
+				<label for="birthdate">Birthdate:</label>
+				<input type="date" id="birthdate" name="birthdate"
+					th:value="${#temporals.format(member.birthdate, 'yyyy-MM-dd')}" required>
+			</div>
+			<div class="form-group">
+				<label for="gender">Gender:</label>
+				<select id="gender" name="gender" th:field="*{gender}" required>
+					<option value="" disabled selected>Select your gender</option>
+					<option value="Male">Male</option>
+					<option value="Female">Female</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="height">Height (in cm):</label>
+				<input type="number" id="height" name="height" th:field="*{height}" required>
+			</div>
+			<div class="form-group">
+				<label for="height">Weight (in kg):</label>
+				<input type="number" id="weight" name="weight" step=".1" th:field="*{weight}" required>
+			</div>
+			<button type="submit" value="Save" style="margin-right: 8px;">Save</button>
+		</form>
+	</div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function (event) {
+			const usernameInput = document.getElementById('username')
+			usernameInput.addEventListener('blur', (event) => {
+				const initialUsername = document.getElementById('initialUsername').value;
+				const userAlrExistErrorSpan = document.getElementById("userAlrExistError");
+				if (usernameInput.value !== initialUsername) {
+					checkIfUsernameAvailable(usernameInput.value);
+				} else {
+					userAlrExistErrorSpan.innerHTML = "";
+				}
+			})
+		});
+
+		function checkIfUsernameAvailable(username) {
+			let xhr = new XMLHttpRequest();
+			xhr.open("POST", "/user/checkIfUsernameAvailable");
+			xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					console.log("response ok");
+					let data = JSON.parse(xhr.responseText);
+					let userAlrExists = data.userAlrExists;
+					const userAlrExistErrorSpan = document.getElementById("userAlrExistError");
+					if (userAlrExists) {
+						userAlrExistErrorSpan.innerHTML = "The username is taken, please enter another username."
+					} else {
+						userAlrExistErrorSpan.innerHTML = "";
+					}
+				}
+			}
+			let data = {
+				"username": username,
+			}
+			xhr.send(JSON.stringify(data));
+		}
+
+		document.getElementById('profileForm').addEventListener('submit', function (event) {
+			var errorSpan = document.getElementById('userAlrExistError');
+			// Check if the error message span contains any text
+			if (errorSpan.textContent.trim() !== '') {
+				event.preventDefault();
+				alert('Please resolve the errors before submitting the form.');
+			}
+		});
+	</script>
+</body>
+
+</html>
