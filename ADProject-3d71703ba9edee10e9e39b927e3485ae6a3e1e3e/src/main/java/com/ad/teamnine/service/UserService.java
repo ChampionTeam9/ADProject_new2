@@ -37,6 +37,7 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class UserService {
+	private EmailService emailService = new EmailService();
 	@Autowired
 	UserRepository userRepo;
 	@Autowired
@@ -169,6 +170,7 @@ public class UserService {
 
 	public void approveRecipeReport(Integer reportId) {
 		RecipeReport recipeReport = recipeReportRepository.findById(reportId).orElse(null);
+		emailService.RecipeReportApprovedNotificationToMember(recipeReport);
 		Recipe recipe = recipeReport.getRecipeReported();
 		recipe.setStatus(Status.DELETED);
 		recipeReport.setStatus(Status.APPROVED);
@@ -189,6 +191,7 @@ public class UserService {
 
 	public void approveMemberReport(Integer reportId) {
 		MemberReport memberReport = memberReportRepository.findById(reportId).orElse(null);
+		emailService.MemberReportApprovedNotificationToMemberReported(memberReport);
 		Member member = memberReport.getMemberReported();
 		member.setMemberStatus(Status.DELETED);
 		memberReport.setStatus(Status.APPROVED);
