@@ -293,7 +293,8 @@ public class RecipeController {
 			ingredient.getRecipes().remove(recipe);
 			ingredientService.saveIngredient(ingredient);
 		}
-		recipeService.deleteRecipe(id);
+		recipe.setStatus(Status.DELETED);
+		recipeService.updateRecipe(recipe);
 		return "redirect:/user/member/myRecipeList";
 	}
 
@@ -307,6 +308,9 @@ public class RecipeController {
 	@GetMapping("/detail/{id}")
 	public String viewRecipe(@PathVariable("id") Integer id, Model model, HttpSession sessionObj) {
 		Recipe recipe = recipeService.getRecipeById(id);
+		if (recipe.getStatus() == Status.DELETED) {
+			return "RecipeViews/recipeDeletedPage";
+		}
 		model.addAttribute("recipe", recipe);
 		// get number of people who rated
 		int numberOfUsersRatings = recipeService.getRecipeById(id).getNumberOfRating();

@@ -204,7 +204,7 @@ public class RecipeService {
 
 	public Page<Recipe> findAllRecipesByPage(int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-		Page<Recipe> recipePage = recipeRepo.findAll(pageRequest);
+		Page<Recipe> recipePage = recipeRepo.findAllPublic(pageRequest);
 		return recipePage;
 	}
 }

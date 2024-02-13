@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -422,7 +423,7 @@ public class UserController {
 	public String showMyRecipeList(Model model, HttpSession sessionObj) {
 		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
-		List<Recipe> recipes = member.getAddedRecipes();
+		List<Recipe> recipes = member.getAddedRecipes().stream().filter(r -> r.getStatus() != Status.DELETED).collect(Collectors.toList());
 		model.addAttribute("recipes", recipes);
 		return "UserViews/showMyRecipePage";
 	}

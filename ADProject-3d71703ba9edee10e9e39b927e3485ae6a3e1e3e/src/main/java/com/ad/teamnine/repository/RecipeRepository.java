@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -47,4 +48,7 @@ public interface RecipeRepository extends JpaRepository<Recipe,Integer>{
 	
 	@Query("SELECT r FROM Recipe r WHERE r.description LIKE %:description% AND r.status = 'PUBLIC'")
     Page<Recipe> findByDescriptionContainingByPage(@Param("description") String description, Pageable pageable);
+	
+	@Query("SELECT r FROM Recipe r WHERE r.status = 'PUBLIC'")
+	Page<Recipe> findAllPublic(PageRequest pageRequest);
 }
