@@ -70,7 +70,7 @@ public class RecipeController {
 	}
 
 	@GetMapping("/search/{tag}")
-	public String searchByTag(@PathVariable String tag, Model model, @RequestParam(defaultValue = "0") int pageNo, 
+	public String searchByTag(@PathVariable String tag, Model model, @RequestParam(defaultValue = "0") int pageNo,
 			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
 		Page<Recipe> recipePage = recipeService.searchByTag(tag, pageNo, pageSize);
 		model.addAttribute("results", recipePage.getContent());
@@ -85,11 +85,11 @@ public class RecipeController {
 
 	// search by query
 	@PostMapping("/search")
-	public String searchRecipe(@RequestParam("query") String query, @RequestParam("searchtype") String type, Model model, 
-			@RequestParam(name = "filter1", defaultValue = "false") boolean filter1, 
-			@RequestParam(name = "filter2", defaultValue = "false") boolean filter2, HttpSession sessionObj, 
-			@RequestParam(defaultValue = "0") int pageNo, 
-			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
+	public String searchRecipe(@RequestParam("query") String query, @RequestParam("searchtype") String type,
+			Model model, @RequestParam(name = "filter1", defaultValue = "false") boolean filter1,
+			@RequestParam(name = "filter2", defaultValue = "false") boolean filter2, HttpSession sessionObj,
+			@RequestParam(defaultValue = "0") int pageNo, @RequestParam(defaultValue = "12") int pageSize,
+			HttpServletRequest request) {
 		List<Recipe> results;
 		switch (type) {
 		case "tag":
@@ -111,25 +111,26 @@ public class RecipeController {
 			filteredResults = results.stream().filter(r -> r.getHealthScore() >= 4).collect(Collectors.toList());
 		}
 		if (filter2) {
-			Integer memberId = (Integer)sessionObj.getAttribute("userId");
+			Integer memberId = (Integer) sessionObj.getAttribute("userId");
 			if (memberId == null) {
 				return "redirect:/user/login";
 			}
-			Member member = userService.getMemberById((Integer)sessionObj.getAttribute("userId"));
+			Member member = userService.getMemberById((Integer) sessionObj.getAttribute("userId"));
 			Double calorieIntake = member.getCalorieIntake();
 			if (member.getCalorieIntake() == null) {
 				return "redirect:/user/myProfile";
 			}
-			filteredResults = results.stream().filter(r -> r.getCalories() <= (calorieIntake/3)).collect(Collectors.toList());
+			filteredResults = results.stream().filter(r -> r.getCalories() <= (calorieIntake / 3))
+					.collect(Collectors.toList());
 		}
 		int totalRecipes = filteredResults.size();
-        int startIndex = pageNo * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, totalRecipes);
-        int currentPage = pageNo;
-        int totalPages = totalRecipes / pageSize;
-        if (totalRecipes % pageSize != 0) {
-            totalPages++;
-        }
+		int startIndex = pageNo * pageSize;
+		int endIndex = Math.min(startIndex + pageSize, totalRecipes);
+		int currentPage = pageNo;
+		int totalPages = totalRecipes / pageSize;
+		if (totalRecipes % pageSize != 0) {
+			totalPages++;
+		}
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("pageSize", pageSize);
@@ -139,7 +140,7 @@ public class RecipeController {
 		System.out.println("pageSize: " + pageSize);
 		System.out.println("currentPage: " + currentPage);
 		model.addAttribute("results", filteredResults.subList(startIndex, endIndex));
-		
+
 		model.addAttribute("query", query);
 		model.addAttribute("searchtype", type);
 		return "/RecipeViews/HomePage";
@@ -184,10 +185,10 @@ public class RecipeController {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Binding error at recipe creation");
 			// Print out binding errors
-            System.out.println("Binding errors:");
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                System.out.println(error.getDefaultMessage());
-            }
+			System.out.println("Binding errors:");
+			for (ObjectError error : bindingResult.getAllErrors()) {
+				System.out.println(error.getDefaultMessage());
+			}
 			return "/RecipeViews/createRecipesPage";
 		}
 		// If preparation time entered in hours, convert to mins
@@ -226,7 +227,7 @@ public class RecipeController {
 			recipe.setImage(existingRecipe.getImage());
 		}
 
-		Member member = userService.getMemberById((Integer)sessionObj.getAttribute("userId"));
+		Member member = userService.getMemberById((Integer) sessionObj.getAttribute("userId"));
 		recipe.setMember(member);
 
 		recipeService.createRecipe(recipe);
@@ -315,13 +316,21 @@ public class RecipeController {
 		List<Review> reviews = reviewService.getReviewsByRecipe(recipe);
 		model.addAttribute("reviews", reviews);
 		if (sessionObj.getAttribute("userId") != null) {
-			Integer userId = (int) sessionObj.getAttribute("userId");
-			Member member = userService.getMemberById(userId);
-			Boolean ifsave = !member.getSavedRecipes().contains(recipe);
-			model.addAttribute("ifsave", ifsave);
+			if (sessionObj.getAttribute("userType").equals("member")) {
+				Integer userId = (int) sessionObj.getAttribute("userId");
+				Member member = userService.getMemberById(userId);
+				Boolean ifsave = !member.getSavedRecipes().contains(recipe);
+				model.addAttribute("ifsave", ifsave);
+			}
+			if (sessionObj.getAttribute("userType").equals("admin")) {
+				model.addAttribute("ifAdmin", true);
+			} else {
+				model.addAttribute("ifAdmin", false);
+			}
 		} else {
 			model.addAttribute("ifsave", true);
 		}
+
 		return "RecipeViews/recipeDetailPage";
 	}
 }

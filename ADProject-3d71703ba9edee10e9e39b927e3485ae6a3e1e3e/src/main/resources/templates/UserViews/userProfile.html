@@ -25,7 +25,7 @@
 		<img src="/user.png" style="width: 100px; height: 100px; margin-bottom: 15px;">
 		<p th:text="${member.username}"></p>
 		<p>Member ID: <span th:if="${member != null}" th:text="${member.id}"></span></p>
-		<button type="button" class="button-style" th:id="${member.id}"
+		<button type="button" class="button-style" th:id="${member.id}" th:unless="${ifAdmin}"
 									onclick="window.location.href='/report/reportMember/' + this.id">Report</button>
 	</div>
 	<br />
