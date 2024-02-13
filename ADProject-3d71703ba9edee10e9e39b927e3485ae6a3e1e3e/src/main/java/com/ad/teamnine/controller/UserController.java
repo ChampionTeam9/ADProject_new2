@@ -242,6 +242,9 @@ public class UserController {
 	@GetMapping("/profile/{id}")
 	public String viewUserProfile(@PathVariable("id") Integer memberId, HttpSession sessionObj, Model model) {
 		Member member = userService.getMemberById(memberId);
+		if (member.getMemberStatus() == Status.DELETED) {
+			return "UserViews/memberDeletedPage";
+		}
 		model.addAttribute("member", member);
 		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
 		model.addAttribute("recipes", publicRecipes);
@@ -453,6 +456,11 @@ public class UserController {
 				return "redirect:/user/admin/dashboard";
 			} else {
 				httpSession.setAttribute("userType", "member");
+				if (userService.getMemberById(user.getId()).getMemberStatus() == Status.DELETED) {
+					httpSession.invalidate();
+					model.addAttribute("errorMessage", "Account has been deleted");
+					return "UserViews/login";
+				}
 				return "redirect:/";
 			}
 		} else {
