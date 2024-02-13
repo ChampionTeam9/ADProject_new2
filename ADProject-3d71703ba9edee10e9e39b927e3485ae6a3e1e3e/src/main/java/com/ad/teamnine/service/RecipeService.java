@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.Status;
@@ -115,15 +117,32 @@ public class RecipeService {
 		List<Recipe> results = recipeRepo.findByNameContaining(query);
 		return results;
 	}
-
+	
+	public Page<Recipe> searchByName(String query, int pageNo, int pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+		Page<Recipe> results = recipeRepo.findByNameContainingByPage(query, pageRequest);
+		return results;
+	}
+	
 	public List<Recipe> searchByTag(String tag) {
 		List<Recipe> results = recipeRepo.findByTagsContaining(tag);
 		return results;
+	}
 
+	public Page<Recipe> searchByTag(String tag, int pageNo, int pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+		Page<Recipe> results = recipeRepo.findByTagsContainingByPage(tag, pageRequest);
+		return results;
 	}
 
 	public List<Recipe> searchByDescription(String query) {
 		List<Recipe> results = recipeRepo.findByDescriptionContaining(query);
+		return results;
+	}
+	
+	public Page<Recipe> searchByDescription(String query, int pageNo, int pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+		Page<Recipe> results = recipeRepo.findByDescriptionContainingByPage(query, pageRequest);
 		return results;
 	}
 
@@ -181,5 +200,11 @@ public class RecipeService {
 	
 	public List<Object[]> getRecipeCountByTag(){
 		return recipeRepo.getRecipeCountByTag();
+	}
+
+	public Page<Recipe> findAllRecipesByPage(int pageNo, int pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+		Page<Recipe> recipePage = recipeRepo.findAll(pageRequest);
+		return recipePage;
 	}
 }
