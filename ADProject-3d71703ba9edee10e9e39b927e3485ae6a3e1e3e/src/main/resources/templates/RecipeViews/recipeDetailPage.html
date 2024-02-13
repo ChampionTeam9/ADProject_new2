@@ -31,12 +31,12 @@
 				<td rowspan="4">
 					<img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image">
 				</td>
-				<td colspan="3">
+				<td>
 					<h1 th:text="${recipe.name}"></h1>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">
+				<td>
 					<div class="star-rating">
 						<span class="star"
 							th:style="'color: ' + (${recipe.rating} >= 1 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
@@ -49,69 +49,50 @@
 						<span class="star"
 							th:style="'color: ' + (${recipe.rating} >= 5 ? 'gold' : 'darkgrey') + ';'">&#9733;</span>
 					</div>
-					&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; <span th:text="${recipe.rating}"></span>
+					&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; <span th:text="${recipe.rating}"></span>&nbsp;&nbsp;&nbsp;
+					(<span th:text="${numberOfUserRatings}"></span> Reviews)
 				</td>
-				<td></td>
-				<td></td>
 			</tr>
 			<tr>
 				<td>
 					<button type="button" th:id="${recipe.id}"
 						onclick="window.location.href='/recipe/review/' + this.id">
 						Review
-					</button>
-				</td>
-				<td>
-					<p><span th:text="${numberOfUserRatings}"></span> Reviews</p>
-				</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>
+					</button>&nbsp;&nbsp;
 					<button type="button" th:id="${recipe.id}" th:if="${ifsave}"
 						onclick="window.location.href='/recipe/save/' + this.id">Save
 					</button>
 					<button type="button" th:id="${recipe.id}" th:unless="${ifsave}"
 						onclick="window.location.href='/recipe/unsubscribe/' + this.id">Unsave
-					</button>
-
+					</button>&nbsp;&nbsp;
+					(<span th:text="${recipe.numberOfSaved}"></span> Saved)
 				</td>
-				<!--<td><button type="button" th:id="${recipe.id}"
-						onclick="window.location.href='/recipe/save/' + this.id">Save</button></td>-->
-				<td>
-					<p><span th:text="${recipe.numberOfSaved}"></span> saved</p>
-				</td>
-				<td></td>
 			</tr>
 			<tr>
-				<td></td>
 				<td>
+					<b>Recipe Id: </b><span th:text="${recipe.id}"></span>&nbsp;&nbsp;
 					<button type="button" th:id="${recipe.id}"
-						onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
-				</td>
-				<td>
-					<button type="button" onclick="window.location.href='/'">Back</button>
-				</td>
+					onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
+				</td>	
 			</tr>
 			<tr>
 				<td colspan="2">
 					<p><b>Created By: </b>
 						<a th:href="@{/user/profile/{userId}(userId=${recipe.member.id})}"
-							th:text="${recipe.member.username}"></a>
-					</p>
-				</td>
-				<td>
-					<p><b>Recipe Id: </b><span th:text="${recipe.id}"></span></p>
+							th:text="${recipe.member.username}"></a>&nbsp;&nbsp;&nbsp; |
+						&nbsp;&nbsp;&nbsp;
+						<b>Submitted On: </b>
+						<span th:text="${recipe.submittedDate}"></span>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="4">
+				<td colspan="2">
 					<p><b>Tags: </b><span th:each="tag : ${recipe.tags}"><span
 								th:text="${tag}"></span>&nbsp;&nbsp;&nbsp;</span></p>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="4">
+				<td colspan="2">
 					<p><b>Serving size: </b><span th:text="${recipe.servings}"></span> &nbsp;&nbsp;&nbsp; |
 						&nbsp;&nbsp;&nbsp; <b>Preparation Time: </b><span th:text="${recipe.preparationTime}"></span>
 						minutes</p>
@@ -143,7 +124,8 @@
 			<div class="one-third-column">
 				<div>
 					<h3>Health Score</h3>
-					<h4 th:text="${recipe.healthScore} + ' / 6'" style="text-align: center;"></h4>
+					<h4 th:text="${recipe.healthScore} + ' / 6'" style="text-align: center;" id="healthScoreText"></h4>
+					<input type="hidden" th:value="${recipe.healthScore}" id="healthScore"/>
 				</div>
 				<br />
 				<div>
@@ -189,15 +171,15 @@
 		<div>
 			<br />
 			<h3>Reviews</h3>
-			<p style="text-align: center;" th:if="${#lists.isEmpty(recipe.reviews)}">No Reviews Yet</p>
-			<div th:if="${not #lists.isEmpty(recipe.reviews)}">
-				<div th:each="review : ${recipe.reviews}">
+			<p style="text-align: center;" th:if="${#lists.isEmpty(reviews)}">No Reviews Yet</p>
+			<div th:if="${not #lists.isEmpty(reviews)}">
+				<div th:each="review : ${reviews}">
 					<div class="card mt-2">
 						<div class="card-body">
 							<div class="user-profile" style="display: flex; justify-content: space-between;">
 								<div class="user-profile" style="display: flex;">
 									<img src="/user.png" style="width: 40px; height: 40px; margin-right: 8px;">
-									<h5 class="card-title" th:text="${review.member.username}">Name</h5>
+									<a th:href="@{/user/profile/{id}(id=${review.member.id})}"><h5 class="card-title" th:text="${review.member.username}">Name</h5></a>
 								</div>
 								<div>
 									<span th:text="${review.reviewDate}">Date</span>
@@ -222,6 +204,23 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			var healthScore = parseInt(document.getElementById("healthScore").value);
+			console.log("healthScore: " + healthScore);
+			var healthScoreText = document.getElementById("healthScoreText");
+				if (healthScore >= 4) {
+		            healthScoreText.style.color = "green";
+		            console.log("green");
+		        } else if (healthScore >= 2 && healthScore <= 3) {
+		            healthScoreText.style.color = "orange";
+		            console.log("orange");
+		        } else {
+		            healthScoreText.style.color = "red";
+		            console.log("red");
+		        }
+			});
+	</script>
 </body>
 
 </html>

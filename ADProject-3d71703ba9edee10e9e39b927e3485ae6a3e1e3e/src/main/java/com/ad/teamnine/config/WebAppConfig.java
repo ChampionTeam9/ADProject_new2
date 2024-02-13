@@ -15,7 +15,7 @@ public class WebAppConfig implements WebMvcConfigurer{
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(securityInterceptor).addPathPatterns("/user/shoppingList/**", "/user/member/**", "/user/myProfile", 
-				"/user/setPreference", "/recipe/create", "/recipe/edit/**", "/recipe/delete/**", "/recipe/review/**", "/report/**", 
-				"/review/**");
+				"/user/setPreference", "/recipe/create", "/recipe/edit/**", "/recipe/delete/**", "/recipe/review/**", "/recipe/save/**",
+				"/report/**", "/review/**");
 	}
 }

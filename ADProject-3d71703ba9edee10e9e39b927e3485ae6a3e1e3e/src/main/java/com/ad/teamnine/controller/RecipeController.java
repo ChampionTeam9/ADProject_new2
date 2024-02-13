@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ad.teamnine.model.*;
 import com.ad.teamnine.service.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -33,6 +36,8 @@ public class RecipeController {
 	private UserService userService;
 	@Autowired
 	IngredientService ingredientService;
+	@Autowired
+	ReviewService reviewService;
 
 	public RecipeController(RecipeService recipeService, UserService userService) {
 		this.recipeService = recipeService;
@@ -65,17 +70,26 @@ public class RecipeController {
 	}
 
 	@GetMapping("/search/{tag}")
-	public String searchByTag(@PathVariable String tag, Model model) {
-		List<Recipe> results = recipeService.searchByTag(tag);
-		model.addAttribute("results", results);
+	public String searchByTag(@PathVariable String tag, Model model, @RequestParam(defaultValue = "0") int pageNo, 
+			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
+		Page<Recipe> recipePage = recipeService.searchByTag(tag, pageNo, pageSize);
+		model.addAttribute("results", recipePage.getContent());
+		model.addAttribute("currentPage", recipePage.getNumber());
+		model.addAttribute("totalPages", recipePage.getTotalPages());
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("request", request.getRequestURI());
+		System.out.println("request: " + request.getRequestURI());
+		System.out.println("results.size = " + recipePage.getContent().size());
 		return "/RecipeViews/HomePage";
 	}
 
-	// search by title name
+	// search by query
 	@PostMapping("/search")
 	public String searchRecipe(@RequestParam("query") String query, @RequestParam("searchtype") String type, Model model, 
 			@RequestParam(name = "filter1", defaultValue = "false") boolean filter1, 
-			@RequestParam(name = "filter2", defaultValue = "false") boolean filter2, HttpSession sessionObj) {
+			@RequestParam(name = "filter2", defaultValue = "false") boolean filter2, HttpSession sessionObj, 
+			@RequestParam(defaultValue = "0") int pageNo, 
+			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
 		List<Recipe> results;
 		switch (type) {
 		case "tag":
@@ -108,7 +122,26 @@ public class RecipeController {
 			}
 			filteredResults = results.stream().filter(r -> r.getCalories() <= (calorieIntake/3)).collect(Collectors.toList());
 		}
-		model.addAttribute("results", filteredResults);
+		int totalRecipes = filteredResults.size();
+        int startIndex = pageNo * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, totalRecipes);
+        int currentPage = pageNo;
+        int totalPages = totalRecipes / pageSize;
+        if (totalRecipes % pageSize != 0) {
+            totalPages++;
+        }
+		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("request", request.getRequestURI());
+		System.out.println("request: " + request.getRequestURI());
+		System.out.println("results.size = " + totalRecipes);
+		System.out.println("pageSize: " + pageSize);
+		System.out.println("currentPage: " + currentPage);
+		model.addAttribute("results", filteredResults.subList(startIndex, endIndex));
+		
+		model.addAttribute("query", query);
+		model.addAttribute("searchtype", type);
 		return "/RecipeViews/HomePage";
 	}
 
@@ -278,6 +311,9 @@ public class RecipeController {
 		// get number of people who rated
 		int numberOfUsersRatings = recipeService.getRecipeById(id).getNumberOfRating();
 		model.addAttribute("numberOfUserRatings", numberOfUsersRatings);
+		// get reviews ordered by review date
+		List<Review> reviews = reviewService.getReviewsByRecipe(recipe);
+		model.addAttribute("reviews", reviews);
 		if (sessionObj.getAttribute("userId") != null) {
 			Integer userId = (int) sessionObj.getAttribute("userId");
 			Member member = userService.getMemberById(userId);
