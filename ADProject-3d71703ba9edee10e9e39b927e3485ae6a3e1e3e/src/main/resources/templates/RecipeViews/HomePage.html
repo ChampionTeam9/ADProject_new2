@@ -14,21 +14,40 @@
 		    color: rgb(0, 0, 0);
 		    text-decoration: none;
 		}
+		.filter-menu {
+			display: none;
+			position: absolute;
+			top: 100%;
+			right: 25%;
+			background-color: #fff;
+			border: 1px solid #ccc;
+			padding: 10px;
+			z-index: 999;
+		}
 	</style>
 
 	<body>
 		<div class="custom-container">
 			<div th:replace="fragments/navbar"></div>
 		</div>
-		<div class="container" style="text-align: center;">
+		<div class="container" style="text-align: center; width: 80%;">
 			<form id="searchForm" action="/recipe/search" method="post">
-				<input type="text" id="searchInput" name="query" placeholder="Enter your search query" style="width: 60%;" required>
-				<select name="searchtype" style="width: 10%;">
-					<option value="name">Name</option>
-					<option value="description">Description</option>
-					<option value="tag">Tag</option>
-				</select>
-				<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
+				<div style="align-items: center;">
+					<div style="position: relative;">
+						<input type="text" id="searchInput" name="query" placeholder="Enter your search query" style="width: 60%;" required>
+						<button id="toggleButton" type="button" class="button-style">☰</button>
+						<div id="filterMenu" class="filter-menu" style="text-align: left;">
+							<input type="checkbox" id="filter1" name="filter1"><label for="filter1">&nbsp;&nbsp;Health Score ≥ 4</label><br />
+							<input type="checkbox" id="filter2" name="filter2"><label for="filter2">&nbsp;&nbsp;Based on my calorie intake</label>
+						</div>
+						<select name="searchtype" style="width: 8%;">
+							<option value="name">Name</option>
+							<option value="description">Description</option>
+							<option value="tag">Tag</option>
+						</select>
+						<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
+					</div>
+				</div>
 			</form>
 			<div class="row">
 				<div th:each="recipe : ${results}" class="col-md-3">
@@ -58,6 +77,13 @@
 			</div>
 		</div>
 	<script>
+		document.getElementById("toggleButton").addEventListener("click", function() {
+			toggleMenu();
+		});
+		function toggleMenu() {
+			var menu = document.getElementById("filterMenu");
+			menu.style.display = menu.style.display === "block" ? "none" : "block";
+		}
 	</script>
 	</body>
 </html>

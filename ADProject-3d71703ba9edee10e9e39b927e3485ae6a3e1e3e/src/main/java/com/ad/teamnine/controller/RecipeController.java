@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,7 +73,9 @@ public class RecipeController {
 
 	// search by title name
 	@PostMapping("/search")
-	public String searchRecipe(@RequestParam("query") String query, @RequestParam("searchtype") String type, Model model) {
+	public String searchRecipe(@RequestParam("query") String query, @RequestParam("searchtype") String type, Model model, 
+			@RequestParam(name = "filter1", defaultValue = "false") boolean filter1, 
+			@RequestParam(name = "filter2", defaultValue = "false") boolean filter2, HttpSession sessionObj) {
 		List<Recipe> results;
 		switch (type) {
 		case "tag":
@@ -88,7 +91,24 @@ public class RecipeController {
 			results = recipeService.searchAll(query);
 			break;
 		}
-		model.addAttribute("results", results);
+		// Filter results
+		List<Recipe> filteredResults = results;
+		if (filter1) {
+			filteredResults = results.stream().filter(r -> r.getHealthScore() >= 4).collect(Collectors.toList());
+		}
+		if (filter2) {
+			Integer memberId = (Integer)sessionObj.getAttribute("userId");
+			if (memberId == null) {
+				return "redirect:/user/login";
+			}
+			Member member = userService.getMemberById((Integer)sessionObj.getAttribute("userId"));
+			Double calorieIntake = member.getCalorieIntake();
+			if (member.getCalorieIntake() == null) {
+				return "redirect:/user/myProfile";
+			}
+			filteredResults = results.stream().filter(r -> r.getCalories() <= (calorieIntake/3)).collect(Collectors.toList());
+		}
+		model.addAttribute("results", filteredResults);
 		return "/RecipeViews/HomePage";
 	}
 
