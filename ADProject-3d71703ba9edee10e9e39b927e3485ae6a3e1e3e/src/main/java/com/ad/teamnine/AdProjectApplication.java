@@ -51,6 +51,7 @@ public class AdProjectApplication {
 				recipe1.getTags().add("cuisine");
 				recipe1.getTags().add("easy");
 				recipe1.setHealthScore(3);
+				recipe1.setCalories(350.5);
 				recipeRepo.save(recipe1);
 				ingredient1.getRecipes().add(recipe1);
 				ingredient2.getRecipes().add(recipe1);

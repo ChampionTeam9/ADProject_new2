@@ -45,7 +45,6 @@
 							calorie intake</label>
 					</div>
 					<select name="searchtype" style="width: 8%;">
-<<<<<<< HEAD
 						<option value="name" th:selected="${searchtype == 'name'}">Name</option>
 						<option value="description" th:selected="${searchtype == 'description'}">Description</option>
 						<option value="tag" th:selected="${searchtype == 'tag'}">Tag</option>
@@ -54,6 +53,7 @@
 					<input type="hidden" id="pageNo" name="pageNo" />
 				</div>
 			</div>
+			<p th:if="${#lists.isEmpty(results)}">No Recipes Found</p>
 			<div class="row" th:if="${not #lists.isEmpty(results)}">
 				<div th:each="recipe : ${results}" class="col-md-3">
 					<div class="card mt-5" style="width: 18rem;">
@@ -83,7 +83,7 @@
 				</div>
 			</div>
 			<br />
-			<div style="text-align: center;">
+			<div style="text-align: center;" th:if="${not #lists.isEmpty(results)}">
 				<input type="hidden" th:value="${request}" id="requestURI" />
 				<span>
 					<th:block th:with="prevPage=${currentPage-1}">
@@ -96,7 +96,7 @@
 						<a name="next" id="next" th:href="${request} + '?pageNo=' + ${nextPage} + '&pageSize=' + ${pageSize}">Next</a>
 				</span>
 			</div>
-			<div style="text-align: center;">
+			<div style="text-align: center;" th:if="${not #lists.isEmpty(results)}">
 				<label for="pageSize" class="col-form-label">Recipes per page:</label>
 				<div>
 					<select name="pageSize" id="pageSize" style="width: 5%;">

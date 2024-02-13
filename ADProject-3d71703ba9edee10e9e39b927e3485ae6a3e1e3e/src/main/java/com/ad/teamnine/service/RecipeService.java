@@ -190,8 +190,8 @@ public class RecipeService {
 		return matchingTags;
 	}
 
-	public List<Recipe> getAllRecipesByMember(Member member) {
-		return recipeRepo.findByMember(member);
+	public List<Recipe> getAllRecipesByMember(Member member, Status status) {
+		return recipeRepo.findByMember(member, status);
 	}
 	
 	public List<Recipe> getAllRecipesByYear(int year){
@@ -204,7 +204,7 @@ public class RecipeService {
 
 	public Page<Recipe> findAllRecipesByPage(int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-		Page<Recipe> recipePage = recipeRepo.findAll(pageRequest);
+		Page<Recipe> recipePage = recipeRepo.findAllPublic(pageRequest);
 		return recipePage;
 	}
 }

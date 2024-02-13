@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -231,8 +232,6 @@ public class UserController {
 		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
 		model.addAttribute("member", member);
-		// Get all recipes for the user
-		model.addAttribute("recipes", recipeService.getAllRecipesByMember(member));
 		return "UserViews/showMyProfile";
 	}
 
@@ -251,7 +250,12 @@ public class UserController {
 	@GetMapping("/profile/{id}")
 	public String viewUserProfile(@PathVariable("id") Integer memberId, HttpSession sessionObj, Model model) {
 		Member member = userService.getMemberById(memberId);
+		if (member.getMemberStatus() == Status.DELETED) {
+			return "UserViews/memberDeletedPage";
+		}
 		model.addAttribute("member", member);
+		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
+		model.addAttribute("recipes", publicRecipes);
 		if(sessionObj.getAttribute("userId")!=null&&sessionObj.getAttribute("userType").equals("admin")) {
 			model.addAttribute("ifAdmin",true);
 		}
@@ -434,7 +438,7 @@ public class UserController {
 	public String showMyRecipeList(Model model, HttpSession sessionObj) {
 		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
-		List<Recipe> recipes = member.getAddedRecipes();
+		List<Recipe> recipes = member.getAddedRecipes().stream().filter(r -> r.getStatus() != Status.DELETED).collect(Collectors.toList());
 		model.addAttribute("recipes", recipes);
 		return "UserViews/showMyRecipePage";
 	}
@@ -464,6 +468,11 @@ public class UserController {
 				return "redirect:/user/admin/dashboard";
 			} else {
 				httpSession.setAttribute("userType", "member");
+				if (userService.getMemberById(user.getId()).getMemberStatus() == Status.DELETED) {
+					httpSession.invalidate();
+					model.addAttribute("errorMessage", "Account has been deleted");
+					return "UserViews/login";
+				}
 				return "redirect:/";
 			}
 		} else {

@@ -21,8 +21,9 @@
 	<div class="container" style="width: 60%;">
 		<h2>Member Report Details</h1>
 		<br />
-		<p>ID: <span th:text="${report.id}"></span></p>
-		<p>Reported by: <span th:text="${report.memberReported.username}"></span></p>
+		<p>Report ID: <span th:text="${report.id}"></span></p>
+		<p>Username: <a th:href="@{/user/profile/{id}(id=${report.memberReported.id})}"><span th:text="${report.memberReported.username}"></span></a></p>
+		<p>Reported by: <a th:href="@{/user/profile/{id}(id=${report.member.id})}"><span th:text="${report.member.username}"></span></a></p>
 		<p>Reason: <span th:text="${report.reason}"></span></p>
 		<div style="display: flex; justify-content: center; margin-top: 20px;">
 			<button type="submit" value="Approve" style="margin-right: 8px;" th:id="${report.id}" 
