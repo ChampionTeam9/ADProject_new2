@@ -31,22 +31,34 @@ public class ReportService {
 
 	@Autowired
 	MemberReportRepository memberReportRepository;
-
 	@Autowired
 	UserService userService;
 
 	@Autowired
 	RecipeService recipeService;
-
+	
+	@Autowired
+	EmailService emailService;
 	// report inappropriate recipes
 	public void reportRecipes(RecipeReport report) {
 		report.setStatus(Status.PENDING);
+		report.setReason(report.getReason().trim());
 		recipeReportRepository.save(report);
+		if(report.getRecipeReported().getMember().getEmail()!=null) {
+			emailService.RecipeReportNotificationToMember(report);
+		}
+		emailService.ReportNotificationToAdmin(report,"RecipeReport");
+		
 	}
 
 	// report inappropriate members
 	public void reportMembers(MemberReport report) {
 		report.setStatus(Status.PENDING);
+		report.setReason(report.getReason().trim());
 		memberReportRepository.save(report);
+		if(report.getMemberReported().getEmail()!=null) {
+			emailService.MemberReportNotificationToMemberReported(report);
+		}
+		emailService.ReportNotificationToAdmin(report,"MemberReport");
 	}
 }

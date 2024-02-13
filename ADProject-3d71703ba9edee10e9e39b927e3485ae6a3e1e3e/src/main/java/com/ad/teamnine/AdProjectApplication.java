@@ -27,7 +27,7 @@ public class AdProjectApplication {
 	public CommandLineRunner commandLineRun(AdminRepository adminRepo, MemberRepository memberRepo, IngredientRepository ingrRepo, RecipeRepository recipeRepo) {
 		return args -> {
 			LocalDate date1 = LocalDate.of(2000, 1, 8);
-			Member member1 = new Member("member1Username", "member1Password!", 170, 65.3, date1, "Male");
+			Member member1 = new Member("member1Username", "member1Password!", 170, 65.3, date1, "Male","e1221820@u.nus.edu");
 			memberRepo.save(member1);
 			
 			Ingredient ingredient1 = new Ingredient("1 whole banana", 1.26, 102.97, 26.38, 14.11, 1.16, 0.38, 0.13);
@@ -57,6 +57,7 @@ public class AdProjectApplication {
 			admin1.setId(3);
 			admin1.setPassword("Admin1password!");
 			admin1.setUsername("Admin1username!");
+			admin1.setEmail("e1221820@u.nus.edu");
 			adminRepo.save(admin1);
 		};
 	}
