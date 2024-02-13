@@ -63,7 +63,7 @@ public class RecipeService {
 	// save specific recipe by id
 	public void saveRecipe(Recipe recipe, Member member) {
 		member.getSavedRecipes().add(recipe);
-		recipe.getMembersWhoSave().add(member); 
+		recipe.getMembersWhoSave().add(member);
 		recipe.setNumberOfSaved(recipe.getNumberOfSaved() + 1);
 		memberRepo.save(member);
 		recipeRepo.save(recipe);
@@ -73,7 +73,7 @@ public class RecipeService {
 	public void unsubscribeRecipe(Recipe recipe, Member member) {
 
 		member.getSavedRecipes().remove(recipe);
-		recipe.getMembersWhoSave().remove(member); 
+		recipe.getMembersWhoSave().remove(member);
 		recipe.setNumberOfSaved(recipe.getNumberOfSaved() - 1);
 		memberRepo.save(member);
 		recipeRepo.save(recipe);
@@ -117,13 +117,13 @@ public class RecipeService {
 		List<Recipe> results = recipeRepo.findByNameContaining(query);
 		return results;
 	}
-	
+
 	public Page<Recipe> searchByName(String query, int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 		Page<Recipe> results = recipeRepo.findByNameContainingByPage(query, pageRequest);
 		return results;
 	}
-	
+
 	public List<Recipe> searchByTag(String tag) {
 		List<Recipe> results = recipeRepo.findByTagsContaining(tag);
 		return results;
@@ -139,7 +139,7 @@ public class RecipeService {
 		List<Recipe> results = recipeRepo.findByDescriptionContaining(query);
 		return results;
 	}
-	
+
 	public Page<Recipe> searchByDescription(String query, int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 		Page<Recipe> results = recipeRepo.findByDescriptionContainingByPage(query, pageRequest);
@@ -161,6 +161,33 @@ public class RecipeService {
 
 	public List<Recipe> getAllRecipes() {
 		return recipeRepo.findAll();
+	}
+
+	public List<Recipe> getRecipesByOrder(String orderBy, String order) {
+		List<Recipe> recipes = new ArrayList<>();
+		if (orderBy.equals("rating")) {
+			if (order.equals("asc")) {
+				recipes = recipeRepo.findAllByOrderByRatingAsc();
+			} else if (order.equals("desc")) {
+				recipes = recipeRepo.findAllByOrderByRatingDesc();
+			}
+		} else if (orderBy.equals("numberOfSaved")) {
+			if (order.equals("asc")) {
+				recipes = recipeRepo.findAllByOrderByNumberOfSavedAsc();
+			} else if (order.equals("desc")) {
+				recipes = recipeRepo.findAllByOrderByNumberOfSavedDesc();
+			}
+		} else if (orderBy.equals("healthScore")) {
+			if (order.equals("asc")) {
+				recipes = recipeRepo.findAllByOrderByHealthScoreAsc();
+			} else if (order.equals("desc")) {
+				recipes = recipeRepo.findAllByOrderByHealthScoreDesc();
+			}
+		}
+		else {
+			recipes = recipeRepo.findAll();
+		}
+		return recipes;
 	}
 
 	// get all unique tags
@@ -193,12 +220,12 @@ public class RecipeService {
 	public List<Recipe> getAllRecipesByMember(Member member, Status status) {
 		return recipeRepo.findByMember(member, status);
 	}
-	
-	public List<Recipe> getAllRecipesByYear(int year){
+
+	public List<Recipe> getAllRecipesByYear(int year) {
 		return recipeRepo.getAllRecipesByYear(year);
 	}
-	
-	public List<Object[]> getRecipeCountByTag(){
+
+	public List<Object[]> getRecipeCountByTag() {
 		return recipeRepo.getRecipeCountByTag();
 	}
 
