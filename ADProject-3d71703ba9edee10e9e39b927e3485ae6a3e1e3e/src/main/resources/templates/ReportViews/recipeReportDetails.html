@@ -11,7 +11,7 @@
 <style>
 	button {
 		border-radius: 4px;
-		width:80px;
+		width: 80px;
 	}
 </style>
 
@@ -25,20 +25,20 @@
 		<table class="table">
 			<tbody>
 				<tr>
-					<td>ID:</td>
-					<td th:text="${report.id}"></td>
+					<td style="width:30%;">ID:</td>
+					<td th:text="${report.id}" style="width:70%;"></td>
 				</tr>
 				<tr>
-					<td>Reported Recipe Name:</td>
-					<td th:text="${report.recipeReported.name}"></td>
+					<td style="width:30%;">Reported Recipe Name:</td>
+					<td th:text="${report.recipeReported.name}" style="width:70%;"></td>
 				</tr>
 				<tr>
-					<td>Member:</td>
-					<td th:text="${report.member.username}"></td>
+					<td style="width:30%;">Member:</td>
+					<td th:text="${report.member.username}" style="width:70%;"></td>
 				</tr>
 				<tr>
-					<td>Reason:</td>
-					<td th:text="${report.reason}"></td>
+					<td style="width:30%;">Reason:</td>
+					<td th:text="${report.reason}" style="width:30%; white-space: pre-wrap; word-break: break-all;"></td>
 				</tr>
 			</tbody>
 		</table>

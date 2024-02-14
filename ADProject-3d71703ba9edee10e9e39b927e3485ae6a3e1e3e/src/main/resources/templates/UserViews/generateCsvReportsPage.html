@@ -10,6 +10,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<link href="/style2.css" rel="stylesheet" />
 	<style>
 		.selectBar {
 			text-align: center;
@@ -33,16 +34,6 @@
 		.selectBar a {
 			display: inline-block;
 			margin-left: 20px;
-		}
-
-		.recipe-link {
-			color: gray;
-			text-decoration: none;
-
-		}
-
-		.recipe-link:hover {
-			color: darkgray;
 		}
 	</style>
 	<script>
@@ -78,8 +69,8 @@
 				<option value="desc">Desc</option>
 				<option value="asc">Asc</option>
 			</select>
-			<button type="submit" class="button-style" style="margin:0 20px;">Search</button>
-			<button id="downloadButton" onclick="downloadCSV()">Download CSV</button>
+			<button type="submit" class="button-style" style="margin:0 10px;">Search</button>
+			<button class="button-style" id="downloadButton" onclick="downloadCSV()">Download CSV</button>
 		</form>
 		<!--<a href="/csv/download" download="output.csv" id="downloadLink">Download CSV</a>-->
 	</div>
@@ -88,20 +79,18 @@
 		<table class="table table-hover" th:if="${not #lists.isEmpty(recipes)}">
 			<thead>
 				<tr>
-					<th scope="col">#</th>
-					<th scope="col">ID</th>
-					<th scope="col">Details</th>
-					<th scope="col">Rating</th>
-					<th scope="col">Number of saved</th>
-					<th scope="col">Health score</th>
+					<th scope="col" style="width: 10%;">ID</th>
+					<th scope="col" style="width: 45%;">Name</th>
+					<th scope="col" style="width: 15%;">Rating</th>
+					<th scope="col" style="width: 15%;">Number of saved</th>
+					<th scope="col" style="width: 15%;">Health score</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr scope="row" th:each="recipe,iterStat : ${recipes}">
-					<td th:text="${iterStat.count}">1</td>
+				<tr scope="row" th:each="recipe : ${recipes}">
 					<td th:text="${recipe.id}">Recipe ID</td>
 					<td><a href="recipeDetailPage.html" th:href="@{/recipe/detail/}+${recipe.id}"
-							class="recipe-link"><span th:text="${recipe.name}"></span></a></td>
+							class="good-link" style="word-wrap: break-word;"><span th:text="${recipe.name}"></span></a></td>
 					<td th:text="${recipe.rating}">Rating</td>
 					<td th:text="${recipe.numberOfSaved}">Number of saved</td>
 					<td th:text="${recipe.healthScore}">Health score</td>

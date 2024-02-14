@@ -69,5 +69,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
 	@Query("SELECT YEAR(r.submittedDate) AS year, COUNT(r) AS count FROM Recipe r WHERE r.submittedDate <= :date GROUP BY YEAR(r.submittedDate) ORDER BY YEAR(r.submittedDate) ASC")
 	List<Object[]> countRecipesBeforeEachYear(LocalDate date);
 
+	@Query("SELECT COUNT(r) FROM Recipe r WHERE r.submittedDate = CURRENT_DATE")
+	int countRecipesAddedToday();
+
+	@Query("SELECT COUNT(r) FROM Recipe r WHERE YEAR(r.submittedDate) = YEAR(CURRENT_DATE)")
+	int countRecipesAddedThisYear();
 
 }

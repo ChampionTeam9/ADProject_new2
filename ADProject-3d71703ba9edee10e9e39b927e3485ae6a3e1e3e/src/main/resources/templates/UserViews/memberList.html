@@ -7,11 +7,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	<style>
-		button {
-			border-radius: 4px;
-		}
-	</style>
+	<link href="/style2.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -43,7 +39,8 @@
 				<tr scope="row" th:if="${not #lists.isEmpty(members)}" th:each="member,iterStat : ${members}">
 					<td th:text="${iterStat.count}">1</td>
 					<td th:text="${member.id}">ID</td>
-					<td th:text="${member.username}">Reported Member Name</td>
+					<td><a th:href="@{/user/profile/{id}(id=${member.id})}" class="good-link"><span
+								th:text="${member.username}"></span></a></td>
 					<td>
 						<button type="button" class="button-style" th:id="${member.id}"
 							onclick="promptDelete(this.id)">Delete</button>
@@ -69,7 +66,7 @@
 		</tr>
 	</table>
 	-->
-	
+
 	<script>
 		function promptDelete(id) {
 			console.log("id: " + id);

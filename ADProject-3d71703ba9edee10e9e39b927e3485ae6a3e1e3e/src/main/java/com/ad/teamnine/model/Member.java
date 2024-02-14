@@ -57,7 +57,9 @@ public class Member extends User{
 	@OneToMany(mappedBy = "memberReported")
 	private List<MemberReport> reportsToMember;
 	
-	public Member() {}
+	public Member() {
+		this.memberStatus = Status.CREATED;
+	}
 	
 	public Member(String username, String password, double height, double weight, LocalDate birthdate, String gender, String email) {
 		super(username, password);
