@@ -57,7 +57,7 @@ public class RecipeController {
 		Recipe recipe = recipeService.getRecipeById(id);
 		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
 		recipeService.unsubscribeRecipe(recipe, member);
-		return "redirect:/recipe/detail/" + id;
+		return "redirect:/user/member/savedList";
 	}
 
 	@GetMapping("/review/{id}")

@@ -178,6 +178,7 @@ public class APIController {
 			String recipeName = currRecipe[0];
 			String recipeDescription = currRecipe[9];
 			double recipeRating = Double.parseDouble(currRecipe[16]);
+			recipeRating = Math.round(recipeRating * 10.0) / 10.0;
 			int numberOfRating = Integer.parseInt(currRecipe[17]);
 			int preparationTime = Integer.parseInt(currRecipe[2]);
 			int servings = Integer.parseInt(currRecipe[14]);
@@ -214,7 +215,7 @@ public class APIController {
 		for (int i = 0; i < ingredientsArr.length; i++) {
 			ingredientsArr[i] = ingredientsArr[i].trim();
 			ingredientsArr[i] = ingredientsArr[i].replaceAll("\\s+", " ");
-			ingredientsArr[i] = ingredientsArr[i].replaceAll("\"", "");
+			ingredientsArr[i] = ingredientsArr[i].replaceAll("'", "");
 		}
 		return ingredientsArr;
 	}
