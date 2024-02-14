@@ -174,8 +174,13 @@ public class APIController {
 			// Create recipe
 			int recipeId = Integer.parseInt(currRecipe[1]);
 			String recipeName = currRecipe[0];
+			recipeName = recipeName.substring(0, 1).toUpperCase() + recipeName.substring(1);
 			String recipeDescription = currRecipe[9];
+			if (!recipeDescription.isEmpty()) {
+				recipeDescription = recipeDescription.substring(0, 1).toUpperCase() + recipeDescription.substring(1);
+			}
 			double recipeRating = Double.parseDouble(currRecipe[16]);
+			recipeRating = Math.round(recipeRating * 10.0) / 10.0;
 			int numberOfRating = Integer.parseInt(currRecipe[17]);
 			int preparationTime = Integer.parseInt(currRecipe[2]);
 			int servings = Integer.parseInt(currRecipe[14]);
@@ -212,7 +217,7 @@ public class APIController {
 		for (int i = 0; i < ingredientsArr.length; i++) {
 			ingredientsArr[i] = ingredientsArr[i].trim();
 			ingredientsArr[i] = ingredientsArr[i].replaceAll("\\s+", " ");
-			ingredientsArr[i] = ingredientsArr[i].replaceAll("\"", "");
+			ingredientsArr[i] = ingredientsArr[i].replaceAll("'", "");
 		}
 		return ingredientsArr;
 	}

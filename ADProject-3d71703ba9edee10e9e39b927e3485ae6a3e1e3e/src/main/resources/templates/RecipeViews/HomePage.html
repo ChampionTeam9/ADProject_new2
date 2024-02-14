@@ -37,7 +37,7 @@
 				<div style="position: relative;">
 					<input type="text" id="searchInput" name="query" placeholder="Enter your search query"
 						th:value="${query}" style="width: 60%;">
-					<button id="toggleButton" type="button" class="button-style">☰</button>
+					<button id="toggleButton" type="button" class="button-style">Filter</button>
 					<div id="filterMenu" class="filter-menu" style="text-align: left;">
 						<input type="checkbox" id="filter1" name="filter1"><label for="filter1">&nbsp;&nbsp;Health Score
 							≥ 4</label><br />
@@ -62,11 +62,11 @@
 								<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}"
 									alt="Recipe Image" style="width: 100%; height: 200px; object-fit: cover;">
 							</a>
-							<div class="card-body" style="min-height: 105px;">
-								<h5 class="card-title">
+							<div class="card-body">
+								<h5 class="card-title" style="min-height: 50px; max-height: 50px; overflow: hidden">
 									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
 								</h5>
-								<p class="card-text text-truncate" style="max-height: 3.6em; overflow: hidden;" th:text="${recipe.description}"></p>
+								<p class="card-text text-truncate" style="min-height: 25px; max-height: 25px; overflow: hidden" th:text="${recipe.description}"></p>
 							</div>
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item">
@@ -87,13 +87,13 @@
 				<input type="hidden" th:value="${request}" id="requestURI" />
 				<span>
 					<th:block th:with="prevPage=${currentPage-1}">
-						<a name="previous" id="previous" th:href="${request} + '?pageNo=' + ${prevPage} + '&pageSize=' + ${pageSize}">Previous</a>
+						<button name="previous" id="previous" class="button-style" style="width: 80px;">Previous</button>
 				</span>&emsp;
 				<span>Page <span th:text="${currentPage + 1}"></span> of <span
 						th:text="${totalPages}"></span></span>&emsp;
 				<span>
 					<th:block th:with="nextPage=${currentPage+1}">
-						<a name="next" id="next" th:href="${request} + '?pageNo=' + ${nextPage} + '&pageSize=' + ${pageSize}">Next</a>
+						<button name="next" id="next" class="button-style" style="width: 80px;">Next</button>
 				</span>
 			</div>
 			<div style="text-align: center;" th:if="${not #lists.isEmpty(results)}">
@@ -123,14 +123,6 @@
 		const totalPages = /*[[${totalPages}]]*/ 0;
 		console.log("currentPage: " + currentPage);
 		console.log("totalPages: " + totalPages);
-		if (currentPage === 0) {
-			previousElement.removeAttribute("href");
-			previousElement.style.color = "gray";
-		}
-		if (currentPage === (totalPages - 1)) {
-			nextElement.removeAttribute("href");
-			nextElement.style.color = "gray";
-		}
 
 		pageSizeDropDown.addEventListener("change", function () {
 			if (requestURI === "/recipe/search") {
@@ -147,26 +139,30 @@
 
 		previousElement.addEventListener("click", function (event) {
 			event.preventDefault();
-			if (requestURI === "/recipe/search") {
-				document.getElementById("pageNo").value = currentPage - 1;
-				document.getElementById("pageSize").value = pageSizeDropDown.value;
-				document.getElementById("searchForm").submit();
-			} else {
-				window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=" + (currentPage - 1);
+			if(currentPage > 0){
+				if (requestURI === "/recipe/search") {
+					document.getElementById("pageNo").value = currentPage - 1;
+					document.getElementById("pageSize").value = pageSizeDropDown.value;
+					document.getElementById("searchForm").submit();
+				} else {
+					window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=" + (currentPage - 1);
+				}
 			}
 		});
 
 		nextElement.addEventListener("click", function (event) {
 			event.preventDefault();
-			if (requestURI === "/recipe/search") {
-				document.getElementById("pageNo").value = currentPage + 1;
-				console.log(document.getElementById("pageNo").value);
-				document.getElementById("pageSize").value = pageSizeDropDown.value;
-				console.log(document.getElementById("pageSize").value);
-				document.getElementById("searchForm").submit();
-			} else {
-				console.log("else printed");
-				window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=" + (currentPage + 1);
+			if(currentPage + 1 < totalPages){
+				if (requestURI === "/recipe/search") {
+					document.getElementById("pageNo").value = currentPage + 1;
+					console.log(document.getElementById("pageNo").value);
+					document.getElementById("pageSize").value = pageSizeDropDown.value;
+					console.log(document.getElementById("pageSize").value);
+					document.getElementById("searchForm").submit();
+				} else {
+					console.log("else printed");
+					window.location.href = requestURI + "?pageSize=" + pageSize.value + "&pageNo=" + (currentPage + 1);
+				}
 			}
 		});
 	</script>

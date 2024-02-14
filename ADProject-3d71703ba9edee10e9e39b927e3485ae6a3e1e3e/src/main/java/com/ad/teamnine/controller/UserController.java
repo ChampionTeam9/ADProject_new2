@@ -106,16 +106,6 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	// Edit the shopping list
-	@GetMapping("shoppingList/edit")
-	public String editShoppingList(Model model, HttpSession sessionObj) {
-		// Get member's shopping list
-		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
-		List<ShoppingListItem> shoppingList = member.getShoppingList();
-		model.addAttribute("shoppingList", shoppingList);
-		return "/UserViews/editShoppingListPage";
-	}
-
 	// Clear off ShoppingListItems
 	@PostMapping("shoppingList/clearItems")
 	public ResponseEntity<Void> clearItems(@RequestBody Map<String, Object> payload, HttpSession sessionObj) {
@@ -179,17 +169,18 @@ public class UserController {
 
 	// refresh tags on the website
 	@PostMapping("/refresh")
-	public String refreshTags(Model model, @RequestParam("tags") List<String> tags, HttpSession session) {
+	public String refreshTags(Model model, @RequestParam(value="tags", required = false) List<String> tags, HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
+		System.out.println("refresh method called");
 		if (oldTags == null) {
 			session.setAttribute("tags", tags);
 		} else {
 			Set<String> selectedTags = new HashSet<>(oldTags);
-			selectedTags.addAll(tags);
-			List<String> combinedTags = new ArrayList<>(selectedTags);
-			session.setAttribute("tags", combinedTags);
-			Set<String> newTags = userService.getRandomUniqueTags(7);
-			model.addAttribute("tags", newTags);
+			if (tags != null) {
+				selectedTags.addAll(tags);
+				List<String> combinedTags = new ArrayList<>(selectedTags);
+				session.setAttribute("tags", combinedTags);
+			}
 		}
 		Set<String> newTags = userService.getRandomUniqueTags(7);
 		model.addAttribute("tags", newTags);
@@ -501,7 +492,7 @@ public class UserController {
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("userId");
+		session.invalidate();
 		return "redirect:/user/login";
 	}
 
