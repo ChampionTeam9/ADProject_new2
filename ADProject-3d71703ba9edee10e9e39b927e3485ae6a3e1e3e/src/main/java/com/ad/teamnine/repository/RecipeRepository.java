@@ -1,5 +1,6 @@
 package com.ad.teamnine.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,5 +65,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
 	List<Recipe> findAllByOrderByHealthScoreAsc();
 
 	List<Recipe> findAllByOrderByHealthScoreDesc();
+
+	@Query("SELECT YEAR(r.submittedDate) AS year, COUNT(r) AS count FROM Recipe r WHERE r.submittedDate <= :date GROUP BY YEAR(r.submittedDate) ORDER BY YEAR(r.submittedDate) ASC")
+	List<Object[]> countRecipesBeforeEachYear(LocalDate date);
+
 
 }

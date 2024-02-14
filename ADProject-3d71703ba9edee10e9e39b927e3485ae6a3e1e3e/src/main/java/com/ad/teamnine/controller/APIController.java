@@ -5,14 +5,14 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import java.util.HashSet;
@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -56,7 +53,7 @@ public class APIController {
 	RecipeService recipeService;
 	@Autowired
 	ReviewService reviewService;
-	
+
 	Map<Integer, Integer> csvIdToDbIdRecipe = new HashMap<>();
 	Map<Integer, Integer> csvIdToDbIdMember = new HashMap<>();
 
@@ -93,7 +90,7 @@ public class APIController {
 		IngredientInfo ingredientInfo = restTemplate.getForObject(url, IngredientInfo.class);
 		List<Parsed> parsed = ingredientInfo.getIngredients().get(0).getParsed();
 		if (parsed == null) {
-			//No such ingredient found
+			// No such ingredient found
 			return new ResponseEntity<Ingredient>(HttpStatus.NOT_FOUND);
 		}
 		String status = parsed.get(0).getStatus();
@@ -108,13 +105,15 @@ public class APIController {
 		double sodium = getDefaultIfNull(nutrients.getNA().getQuantity());
 		double fat = getDefaultIfNull(nutrients.getFAT().getQuantity());
 		double saturatedFat = getDefaultIfNull(nutrients.getFASAT().getQuantity());
-		Ingredient ingredient = new Ingredient(foodText, protein, calories, carbohydrate, sugar, sodium, fat, saturatedFat);
+		Ingredient ingredient = new Ingredient(foodText, protein, calories, carbohydrate, sugar, sodium, fat,
+				saturatedFat);
 		return new ResponseEntity<Ingredient>(ingredient, HttpStatus.OK);
 	}
-	
+
 	private static double getDefaultIfNull(Double value) {
-		// If any of the nutrients is null as info not available on API, set default to zero
-	    return value != null ? value : 0.0;
+		// If any of the nutrients is null as info not available on API, set default to
+		// zero
+		return value != null ? value : 0.0;
 	}
 
 	public void saveEntities(List<String[]> recipes) {
@@ -128,8 +127,7 @@ public class APIController {
 			// In case member already exists
 			if (csvIdToDbIdMember.containsKey(memberId)) {
 				member = userService.getMemberById(csvIdToDbIdMember.get(memberId));
-			}
-			else {
+			} else {
 				// Randomise their attributes as not provided in dataset
 				String username = "member" + memberId;
 				String password = "member" + memberId + "Password!";
@@ -137,17 +135,17 @@ public class APIController {
 				Double height = Math.round((140 + (190 - 140) * rnd.nextDouble()) * 10.0) / 10.0;
 				Double weight = Math.round((45 + (90 - 50) * rnd.nextDouble()) * 10.0) / 10.0;
 				LocalDate startDate = LocalDate.of(1950, 1, 1);
-		        LocalDate endDate = LocalDate.of(2005, 12, 31);
-		        long startEpochDay = startDate.toEpochDay();
-		        long endEpochDay = endDate.toEpochDay();
-		        long randomEpochDay = startEpochDay + (long) (Math.random() * (endEpochDay - startEpochDay + 1));
-		        LocalDate birthdate = LocalDate.ofEpochDay(randomEpochDay);
-		        String gender;
-		        if (Math.random() > 0.5) 
-		        	gender  = "Male";
-		        else 
-		        	gender = "Female";
-				member = new Member(username, password, height, weight, birthdate, gender,null);
+				LocalDate endDate = LocalDate.of(2005, 12, 31);
+				long startEpochDay = startDate.toEpochDay();
+				long endEpochDay = endDate.toEpochDay();
+				long randomEpochDay = startEpochDay + (long) (Math.random() * (endEpochDay - startEpochDay + 1));
+				LocalDate birthdate = LocalDate.ofEpochDay(randomEpochDay);
+				String gender;
+				if (Math.random() > 0.5)
+					gender = "Male";
+				else
+					gender = "Female";
+				member = new Member(username, password, height, weight, birthdate, gender, null);
 				Member savedMember = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}
@@ -234,7 +232,7 @@ public class APIController {
 		}
 		return itemsArr;
 	}
-	
+
 	public void saveInteractions(List<String[]> interactions) {
 		for (int i = 1; i < interactions.size(); i++) {
 			String[] currInteraction = interactions.get(i);
@@ -243,8 +241,7 @@ public class APIController {
 			// Get member from Db if exists
 			if (csvIdToDbIdMember.containsKey(memberId)) {
 				member = userService.getMemberById(csvIdToDbIdMember.get(memberId));
-			}
-			else {
+			} else {
 				member = new Member();
 				member.setUsername("member" + memberId);
 				member.setPassword("member" + memberId + "Password!");
@@ -263,23 +260,24 @@ public class APIController {
 			reviewService.saveReview(review);
 		}
 	}
-	
+
 	@GetMapping("/user/status")
 	@ResponseBody
 	public Map<String, Object> getUserStatus(HttpSession session) {
-	    Map<String, Object> status = new HashMap<>();
-	   
-	    Integer userId = (Integer) session.getAttribute("userId");
-	    boolean isLoggedIn = userId != null;
-	    status.put("isLoggedIn", isLoggedIn);
-	    
-	    if (isLoggedIn) {
-	        
-	        String username = userService.getUsernameById(userId); 
-	        status.put("username", username);
-	    }
-	    return status;
+		Map<String, Object> status = new HashMap<>();
+
+		Integer userId = (Integer) session.getAttribute("userId");
+		boolean isLoggedIn = userId != null;
+		status.put("isLoggedIn", isLoggedIn);
+
+		if (isLoggedIn) {
+
+			String username = userService.getUsernameById(userId);
+			status.put("username", username);
+		}
+		return status;
 	}
+
 	@PostMapping("/login")
 	public ResponseEntity<?> loginUser(@RequestBody Member user1) {
 		logger.info("Attempting to log in user: {}", user1.getUsername());
@@ -321,7 +319,22 @@ public class APIController {
 		}
 	}
 
-	
+	@GetMapping("/getRecipeCountByMonth")
+	public ResponseEntity<Map<String, Object>> getRecipeData(@RequestParam int year) {
+		List<Recipe> recipesByYear = recipeService.getAllRecipesByYear(year);
+		List<String> months = new ArrayList<>();
+		Collections.addAll(months, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+		// Initialize list with 0s for each month
+		List<Integer> counts = new ArrayList<>(Collections.nCopies(12, 0));
+		for (Recipe recipe : recipesByYear) {
+			int monthIndex = recipe.getSubmittedDate().getMonthValue() - 1;
+			counts.set(monthIndex, counts.get(monthIndex) + 1);
+		}
+
+		Map<String, Object> responseData = new HashMap<>();
+		responseData.put("months", months);
+		responseData.put("counts", counts);
+
+		return new ResponseEntity<>(responseData, HttpStatus.OK);
+	}
 }
-
-
