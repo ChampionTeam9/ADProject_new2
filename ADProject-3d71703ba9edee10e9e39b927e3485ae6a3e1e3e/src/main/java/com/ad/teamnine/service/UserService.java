@@ -247,4 +247,8 @@ public class UserService {
 		Optional<User> user = userRepo.findById(id);
 		return user.orElse(null);
 	}
+public Member getMemberByUsername(String username) {
+		
+		return memberRepo.findByUsername(username);
+	}
 }
