@@ -269,14 +269,21 @@ public class RecipeController {
 			fat += ingredient.getFat();
 			saturatedFat += ingredient.getSaturatedFat();
 		}
-		recipe.setCalories(calories / servings);
+		recipe.setCalories(Math.round((calories / servings) * 10.0) / 10.0);
+		
 		// Calculate PDV of each macronutrient by using their reference intake
 		Double proteinPDV = (protein / servings) / 50 * 100;
+		proteinPDV = Math.round(proteinPDV * 10.0) / 10.0;
 		Double carbohydratePDV = (carbohydrate / servings) / 260 * 100;
+		carbohydratePDV = Math.round(carbohydratePDV * 10.0) / 10.0;
 		Double sugarPDV = (sugar / servings) / 90 * 100;
+		sugarPDV = Math.round(sugarPDV * 10.0) / 10.0;
 		Double sodiumPDV = (sodium / 1000 / servings) / 6 * 100;
+		sodiumPDV = Math.round(sodiumPDV * 10.0) / 10.0;
 		Double fatPDV = (fat / servings) / 70 * 100;
+		fatPDV = Math.round(fatPDV * 10.0) / 10.0;
 		Double saturatedFatPDV = (saturatedFat / servings) / 20 * 100;
+		saturatedFatPDV = Math.round(saturatedFatPDV * 10.0) / 10.0;
 		recipe.setProtein(proteinPDV);
 		recipe.setCarbohydrate(carbohydratePDV);
 		recipe.setSugar(sugarPDV);
