@@ -485,7 +485,7 @@ public class UserController {
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("userId");
+		session.invalidate();
 		return "redirect:/user/login";
 	}
 
