@@ -61,4 +61,11 @@ public class ReportService {
 		}
 		emailService.ReportNotificationToAdmin(report,"MemberReport");
 	}
+	
+	public long getRecipeReportCount() {
+		return recipeReportRepository.countByStatus(Status.PENDING);
+	}
+	public long getMemberReportCount() {
+		return memberReportRepository.countByStatus(Status.PENDING);
+	}
 }

@@ -1,8 +1,12 @@
 package com.ad.teamnine.controller;
 
 import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -10,14 +14,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +46,7 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/api")
 public class APIController {
 	private final CsvService csvService;
+	private static final Logger logger = LoggerFactory.getLogger(APIController.class);
 
 	@Autowired
 	UserService userService;
@@ -261,6 +276,48 @@ public class APIController {
 	    }
 	    return status;
 	}
+	@PostMapping("/login")
+	public ResponseEntity<?> loginUser(@RequestBody Member user1) {
+		logger.info("Attempting to log in user: {}", user1.getUsername());
+		User user = userService.getUserByUsername(user1.getUsername());
+		if (user != null && user1.getPassword().equals(user.getPassword())) {
+			logger.info("Login successful for user: {}", user1.getUsername());
+			return ResponseEntity.ok().body("Login succeeded!");
+		} else {
+			logger.error("Login failed for user: {}", user1.getUsername());
+			return ResponseEntity.badRequest().body("Username or password wrong!");
+		}
+	}
+
+	@PostMapping("/getMySavedRecipes")
+	public ResponseEntity<?> getSavedRecipes(@RequestBody Member member) {
+		try {
+			Member member1 = userService.getMemberByUsername(member.getUsername());
+			if (member1 == null) {
+				return ResponseEntity.notFound().build();
+			}
+
+			Set<Recipe> recipes = new HashSet<>(member1.getSavedRecipes());
+
+			// 构建包含食谱信息的List
+			List<RecipeDTO> recipeDTOs = new ArrayList<>();
+			for (Recipe recipe : recipes) {
+				RecipeDTO recipeDTO = new RecipeDTO();
+				recipeDTO.setId(recipe.getId());
+				recipeDTO.setName(recipe.getName());
+				recipeDTO.setDescription(recipe.getDescription());
+				recipeDTOs.add(recipeDTO);
+			}
+
+			// 返回包含食谱信息的List给客户端
+			return ResponseEntity.ok().body(recipeDTOs);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred while retrieving saved recipes.");
+		}
+	}
+
+	
 }
 
 

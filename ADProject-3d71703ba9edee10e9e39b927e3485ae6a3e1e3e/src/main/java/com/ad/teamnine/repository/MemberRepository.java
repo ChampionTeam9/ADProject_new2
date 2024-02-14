@@ -9,4 +9,6 @@ import com.ad.teamnine.model.Status;
 
 public interface MemberRepository extends JpaRepository<Member,Integer>{
 	List<Member> findByMemberStatusNot(Status status);
+
+	Member findByUsername(String username);
 }

@@ -5,10 +5,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Csv Report</title>
+	<link href="/style.css" rel="stylesheet" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	<link href="/style.css" rel="stylesheet" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 	<style>
 		.selectBar {
@@ -16,9 +16,7 @@
 		}
 
 		.selectBar form {
-			width: 60%;
 			margin: 0 auto;
-			text-align: center;
 		}
 
 		.selectBar label {
@@ -36,6 +34,16 @@
 			display: inline-block;
 			margin-left: 20px;
 		}
+
+		.recipe-link {
+			color: gray;
+			text-decoration: none;
+
+		}
+
+		.recipe-link:hover {
+			color: darkgray;
+		}
 	</style>
 	<script>
 		window.addEventListener('DOMContentLoaded', (event) => {
@@ -51,14 +59,13 @@
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
 	</div>
-	<div class="container" style="width: 60%;">
+	<div class="container" style="width: 80%;">
 		<h2>Generate Csv Reports</h2>
 	</div>
 	<input type="hidden" th:value="${previousOrderBy}" id="preOrderBy">
 	<input type="hidden" th:value="${previousOrder}" id="preOrder">
 	<div class="selectBar">
-		<form style="width: 60%; margin: 0 auto; text-align: center;" action="/user/admin/generateCsvReport"
-			method="post">
+		<form style="margin: 0 auto; text-align: center;" action="/user/admin/generateCsvReport" method="post">
 			<label for="select1">Order by:</label>
 			<select id="select1" name="orderBy">
 				<option value="rating">Rating</option>
@@ -72,10 +79,11 @@
 				<option value="asc">Asc</option>
 			</select>
 			<button type="submit" class="button-style" style="margin:0 20px;">Search</button>
+			<button id="downloadButton" onclick="downloadCSV()">Download CSV</button>
 		</form>
-		<a href="/csv/download" download="output.csv" id="downloadLink">Download CSV</a>
+		<!--<a href="/csv/download" download="output.csv" id="downloadLink">Download CSV</a>-->
 	</div>
-	<div class="container" style="text-align: center; width: 70%;">
+	<div class="container" style="width: 80%;">
 		<p style="text-align: center;" th:if="${#lists.isEmpty(recipes)}">No Records Yet</p>
 		<table class="table table-hover" th:if="${not #lists.isEmpty(recipes)}">
 			<thead>
@@ -92,8 +100,8 @@
 				<tr scope="row" th:each="recipe,iterStat : ${recipes}">
 					<td th:text="${iterStat.count}">1</td>
 					<td th:text="${recipe.id}">Recipe ID</td>
-					<td><a href="recipeDetailPage.html" th:href="@{/recipe/detail/}+${recipe.id}"><span
-								th:text="${recipe.name}"></span></a></td>
+					<td><a href="recipeDetailPage.html" th:href="@{/recipe/detail/}+${recipe.id}"
+							class="recipe-link"><span th:text="${recipe.name}"></span></a></td>
 					<td th:text="${recipe.rating}">Rating</td>
 					<td th:text="${recipe.numberOfSaved}">Number of saved</td>
 					<td th:text="${recipe.healthScore}">Health score</td>
@@ -102,6 +110,25 @@
 		</table>
 	</div>
 	<script>
+		function downloadCSV() {
+			var select1Value = document.getElementById('select1').value;
+			var select2Value = document.getElementById('select2').value;
+			var downloadLink = "/csv/download/" + select1Value + "/" + select2Value;
+
+			// 创建一个隐藏的链接元素
+			var link = document.createElement("a");
+			link.href = downloadLink;
+			link.download = "output.csv";
+
+			// 将链接添加到文档中
+			document.body.appendChild(link);
+
+			// 模拟点击链接以触发下载
+			link.click();
+
+			// 删除添加的链接元素
+			document.body.removeChild(link);
+		}
 		document.getElementById('downloadLink').addEventListener('click', function (event) {
 			var select1Value = document.getElementById('select1').value;
 			var select2Value = document.getElementById('select2').value;
