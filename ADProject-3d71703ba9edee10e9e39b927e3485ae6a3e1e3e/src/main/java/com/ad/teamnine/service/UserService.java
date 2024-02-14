@@ -194,6 +194,12 @@ public class UserService {
 		emailService.MemberReportApprovedNotificationToMemberReported(memberReport);
 		Member member = memberReport.getMemberReported();
 		member.setMemberStatus(Status.DELETED);
+		// Set deleted member's recipes to deleted
+		List<Recipe> recipes = member.getAddedRecipes();
+		for (Recipe recipe : recipes) {
+			recipe.setStatus(Status.DELETED);
+			recipeRepo.save(recipe);
+		}
 		memberReport.setStatus(Status.APPROVED);
 		memberRepo.save(member);
 		memberReportRepository.save(memberReport);
