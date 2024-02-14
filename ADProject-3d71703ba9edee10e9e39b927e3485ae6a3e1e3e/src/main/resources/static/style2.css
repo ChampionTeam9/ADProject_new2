@@ -1,0 +1,23 @@
+.good-link {
+	font-weight: 700;
+	color: seagreen;
+	text-decoration: none;
+}
+
+.good-link:hover {
+	color: darkgreen;
+}
+
+.bad-link {
+	font-weight: 700;
+	color: orangered;
+	text-decoration: none;
+}
+
+.bad-link:hover {
+	color: darkred;
+}
+
+button {
+	border-radius: 4px;
+}

@@ -25,7 +25,7 @@
 		<br />
 		<form action="/report/reportMember" method="post" th:object="${report}">
 			<label for="reason">Reason:</label>
-			<textarea id="reason" name="reason" th:field="*{reason}" rows="4" cols="50" required></textarea>
+			<textarea id="reason" name="reason" th:field="*{reason}" rows="4" cols="50" maxlength="400" required></textarea>
 
 
 			<input type="hidden" th:field="*{member}" th:value="${report.member}">

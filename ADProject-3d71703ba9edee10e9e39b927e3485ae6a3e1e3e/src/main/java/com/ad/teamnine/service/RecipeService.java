@@ -231,7 +231,12 @@ public class RecipeService {
 	public List<Object[]> getRecipeCountByYear() {
 		return recipeRepo.countRecipesBeforeEachYear(LocalDate.now());
 	}
-
+	public int getRecipeCountAddedToday() {
+		return recipeRepo.countRecipesAddedToday();
+	}
+	public int getRecipeCountAddedThisYear() {
+		return recipeRepo.countRecipesAddedThisYear();
+	}
 	public Page<Recipe> findAllRecipesByPage(int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 		Page<Recipe> recipePage = recipeRepo.findAllPublic(pageRequest);

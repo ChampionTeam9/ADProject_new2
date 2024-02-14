@@ -27,13 +27,25 @@
 		<form action="/report/reportRecipe" method="post" th:object="${report}">
 			<div class="form-group">
 				<label for="reason">Reason:</label>
-				<textarea id="reason" name="reason" th:field="*{reason}" rows="4" cols="50" required></textarea>
+				<textarea id="reason" name="reason" th:field="*{reason}" rows="4" cols="50" maxlength="400"
+					required></textarea>
 			</div>
 			<input type="hidden" th:field="*{member}" th:value="${report.member}">
 			<input type="hidden" th:field="*{recipeReported}" th:value="${report.recipeReported}">
 			<button type="submit" value="Submit Report">Submit Report</button>
 		</form>
 	</div>
+	<script>
+		var textarea = document.getElementById('reason');
+		textarea.addEventListener('input', function (event) {
+			var currentLength = textarea.value.length;
+			var maxLength = parseInt(textarea.getAttribute('maxlength'));
+			if (currentLength > maxLength) {
+				event.preventDefault();
+				alert('reason should not be longer than 400 chars');
+			}
+		});
+	</script>
 </body>
 
 </html>

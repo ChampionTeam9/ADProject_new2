@@ -110,6 +110,7 @@ public class UserService {
 			member.setHeight(height);
 			member.setWeight(weight);
 			member.setBirthdate(birthdate);
+			member.setRegistrationDate(LocalDate.now());
 			memberRepo.save(member);
 		}
 	}
@@ -261,5 +262,11 @@ public class UserService {
 	public Member getMemberByUsername(String username) {
 
 		return memberRepo.findByUsername(username);
+	}
+	public int getMemberCountAddedToday() {
+		return memberRepo.countMembersRegisteredToday();
+	}
+	public int getMemberCountAddedThisYear() {
+		return memberRepo.countMembersRegisteredThisYear();
 	}
 }

@@ -7,19 +7,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	<style>
-		button{
-			border-radius: 4px;
-		}
-		.member-link {
-			color: gray;
-			text-decoration: none;
-		}
-
-		.member-link:hover {
-			color: darkgray;
-		}
-	</style>
+	<link href="/style2.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -27,30 +15,32 @@
 		<div th:replace="fragments/navbar"></div>
 	</div>
 	<div class="container" style="width: 80%;">
-		<h2>Member Report Details</h1>
+		<div>
+			<h2>Member Report Details</h2>
 			<br />
 			<table class="table">
 				<tbody>
 					<tr>
-						<td>Report ID: </td>
-						<td th:text="${report.id}"></td>
+						<td style="width:20%;">Report ID: </td>
+						<td th:text="${report.id}" style="width:80%;"></td>
 					</tr>
 					<tr>
-						<td>Username:</td>
-						<td><a th:href="@{/user/profile/{id}(id=${report.memberReported.id})}" class="member-link"><span
-									th:text="${report.memberReported.username}" ></span></a></td>
+						<td style="width:20%;">Username:</td>
+						<td><a th:href="@{/user/profile/{id}(id=${report.memberReported.id})}" class="bad-link"><span
+									th:text="${report.memberReported.username}" style="width:80%;"></span></a></td>
 					</tr>
 					<tr>
-						<td>Reported by: </td>
-						<td><a th:href="@{/user/profile/{id}(id=${report.member.id})}" class="member-link"><span
-									th:text="${report.member.username}" c></span></a></td>
+						<td style="width:20%;">Reported by: </td>
+						<td><a th:href="@{/user/profile/{id}(id=${report.member.id})}" class="good-link"><span
+									th:text="${report.member.username}" style="width:80%;"></span></a></td>
 					</tr>
 					<tr>
-						<td>Reason:</td>
-						<td th:text="${report.reason}"></td>
+						<td style="width:20%;">Reason:</td>
+						<td th:text="${report.reason}" style="width:80%; white-space: pre-wrap; word-break: break-all;"></td>
 					</tr>
 				</tbody>
 			</table>
+
 			<br />
 			<div>
 				<button type="submit" value="Approve" style="margin-right: 8px;" th:id="${report.id}"
@@ -60,6 +50,7 @@
 					onclick="window.location.href='/user/admin/memberReport/' + this.id + '/reject'">Reject</button>
 				<!--<button type="submit" onclick="window.location.href='/user/admin/memberReport'">Back</button>-->
 			</div>
+		</div>
 	</div>
 </body>
 

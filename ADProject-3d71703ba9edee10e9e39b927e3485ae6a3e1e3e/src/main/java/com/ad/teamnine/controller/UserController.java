@@ -200,6 +200,7 @@ public class UserController {
 			return "/UserViews/register";
 		}
 		newMember.setMemberStatus(Status.CREATED);
+		newMember.setRegistrationDate(LocalDate.now());
 		if (newMember.getEmail() == null || newMember.getEmail().isEmpty()) {
 			userService.saveMember(newMember);
 			httpSession.setAttribute("userId", newMember.getId());
@@ -261,6 +262,10 @@ public class UserController {
 
 	@GetMapping("/admin/dashboard")
 	public String getDashboard(Model model) {
+		model.addAttribute("numberOfRecipeAddedToday", recipeService.getRecipeCountAddedToday());
+		model.addAttribute("numberOfMemberAddedToday", userService.getMemberCountAddedToday());
+		model.addAttribute("numberOfRecipeAddedThisYear", recipeService.getRecipeCountAddedThisYear());
+		model.addAttribute("numberOfMemberAddedThisYear", userService.getMemberCountAddedThisYear());
 		model.addAttribute("numberOfMemberReports", reportService.getMemberReportCount());
 		model.addAttribute("numberOfRecipeReports", reportService.getRecipeReportCount());
 
@@ -306,7 +311,7 @@ public class UserController {
 		model.addAttribute("recipeCountByTag", recipeCountByTag);
 		// get the number of recipes every year
 		List<Object[]> yearCounts = recipeService.getRecipeCountByYear();
-		List<String> years = new ArrayList<>();
+		List<String> yearsForRecipe = new ArrayList<>();
 		List<Long> recipeCountByYear = new ArrayList<>();
 		long sum = 0l;
 		for (int i = 0; i < yearCounts.size(); i++) {
@@ -314,14 +319,14 @@ public class UserController {
 			String Year = yearCount[0].toString();
 			Long recipeCount = (Long) yearCount[1];
 			sum += recipeCount;
-			years.add(Year);
+			yearsForRecipe.add(Year);
 			recipeCountByYear.add(sum);
 		}
-		model.addAttribute("years", years);
-		if (years.contains(String.valueOf(LocalDate.now().getYear()))) {
+		model.addAttribute("yearsForRecipe", yearsForRecipe);
+		if (yearsForRecipe.contains(String.valueOf(LocalDate.now().getYear()))) {
 			model.addAttribute("currentYear", String.valueOf(LocalDate.now().getYear()));
 		} else {
-			String latestYear = String.valueOf(years.stream().mapToInt(Integer::parseInt)
+			String latestYear = String.valueOf(yearsForRecipe.stream().mapToInt(Integer::parseInt)
 					.max()
 					.orElse(LocalDate.now().getYear()));
 			model.addAttribute("currentYear", latestYear);

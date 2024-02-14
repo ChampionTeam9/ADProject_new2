@@ -39,6 +39,7 @@
 		</div>
 
 		<div class="container" style="width: 80%;">
+			<label style="font-size: 18px; font-weight: 700;">To do</label>
 			<div class="row justify-content-center">
 				<div class="col-md-6">
 					<div class="card mb-3">
@@ -62,19 +63,67 @@
 		</div>
 		<div class="container" style="width: 80%;">
 			<div style="margin-right: 100px;">
-				<label for="recipeChartByYear" style="font-size: 18px;">Growing Trend</label>
+				<label for="recipeChartByYear" style="font-size: 18px;font-weight: 700;">Growing Trend for
+					recipe</label>
 				<canvas id="recipeChartByYear" style="width:100%;max-width: 800px;max-height: 400px;"></canvas>
-				<input type="hidden" id="years" th:value="${years}" />
+				<input type="hidden" id="yearsForRecipe" th:value="${yearsForRecipe}" />
 				<input type="hidden" id="recipeCountByYear" th:value="${recipeCountByYear}" />
 			</div>
-			<br />
-			<br />
+		</div>
+		<div class="container" style="width: 80%; display: flex; justify-content: space-between;">
+			<div class="container" style="width: 48%;">
+				<label style="font-size: 18px;font-weight: 700;">Added Today</label>
+				<div class="row justify-content-center">
+					<div class="col-md-6">
+						<div class="card mb-3">
+							<div class="card-body">
+								<h2 class="card-title" th:text="${numberOfRecipeAddedToday}">0</h2>
+								<p class="card-text" style="font-size: large;">recipe added</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card mb-3">
+							<div class="card-body">
+								<h2 class="card-title" th:text="${numberOfMemberAddedToday}">0</h2>
+								<p class="card-text" style="font-size: large;">member added</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container" style="width: 48%;">
+				<label style="font-size: 18px; font-weight: 700;">Added This Year</label>
+				<div class="row justify-content-center">
+					<div class="col-md-6">
+						<div class="card mb-3">
+							<div class="card-body">
+								<h2 class="card-title" th:text="${numberOfRecipeAddedThisYear}">0</h2>
+								<p class="card-text" style="font-size: large;">recipe added</p>
+
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="card mb-3">
+							<div class="card-body">
+								<h2 class="card-title" th:text="${numberOfMemberAddedThisYear}">0</h2>
+								<p class="card-text" style="font-size: large;">member added</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container" style="width: 80%;">
+
 			<div class="row">
 				<div class="col-md-9">
 					<div class="selectBar">
-						<label for="inputGroupSelect01" style="font-size: 18px;">Recipe annual report for Year</label>
+						<label for="inputGroupSelect01" style="font-size: 18px;font-weight: 700;">Recipe annual report
+							for Year</label>
 						<select class="custom-select" id="inputGroupSelect01">
-							<option th:each="year : ${years}" th:value="${year}" th:text="${year}"
+							<option th:each="year : ${yearsForRecipe}" th:value="${year}" th:text="${year}"
 								selected="${maxYear}">
 							</option>
 						</select>
@@ -89,7 +138,7 @@
 			</div>
 			<br />
 			<br />
-			<label for="tagChart" style="font-size: 18px;">Top 10 Tags</label>
+			<label for="tagChart" style="font-size: 18px;font-weight: 700;">Top 10 Tags</label>
 			<div style="margin-right: 100px;text-align: center;">
 				<canvas id="tagChart" style="width:100%;max-width: 800px;max-height: 400px;"></canvas>
 				<input type="hidden" id="tags" th:value="${tags}" />
@@ -115,7 +164,6 @@
 			xhr.open("GET", "/api/getRecipeCountByMonth?year=" + selectedYear, true);
 			xhr.send();
 		}
-
 
 		document.addEventListener("DOMContentLoaded", function (event) {
 			plotRecipeChart();
@@ -158,11 +206,11 @@
 		}
 
 		function updateRecipeChart(xValues, yValues) {
-			recipeChart.data.labels = xValues; // 更新标签
-			recipeChart.data.datasets[0].data = yValues; // 更新数据
-			recipeChart.update(); // 更新图表
+			recipeChart.data.labels = xValues;
+			recipeChart.data.datasets[0].data = yValues;
+			recipeChart.update();
 		}
-		
+
 		function plotTagChart() {
 			let xValuesString = document.getElementById("tags").value;
 			xValuesString = xValuesString.substring(1, xValuesString.length - 1);
@@ -198,7 +246,7 @@
 
 
 		function plotRecipeChartByYear() {
-			let xValuesString = document.getElementById("years").value;
+			let xValuesString = document.getElementById("yearsForRecipe").value;
 			xValuesString = xValuesString.substring(1, xValuesString.length - 1);
 			const xValues = xValuesString.split(",").map(year => year.trim());
 			const yValues = JSON.parse(document.getElementById("recipeCountByYear").value);

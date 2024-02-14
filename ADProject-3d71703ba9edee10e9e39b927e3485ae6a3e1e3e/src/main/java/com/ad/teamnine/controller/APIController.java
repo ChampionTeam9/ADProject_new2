@@ -146,6 +146,7 @@ public class APIController {
 				else
 					gender = "Female";
 				member = new Member(username, password, height, weight, birthdate, gender, null);
+				
 				Member savedMember = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}
@@ -249,7 +250,6 @@ public class APIController {
 				csvIdToDbIdMember.put(memberId, member.getId());
 			}
 			int recipeId = Integer.parseInt(currInteraction[1]);
-			// Get recipe from Db
 			Recipe recipe = recipeService.getRecipeById(csvIdToDbIdRecipe.get(recipeId));
 			int rating = Integer.parseInt(currInteraction[3]);
 			String comment = currInteraction[4];
