@@ -43,7 +43,7 @@ public class AdProjectApplication {
 				Recipe recipe1 = new Recipe("recipe1Name", "recipe1Description", member1);
 				recipe1.getIngredients().add(ingredient1);
 				recipe1.getIngredients().add(ingredient2);
-				recipe1.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
+				recipe1.setImage("2090f118-1d71-4a19-9746-dac2a6975551_download4.jpg");
 				recipe1.setPreparationTime(30);
 				recipe1.setServings(4);
 				recipe1.setNotes("This is the notes of recipe 1");

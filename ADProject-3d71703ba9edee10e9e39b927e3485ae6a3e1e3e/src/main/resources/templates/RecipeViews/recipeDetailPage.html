@@ -28,8 +28,8 @@
 	<div class="container" style="width: 60%;">
 		<table style="width: 100%;">
 			<tr>
-				<td rowspan="4">
-					<img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image" style="width: 350px; height: 250px; object-fit: contain;">
+				<td rowspan="4" style="width: 40%">
+					<img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image" style="width: 100%; height: 250px; object-fit: cover;">
 				</td>
 				<td>
 					<h1 th:text="${recipe.name}"></h1>
@@ -68,13 +68,14 @@
 					<button type="button" th:id="${recipe.id}" th:unless="${ifsave}"
 						onclick="window.location.href='/recipe/unsubscribe/' + this.id">Unsave
 					</button>&nbsp;&nbsp;
+					<button type="button" th:id="${recipe.id}" th:unless="${ifAdmin}"
+						onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<b>Recipe Id: </b><span th:text="${recipe.id}"></span>&nbsp;&nbsp;
-					<button type="button" th:id="${recipe.id}" th:unless="${ifAdmin}"
-						onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
+					
+					
 				</td>
 			</tr>
 			<tr>
@@ -83,8 +84,11 @@
 						<a th:href="@{/user/profile/{userId}(userId=${recipe.member.id})}"
 							th:text="${recipe.member.username}"></a>&nbsp;&nbsp;&nbsp; |
 						&nbsp;&nbsp;&nbsp;
+						<b>Recipe Id: </b><span th:text="${recipe.id}"></span>&nbsp;&nbsp;&nbsp; |
+						&nbsp;&nbsp;&nbsp;
 						<b>Submitted On: </b>
 						<span th:text="${recipe.submittedDate}"></span>
+						
 				</td>
 			</tr>
 			<tr>
@@ -105,7 +109,7 @@
 		<div class="page-divide-container">
 			<div class="two-thirds-column" style="margin-right: 30px;">
 				<div>
-					<h3 style="margin-right: 10px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button"
+					<h3 style="margin-right: 10px; margin-left: 15px;">Ingredients &nbsp;&nbsp;&nbsp;<button type="button"
 							th:unless="${ifAdmin}" th:id="${recipe.id}"
 							onclick="window.location.href='/user/shoppingList/add/' + this.id"
 							style="height: 30px; font-size: 14px;">Add to Shopping List</button></h3>
@@ -115,7 +119,7 @@
 				</div>
 				<br />
 				<div>
-					<h3>Steps</h3>
+					<h3 style="margin-left: 15px;">Steps</h3>
 					<table style="margin-left:auto; margin-right: auto; width:100%">
 						<tr th:each="step, iterStat : ${recipe.steps}">
 							<td th:text="${iterStat.count}"></td>

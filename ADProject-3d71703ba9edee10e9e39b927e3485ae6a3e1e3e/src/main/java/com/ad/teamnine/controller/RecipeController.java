@@ -196,7 +196,18 @@ public class RecipeController {
 			int preparationTime = recipe.getPreparationTime();
 			recipe.setPreparationTime(preparationTime * 60);
 		}
-
+		
+		// Set the first letter of name and description as uppercase
+		String recipeName = recipe.getName().trim();
+		recipeName = recipeName.substring(0, 1).toUpperCase() + recipeName.substring(1);
+		recipe.setName(recipeName);
+		
+		String recipeDescription = recipe.getName().trim();
+		if (!recipeDescription.isEmpty()) {
+			recipeDescription = recipeDescription.substring(0, 1).toUpperCase() + recipeDescription.substring(1);
+			recipe.setDescription(recipeDescription);
+		}
+		
 		List<String> steps = recipe.getSteps();
 		List<String> newSteps = new ArrayList<>();
 		for (String step : steps) {
