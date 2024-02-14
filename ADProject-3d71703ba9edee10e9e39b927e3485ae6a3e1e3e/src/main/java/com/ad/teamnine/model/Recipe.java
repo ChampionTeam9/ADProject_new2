@@ -96,6 +96,7 @@ public class Recipe {
 		recipesToReport = new ArrayList<>();
 		numberOfSaved = 0;
 		numberOfRating = 0;
+		rating = 0.0;
 		submittedDate = LocalDate.now();
 	}
 
@@ -106,7 +107,6 @@ public class Recipe {
 		this.member = member;
 		status = Status.PUBLIC;
 		steps = new ArrayList<>();
-		this.rating = 0.0;
 	}
 
 	public Recipe(String name, String description, double rating, int preparationTime, int servings,
