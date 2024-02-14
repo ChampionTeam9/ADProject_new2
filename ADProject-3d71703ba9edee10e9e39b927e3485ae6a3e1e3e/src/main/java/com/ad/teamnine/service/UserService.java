@@ -170,7 +170,9 @@ public class UserService {
 
 	public void approveRecipeReport(Integer reportId) {
 		RecipeReport recipeReport = recipeReportRepository.findById(reportId).orElse(null);
-		emailService.RecipeReportApprovedNotificationToMember(recipeReport);
+		if (recipeReport.getRecipeReported().getMember().getEmail() != null) {
+			emailService.RecipeReportApprovedNotificationToMember(recipeReport);
+		}
 		Recipe recipe = recipeReport.getRecipeReported();
 		recipe.setStatus(Status.DELETED);
 		recipeReport.setStatus(Status.APPROVED);
@@ -191,7 +193,9 @@ public class UserService {
 
 	public void approveMemberReport(Integer reportId) {
 		MemberReport memberReport = memberReportRepository.findById(reportId).orElse(null);
-		emailService.MemberReportApprovedNotificationToMemberReported(memberReport);
+		if (memberReport.getMemberReported().getEmail() != null) {
+			emailService.MemberReportApprovedNotificationToMemberReported(memberReport);
+		}
 		Member member = memberReport.getMemberReported();
 		member.setMemberStatus(Status.DELETED);
 		memberReport.setStatus(Status.APPROVED);
@@ -247,8 +251,9 @@ public class UserService {
 		Optional<User> user = userRepo.findById(id);
 		return user.orElse(null);
 	}
-public Member getMemberByUsername(String username) {
-		
+
+	public Member getMemberByUsername(String username) {
+
 		return memberRepo.findByUsername(username);
 	}
 }

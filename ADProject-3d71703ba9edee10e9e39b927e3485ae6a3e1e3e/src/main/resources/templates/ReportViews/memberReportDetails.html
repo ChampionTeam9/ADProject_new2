@@ -8,8 +8,16 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 	<style>
-		button {
+		button{
 			border-radius: 4px;
+		}
+		.member-link {
+			color: gray;
+			text-decoration: none;
+		}
+
+		.member-link:hover {
+			color: darkgray;
 		}
 	</style>
 </head>
@@ -18,20 +26,40 @@
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
 	</div>
-	<div class="container" style="width: 60%;">
+	<div class="container" style="width: 80%;">
 		<h2>Member Report Details</h1>
-		<br />
-		<p>Report ID: <span th:text="${report.id}"></span></p>
-		<p>Username: <a th:href="@{/user/profile/{id}(id=${report.memberReported.id})}"><span th:text="${report.memberReported.username}"></span></a></p>
-		<p>Reported by: <a th:href="@{/user/profile/{id}(id=${report.member.id})}"><span th:text="${report.member.username}"></span></a></p>
-		<p>Reason: <span th:text="${report.reason}"></span></p>
-		<div style="display: flex; justify-content: center; margin-top: 20px;">
-			<button type="submit" value="Approve" style="margin-right: 8px;" th:id="${report.id}" 
-			onclick="window.location.href='/user/admin/memberReport/' + this.id + '/approve'">Approve</button>
-			<button type="submit" value="Reject" style="margin-right: 8px;" th:id="${report.id}" 
-			onclick="window.location.href='/user/admin/memberReport/' + this.id + '/reject'">Reject</button>
-			<button type="submit" onclick="window.location.href='/user/admin/memberReport'">Back</button>
-		</div>
+			<br />
+			<table class="table">
+				<tbody>
+					<tr>
+						<td>Report ID: </td>
+						<td th:text="${report.id}"></td>
+					</tr>
+					<tr>
+						<td>Username:</td>
+						<td><a th:href="@{/user/profile/{id}(id=${report.memberReported.id})}" class="member-link"><span
+									th:text="${report.memberReported.username}" ></span></a></td>
+					</tr>
+					<tr>
+						<td>Reported by: </td>
+						<td><a th:href="@{/user/profile/{id}(id=${report.member.id})}" class="member-link"><span
+									th:text="${report.member.username}" c></span></a></td>
+					</tr>
+					<tr>
+						<td>Reason:</td>
+						<td th:text="${report.reason}"></td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<div>
+				<button type="submit" value="Approve" style="margin-right: 8px;" th:id="${report.id}"
+					onclick="window.location.href='/user/admin/memberReport/' + this.id + '/approve'">Approve</button>
+				<button type="submit" value="Reject" style="margin-right: 8px; background-color: red;"
+					th:id="${report.id}"
+					onclick="window.location.href='/user/admin/memberReport/' + this.id + '/reject'">Reject</button>
+				<!--<button type="submit" onclick="window.location.href='/user/admin/memberReport'">Back</button>-->
+			</div>
 	</div>
 </body>
 

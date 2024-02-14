@@ -40,6 +40,8 @@ public class UserController {
 	private ShoppingListItemService shoppingListItemService;
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+	private ReportService reportService;
 
 	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add/{id}")
@@ -305,21 +307,10 @@ public class UserController {
 				}
 			}
 		}
+		model.addAttribute("numberOfMemberReports", reportService.getMemberReportCount());
+		model.addAttribute("numberOfRecipeReports", reportService.getRecipeReportCount());
 		model.addAttribute("tags", tags);
 		model.addAttribute("recipeCountByTag", recipeCountByTag);
-
-//	    List<Object[]> dailyData = userService.getDailyMemberData();
-//	    List<String> dates = new ArrayList<>();
-//	    List<Integer> newUsers = new ArrayList<>();
-//
-//	    for (Object[] data : dailyData) {
-//	        dates.add(data[0].toString());
-//	        newUsers.add(Integer.parseInt(data[1].toString()));
-//	    }
-//
-//	    model.addAttribute("dates", dates);
-//	    model.addAttribute("newUsers", newUsers);
-
 		return "UserViews/dashboard";
 	}
 
@@ -502,8 +493,8 @@ public class UserController {
 	public String generateCsvReport(Model model) {
 		List<Recipe> recipes = recipeService.getAllRecipes();
 		model.addAttribute("recipes", recipes);
-	    model.addAttribute("previousOrderBy", "rating");
-	    model.addAttribute("previousOrder", "desc");
+		model.addAttribute("previousOrderBy", "rating");
+		model.addAttribute("previousOrder", "desc");
 		return "UserViews/generateCsvReportsPage";
 	}
 
@@ -512,8 +503,8 @@ public class UserController {
 			Model model) {
 		List<Recipe> recipes = recipeService.getRecipesByOrder(orderBy, order);
 		model.addAttribute("recipes", recipes);
-	    model.addAttribute("previousOrderBy", orderBy);
-	    model.addAttribute("previousOrder", order);
+		model.addAttribute("previousOrderBy", orderBy);
+		model.addAttribute("previousOrder", order);
 		return "UserViews/generateCsvReportsPage";
 	}
 }
