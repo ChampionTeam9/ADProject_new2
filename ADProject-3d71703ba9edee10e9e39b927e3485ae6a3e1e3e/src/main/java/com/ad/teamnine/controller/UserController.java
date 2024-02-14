@@ -105,16 +105,6 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	// Edit the shopping list
-	@GetMapping("shoppingList/edit")
-	public String editShoppingList(Model model, HttpSession sessionObj) {
-		// Get member's shopping list
-		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
-		List<ShoppingListItem> shoppingList = member.getShoppingList();
-		model.addAttribute("shoppingList", shoppingList);
-		return "/UserViews/editShoppingListPage";
-	}
-
 	// Clear off ShoppingListItems
 	@PostMapping("shoppingList/clearItems")
 	public ResponseEntity<Void> clearItems(@RequestBody Map<String, Object> payload, HttpSession sessionObj) {
