@@ -29,7 +29,7 @@
 		<table style="width: 100%;">
 			<tr>
 				<td rowspan="4">
-					<img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image">
+					<img th:src="@{/images/{imageName}(imageName=${recipe.image})}" alt="Recipe Image" style="width: 350px; height: 250px; object-fit: contain;">
 				</td>
 				<td>
 					<h1 th:text="${recipe.name}"></h1>
