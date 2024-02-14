@@ -10,64 +10,199 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<style>
+		.selectBar label {
+			display: inline-block;
+			text-align: right;
+			margin-right: 10px;
+		}
+
+		.selectBar select {
+			width: 150px;
+		}
+
+		.selectBar a,
+		button {
+			display: inline-block;
+			margin-left: 20px;
+		}
+	</style>
 </head>
 
 <body>
-	<div class="custom-container">
-		<div th:replace="fragments/navbar"></div>
-	</div>
-	<div class="container" style="width: 80%;">
-		<h2>Dashboard</h2>
-	</div>
+	<div>
+		<div class="custom-container">
+			<div th:replace="fragments/navbar"></div>
+		</div>
+		<div class="container" style="width: 80%;">
+			<h2>Dashboard</h2>
+		</div>
 
-	<div class="container" style="width: 80%;">
-		<div class="row justify-content-center">
-			<div class="col-md-6">
-				<div class="card mb-3">
-					<div class="card-body">
-						<h2 class="card-title" th:text="${numberOfMemberReports}">0</h2>
-						<p class="card-text" style="font-size: large;">Member report pending for approval</p>
-						<a href="/user/admin/memberReport" class="btn btn-primary">Details</a>
+		<div class="container" style="width: 80%;">
+			<div class="row justify-content-center">
+				<div class="col-md-6">
+					<div class="card mb-3">
+						<div class="card-body">
+							<h2 class="card-title" th:text="${numberOfMemberReports}">0</h2>
+							<p class="card-text" style="font-size: large;">Member report pending for approval</p>
+							<a href="/user/admin/memberReport" class="btn btn-primary">Details</a>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="card mb-3">
-					<div class="card-body">
-						<h2 class="card-title" th:text="${numberOfRecipeReports}">0</h2>
-						<p class="card-text" style="font-size: large;">Recipe report pending for approval</p>
-						<a href="/user/admin/recipeReport" class="btn btn-primary">Details</a>
+				<div class="col-md-6">
+					<div class="card mb-3">
+						<div class="card-body">
+							<h2 class="card-title" th:text="${numberOfRecipeReports}">0</h2>
+							<p class="card-text" style="font-size: large;">Recipe report pending for approval</p>
+							<a href="/user/admin/recipeReport" class="btn btn-primary">Details</a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="container" style="width: 80%;">
-		<div class="page-divide-container">
-			<div class="two-thirds-column" style="margin-right: 30px;">
-				<canvas id="recipeChart" style="width:100%;max-width:700px"></canvas>
+		<div class="container" style="width: 80%;">
+			<div style="margin-right: 100px;">
+				<label for="recipeChartByYear" style="font-size: 18px;">Growing Trend</label>
+				<canvas id="recipeChartByYear" style="width:100%;max-width: 800px;max-height: 400px;"></canvas>
+				<input type="hidden" id="years" th:value="${years}" />
+				<input type="hidden" id="recipeCountByYear" th:value="${recipeCountByYear}" />
+			</div>
+			<br />
+			<br />
+			<div class="row">
+				<div class="col-md-9">
+					<div class="selectBar">
+						<label for="inputGroupSelect01" style="font-size: 18px;">Recipe annual report for Year</label>
+						<select class="custom-select" id="inputGroupSelect01">
+							<option th:each="year : ${years}" th:value="${year}" th:text="${year}"
+								selected="${maxYear}">
+							</option>
+						</select>
+						<button class="btn btn-primary ml-2" type="button" onclick="search()">Search</button>
+					</div>
+				</div>
+			</div>
+			<div style="margin-right:100px;">
+				<canvas id="recipeChart" style="width:100%;max-width: 800px;max-height: 400px;"></canvas>
 				<input type="hidden" id="months" th:value="${months}" />
 				<input type="hidden" id="recipeCountByMonth" th:value="${recipeCountByMonth}" />
 			</div>
-			<div class="one-third-column">
-				<canvas id="tagChart" style="width:100%;max-width:500px;height:600px;"></canvas>
+			<br />
+			<br />
+			<label for="tagChart" style="font-size: 18px;">Top 10 Tags</label>
+			<div style="margin-right: 100px;text-align: center;">
+				<canvas id="tagChart" style="width:100%;max-width: 800px;max-height: 400px;"></canvas>
 				<input type="hidden" id="tags" th:value="${tags}" />
 				<input type="hidden" id="recipeCountByTag" th:value="${recipeCountByTag}" />
 			</div>
 		</div>
 	</div>
 	<script th:inline="javascript">
+		function search() {
+			console.log("Button clicked!");
+			var selectedYear = document.getElementById("inputGroupSelect01").value;
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					console.log(xhr.responseText);
+					var response = JSON.parse(xhr.responseText); // 解析 JSON 响应
+					console.log("pass");
+					console.log(response.months);
+					console.log(response.counts);
+					updateRecipeChart(response.months, response.counts);
+				}
+			};
+			xhr.open("GET", "/api/getRecipeCountByMonth?year=" + selectedYear, true);
+			xhr.send();
+		}
+
+
 		document.addEventListener("DOMContentLoaded", function (event) {
 			plotRecipeChart();
 			plotTagChart();
+			plotRecipeChartByYear();
 		});
 
+		var recipeChart = null;
 		function plotRecipeChart() {
 			let xValuesString = document.getElementById("months").value;
 			xValuesString = xValuesString.substring(1, xValuesString.length - 1);
 			const xValues = xValuesString.split(",").map(month => month.trim());
 			const yValues = JSON.parse(document.getElementById("recipeCountByMonth").value);
-			const recipeChart = new Chart("recipeChart", {
+			recipeChart = new Chart("recipeChart", {
+				type: "bar", // 将类型更改为柱状图
+				data: {
+					labels: xValues,
+					datasets: [{
+						backgroundColor: "rgba(0,0,255,0.5)", // 柱状图的填充颜色
+						borderColor: "rgba(0,0,255,1.0)", // 柱状图的边框颜色
+						borderWidth: 1, // 柱状图边框宽度
+						data: yValues
+					}]
+				},
+				options: {
+					legend: {display: false},
+					title: {
+						display: true,
+						text: "Recipes Submitted"
+					},
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true // y轴从0开始
+							}
+						}]
+					}
+				}
+			});
+		}
+
+		function updateRecipeChart(xValues, yValues) {
+			recipeChart.data.labels = xValues; // 更新标签
+			recipeChart.data.datasets[0].data = yValues; // 更新数据
+			recipeChart.update(); // 更新图表
+		}
+		
+		function plotTagChart() {
+			let xValuesString = document.getElementById("tags").value;
+			xValuesString = xValuesString.substring(1, xValuesString.length - 1);
+			const xValues = xValuesString.split(",").map(tag => tag.trim());
+			const yValues = JSON.parse(document.getElementById("recipeCountByTag").value);
+			new Chart("tagChart", {
+				type: "bar", // 将类型更改为柱状图
+				data: {
+					labels: xValues,
+					datasets: [{
+						backgroundColor: "rgba(0,0,255,0.5)", // 柱状图的填充颜色
+						borderColor: "rgba(0,0,255,1.0)", // 柱状图的边框颜色
+						borderWidth: 1, // 柱状图边框宽度
+						data: yValues
+					}]
+				},
+				options: {
+					legend: {display: false},
+					title: {
+						display: true,
+						text: "Top tags"
+					},
+					scales: {
+						dataset: [{
+							categoryPercentage: 0.8, // 调整柱状图的高度
+							barPercentage: 0.8 // 调整柱状图的宽度
+						}]
+					}
+				}
+			});
+		}
+
+
+
+		function plotRecipeChartByYear() {
+			let xValuesString = document.getElementById("years").value;
+			xValuesString = xValuesString.substring(1, xValuesString.length - 1);
+			const xValues = xValuesString.split(",").map(year => year.trim());
+			const yValues = JSON.parse(document.getElementById("recipeCountByYear").value);
+			const recipeChart = new Chart("recipeChartByYear", {
 				type: "line",
 				data: {
 					labels: xValues,
@@ -83,39 +218,7 @@
 					legend: {display: false},
 					title: {
 						display: true,
-						text: "Recipes Submitted in 2003"
-					}
-				}
-			});
-		}
-
-		function plotTagChart() {
-			let xValuesString = document.getElementById("tags").value;
-			xValuesString = xValuesString.substring(1, xValuesString.length - 1);
-			const xValues = xValuesString.split(",").map(tag => tag.trim());
-			console.log(xValues);
-			const yValues = JSON.parse(document.getElementById("recipeCountByTag").value);
-			console.log(yValues);
-			new Chart("tagChart", {
-				type: "horizontalBar",
-				data: {
-					labels: xValues,
-					datasets: [{
-						backgroundColor: "#5cb85c",
-						data: yValues
-					}]
-				},
-				options: {
-					legend: {display: false},
-					title: {
-						display: true,
-						text: "Top tags"
-					},
-					scales: {
-						xAxes: [{
-							categoryPercentage: 2.0, // Adjust the space between bars
-							barPercentage: 1.0 // Adjust the width of bars
-						}]
+						text: "The number of Recipes in Years"
 					}
 				}
 			});
