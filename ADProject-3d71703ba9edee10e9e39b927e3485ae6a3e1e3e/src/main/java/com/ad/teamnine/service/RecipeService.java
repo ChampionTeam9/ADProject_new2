@@ -183,8 +183,7 @@ public class RecipeService {
 			} else if (order.equals("desc")) {
 				recipes = recipeRepo.findAllByOrderByHealthScoreDesc();
 			}
-		}
-		else {
+		} else {
 			recipes = recipeRepo.findAll();
 		}
 		return recipes;
@@ -229,9 +228,14 @@ public class RecipeService {
 		return recipeRepo.getRecipeCountByTag();
 	}
 
+	public List<Object[]> getRecipeCountByYear() {
+		return recipeRepo.countRecipesBeforeEachYear(LocalDate.now());
+	}
+
 	public Page<Recipe> findAllRecipesByPage(int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 		Page<Recipe> recipePage = recipeRepo.findAllPublic(pageRequest);
 		return recipePage;
 	}
+
 }

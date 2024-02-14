@@ -1,5 +1,6 @@
 package com.ad.teamnine.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -269,8 +270,11 @@ public class UserController {
 
 	@GetMapping("/admin/dashboard")
 	public String getDashboard(Model model) {
+		model.addAttribute("numberOfMemberReports", reportService.getMemberReportCount());
+		model.addAttribute("numberOfRecipeReports", reportService.getRecipeReportCount());
+
 		// Get data to plot number of recipes submitted per month in a certain year
-		int year = 2003;
+		int year =LocalDate.now().getYear();
 		List<Recipe> recipesByYear = recipeService.getAllRecipesByYear(year);
 		List<String> months = new ArrayList<>();
 		Collections.addAll(months, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
@@ -307,10 +311,32 @@ public class UserController {
 				}
 			}
 		}
-		model.addAttribute("numberOfMemberReports", reportService.getMemberReportCount());
-		model.addAttribute("numberOfRecipeReports", reportService.getRecipeReportCount());
 		model.addAttribute("tags", tags);
 		model.addAttribute("recipeCountByTag", recipeCountByTag);
+		// get the number of recipes every year
+		List<Object[]> yearCounts = recipeService.getRecipeCountByYear();
+		List<String> years = new ArrayList<>();
+		List<Long> recipeCountByYear = new ArrayList<>();
+		long sum = 0l;
+		for (int i = 0; i < yearCounts.size(); i++) {
+			Object[] yearCount = yearCounts.get(i);
+			String Year = yearCount[0].toString();
+			Long recipeCount = (Long) yearCount[1];
+			sum += recipeCount;
+			years.add(Year);
+			recipeCountByYear.add(sum);
+		}
+		model.addAttribute("years", years);
+		if (years.contains(String.valueOf(LocalDate.now().getYear()))) {
+			model.addAttribute("currentYear", String.valueOf(LocalDate.now().getYear()));
+		} else {
+			String latestYear = String.valueOf(years.stream().mapToInt(Integer::parseInt)
+					.max()
+					.orElse(LocalDate.now().getYear()));
+			model.addAttribute("currentYear", latestYear);
+		}
+
+		model.addAttribute("recipeCountByYear", recipeCountByYear);
 		return "UserViews/dashboard";
 	}
 
