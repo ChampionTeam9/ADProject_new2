@@ -200,7 +200,7 @@ public class APIController {
 		for (int i = 0; i < ingredientsArr.length; i++) {
 			ingredientsArr[i] = ingredientsArr[i].trim();
 			ingredientsArr[i] = ingredientsArr[i].replaceAll("\\s+", " ");
-			ingredientsArr[i] = ingredientsArr[i].replaceAll("\"", "");
+			ingredientsArr[i] = ingredientsArr[i].replaceAll("'", "");
 		}
 		return ingredientsArr;
 	}
