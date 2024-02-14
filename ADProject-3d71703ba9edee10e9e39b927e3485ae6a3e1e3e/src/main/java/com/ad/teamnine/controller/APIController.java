@@ -117,7 +117,8 @@ public class APIController {
 	}
 
 	public void saveEntities(List<String[]> recipes) {
-		System.out.println("recipes size = " + recipes.size());
+		String[] imageFiles = {"download.jpg", "download2.jpg", "download3.jpg", "download4.jpg", "download5.jpg", 
+				"download6.jpg", "download7.jpg", "download8.jpg", "download9.jpg", "download10.jpg"};
 		for (int i = 1; i < recipes.size(); i++) {
 			String[] currRecipe = recipes.get(i);
 			System.out.println(i + ": " + currRecipe[0]);
@@ -197,10 +198,14 @@ public class APIController {
 			Recipe recipe = new Recipe(recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
-			recipe.setImage("1b06d0cb-3609-4d5e-8c8c-bb7fe73ca345_download.jpg");
+			recipe.setImage("download.jpg");
 			recipe.setNumberOfRating(numberOfRating);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 			recipe.setSubmittedDate(LocalDate.parse(currRecipe[4], formatter));
+			//set image
+			int imageIndex = i % imageFiles.length;
+			String imageName = imageFiles[imageIndex];
+			recipe.setImage(imageName);
 			Recipe savedRecipe = recipeService.createRecipe(recipe);
 			csvIdToDbIdRecipe.put(recipeId, savedRecipe.getId());
 
