@@ -40,6 +40,7 @@ public class UserController {
 	private ShoppingListItemService shoppingListItemService;
 	@Autowired
 	private EmailService emailService;
+
 	// Show page for adding ingredients to shopping list
 	@GetMapping("/shoppingList/add/{id}")
 	public String addShoppingListIngredient(Model model, @PathVariable("id") int recipeId) {
@@ -211,9 +212,9 @@ public class UserController {
 			return "redirect:/user/setPreference";
 		}
 		String code = EmailService.generateVerificationCode();
-		emailService.SendEmailVerificationCodeToMember(newMember,code);
-		model.addAttribute("newMember",newMember);
-		model.addAttribute("verifyCode",code);
+		emailService.SendEmailVerificationCodeToMember(newMember, code);
+		model.addAttribute("newMember", newMember);
+		model.addAttribute("verifyCode", code);
 		return "UserViews/verificationMailBoxPage";
 	}
 
@@ -256,11 +257,10 @@ public class UserController {
 		model.addAttribute("member", member);
 		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
 		model.addAttribute("recipes", publicRecipes);
-		if(sessionObj.getAttribute("userId")!=null&&sessionObj.getAttribute("userType").equals("admin")) {
-			model.addAttribute("ifAdmin",true);
-		}
-		else {
-			model.addAttribute("ifAdmin",false);
+		if (sessionObj.getAttribute("userId") != null && sessionObj.getAttribute("userType").equals("admin")) {
+			model.addAttribute("ifAdmin", true);
+		} else {
+			model.addAttribute("ifAdmin", false);
 		}
 		return "UserViews/userProfile";
 	}
@@ -438,7 +438,8 @@ public class UserController {
 	public String showMyRecipeList(Model model, HttpSession sessionObj) {
 		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
-		List<Recipe> recipes = member.getAddedRecipes().stream().filter(r -> r.getStatus() != Status.DELETED).collect(Collectors.toList());
+		List<Recipe> recipes = member.getAddedRecipes().stream().filter(r -> r.getStatus() != Status.DELETED)
+				.collect(Collectors.toList());
 		model.addAttribute("recipes", recipes);
 		return "UserViews/showMyRecipePage";
 	}
@@ -488,12 +489,31 @@ public class UserController {
 	}
 
 	@PostMapping("/verifyEmail")
-	public String verifyEmail(@ModelAttribute("member") Member member,HttpSession httpSession) {
+	public String verifyEmail(@ModelAttribute("member") Member member, HttpSession httpSession) {
 		userService.saveMember(member);
 		httpSession.setAttribute("userId", member.getId());
-		if(member.getPerfenceList() == null ||member.getPerfenceList().isEmpty()) {
+		if (member.getPerfenceList() == null || member.getPerfenceList().isEmpty()) {
 			return "redirect:/user/setPreference";
 		}
 		return "redirect:/";
+	}
+
+	@GetMapping("/admin/generateCsvReport")
+	public String generateCsvReport(Model model) {
+		List<Recipe> recipes = recipeService.getAllRecipes();
+		model.addAttribute("recipes", recipes);
+	    model.addAttribute("previousOrderBy", "rating");
+	    model.addAttribute("previousOrder", "desc");
+		return "UserViews/generateCsvReportsPage";
+	}
+
+	@PostMapping("admin/generateCsvReport")
+	public String generateCsvReportByOrder(@RequestParam("orderBy") String orderBy, @RequestParam("order") String order,
+			Model model) {
+		List<Recipe> recipes = recipeService.getRecipesByOrder(orderBy, order);
+		model.addAttribute("recipes", recipes);
+	    model.addAttribute("previousOrderBy", orderBy);
+	    model.addAttribute("previousOrder", order);
+		return "UserViews/generateCsvReportsPage";
 	}
 }
