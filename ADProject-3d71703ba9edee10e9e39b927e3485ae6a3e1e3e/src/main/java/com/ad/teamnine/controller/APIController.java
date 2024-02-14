@@ -316,24 +316,7 @@ public class APIController {
 		}
 	}
 
-	@GetMapping("/test")
-	public ResponseEntity<Set<Recipe>> test() {
-		try {
-			Member member = new Member();
-			member.setUsername("member1Username");
-			Member member1 = userService.getMemberByUsername(member.getUsername());
-			Set<Recipe> recipes = new HashSet<>(member1.getSavedRecipes());
-
-			recipes.forEach(
-					recipe -> System.out.println("Recipe ID: " + recipe.getId() + ", Name: " + recipe.getName()));
-
-			return ResponseEntity.ok().body(recipes);
-		} catch (Exception e) {
-			// 异常处理逻辑
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
+	
 }
 
 
