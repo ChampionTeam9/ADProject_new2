@@ -199,6 +199,15 @@ public class UserService {
 		}
 		Member member = memberReport.getMemberReported();
 		member.setMemberStatus(Status.DELETED);
+		List<RecipeReport> recipeReports = recipeReportRepository.findByRecipeReported_Member(member);
+		List<MemberReport> memberReports = memberReportRepository.findByMemberReported(member);
+		for(RecipeReport recipeReport:recipeReports) {
+			this.approveRecipeReport(recipeReport.getId());
+		}
+		for(MemberReport otherMemberReport:memberReports) {
+			 otherMemberReport.setStatus(Status.APPROVED);
+			 memberReportRepository.save(otherMemberReport);
+		}
 		// Set deleted member's recipes to deleted
 		List<Recipe> recipes = member.getAddedRecipes();
 		for (Recipe recipe : recipes) {
