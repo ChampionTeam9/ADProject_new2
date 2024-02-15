@@ -204,8 +204,6 @@ public class UserController {
 		newMember.setRegistrationDate(LocalDate.now());
 		if (newMember.getEmail() == null || newMember.getEmail().isEmpty()) {
 			userService.saveMember(newMember);
-			httpSession.setAttribute("userId", newMember.getId());
-			httpSession.setAttribute("userType", "member");
 			return "redirect:/user/setPreference";
 		}
 		String code = EmailService.generateVerificationCode();
@@ -530,6 +528,7 @@ public class UserController {
 	public String verifyEmail(@ModelAttribute("member") Member member, HttpSession httpSession) {
 		userService.saveMember(member);
 		httpSession.setAttribute("userId", member.getId());
+		httpSession.setAttribute("userType", "member");
 		if (member.getPerfenceList() == null || member.getPerfenceList().isEmpty()) {
 			return "redirect:/user/setPreference";
 		}
