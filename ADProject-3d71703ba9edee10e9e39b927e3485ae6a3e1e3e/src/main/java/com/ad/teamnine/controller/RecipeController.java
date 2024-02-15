@@ -82,6 +82,7 @@ public class RecipeController {
 			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
 		Page<Recipe> recipePage = recipeService.searchByTag(tag, pageNo, pageSize);
 		model.addAttribute("results", recipePage.getContent());
+		model.addAttribute("recipeRecommended", recipePage.getContent());//换成recommendation
 		model.addAttribute("currentPage", recipePage.getNumber());
 		model.addAttribute("totalPages", recipePage.getTotalPages());
 		model.addAttribute("pageSize", pageSize);
@@ -148,7 +149,7 @@ public class RecipeController {
 		System.out.println("pageSize: " + pageSize);
 		System.out.println("currentPage: " + currentPage);
 		model.addAttribute("results", filteredResults.subList(startIndex, endIndex));
-
+		model.addAttribute("recipeRecommended",filteredResults.subList(startIndex, endIndex));// 换成recommendation
 		model.addAttribute("query", query);
 		model.addAttribute("searchtype", type);
 		return "/RecipeViews/HomePage";
