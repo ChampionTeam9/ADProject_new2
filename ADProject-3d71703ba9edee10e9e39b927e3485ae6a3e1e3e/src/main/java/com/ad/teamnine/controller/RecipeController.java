@@ -59,6 +59,13 @@ public class RecipeController {
 		recipeService.unsubscribeRecipe(recipe, member);
 		return "redirect:/user/member/savedList";
 	}
+	@GetMapping("/unsubscribeOnDetailPage/{id}")
+	public String unsubscribeRecipeOnDetailPage(@PathVariable Integer id, HttpSession sessionObj) {
+		Recipe recipe = recipeService.getRecipeById(id);
+		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
+		recipeService.unsubscribeRecipe(recipe, member);
+		return "redirect:/recipe/detail/" + id;
+	}
 
 	@GetMapping("/review/{id}")
 	public String reviewRecipe(@PathVariable Integer id, HttpSession sessionObj, Model model) {
@@ -157,6 +164,10 @@ public class RecipeController {
 		String ingredientName = (String) payload.get("ingredientName");
 		Ingredient ingredient = ingredientService.getIngredientByfoodText(ingredientName);
 		Map<String, Object> response = new HashMap<>();
+		if (ingredient != null && ingredient.getCalories() == null) {
+			ingredientService.deleteIngredient(ingredient);
+			ingredient = null;
+		}
 		if (ingredient == null) {
 			// Create ingredient
 			ResponseEntity<Ingredient> ingredientResponse = APIController.getNutritionInfo(ingredientName);
@@ -338,8 +349,8 @@ public class RecipeController {
 		List<Review> reviews = reviewService.getReviewsByRecipe(recipe);
 		model.addAttribute("reviews", reviews);
 		if (sessionObj.getAttribute("userId") != null) {
+			Integer userId = (int) sessionObj.getAttribute("userId");
 			if (sessionObj.getAttribute("userType").equals("member")) {
-				Integer userId = (int) sessionObj.getAttribute("userId");
 				Member member = userService.getMemberById(userId);
 				Boolean ifsave = !member.getSavedRecipes().contains(recipe);
 				model.addAttribute("ifsave", ifsave);
@@ -349,8 +360,14 @@ public class RecipeController {
 			} else {
 				model.addAttribute("ifAdmin", false);
 			}
+			if(userId.equals(recipe.getMember().getId())) {
+				model.addAttribute("isMine",true);
+			}else {
+				model.addAttribute("isMine",false);
+			}
 		} else {
 			model.addAttribute("ifsave", true);
+			model.addAttribute("isMine",false);
 		}
 
 		return "RecipeViews/recipeDetailPage";

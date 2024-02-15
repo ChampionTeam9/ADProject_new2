@@ -16,6 +16,8 @@ public interface MemberReportRepository extends JpaRepository<MemberReport, Inte
 
 	List<MemberReport> findByStatus(Status pending);
 
+	List<MemberReport> findByMemberReported(Member member);
+
 	@Query("SELECT COUNT(r) FROM MemberReport r WHERE r.status = :status")
 	long countByStatus(@Param("status") Status status);
 }

@@ -18,4 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
 	@Query("SELECT COUNT(m) FROM Member m WHERE YEAR(m.registrationDate) = YEAR(CURRENT_DATE)")
 	int countMembersRegisteredThisYear();
+
+	@Query("SELECT COUNT(r) FROM Member m JOIN m.addedRecipes r WHERE m.id = :memberId AND r.status != 'DELETED'")
+	int countNonDeletedRecipesByMemberId(Integer memberId);
 }

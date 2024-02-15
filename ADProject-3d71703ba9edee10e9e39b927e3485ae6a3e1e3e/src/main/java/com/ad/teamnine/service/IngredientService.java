@@ -32,4 +32,8 @@ public class IngredientService {
 	public Ingredient saveIngredient(Ingredient ingredient) {
 		return ingredientRepo.save(ingredient);
 	}
+
+	public void deleteIngredient(Ingredient ingredient) {
+		ingredientRepo.delete(ingredient);
+	}
 }
