@@ -344,7 +344,7 @@ public class APIController {
 	@GetMapping("/getRecipeData")
     public ResponseEntity<?> getRecipes(
             @RequestParam(name = "start", defaultValue = "0") int start,
-            @RequestParam(name = "limit", defaultValue = "10") int limit) {
+            @RequestParam(name = "limit", defaultValue = "30") int limit) {
         
         //  getRecipes(start, limit) 来获取数据
         List<Recipe> recipes = recipeService.getRecipes(start, limit);
