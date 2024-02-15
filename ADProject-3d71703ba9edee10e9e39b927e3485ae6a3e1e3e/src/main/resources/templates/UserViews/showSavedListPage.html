@@ -29,12 +29,9 @@
 						<div class="card" style="width: 18rem;">
 							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
 								<img class="card-img-top" th:src="@{/images/{imageName}(imageName=${recipe.image})}"
-<<<<<<< HEAD
-									alt="Recipe Image" style="width: 100%; height: 200px; object-fit: cover;"
-									th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'filter: grayscale(50%)' : ''">
-=======
-									alt="Recipe Image" th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'filter: grayscale(50%); width: 100%; height: 200px; object-fit: cover;' : 'width: 100%; height: 200px; object-fit: cover;'">
->>>>>>> 2ac6396d4c34b691ba90131eccb0dc040bec10ff
+									alt="Recipe Image"
+									th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'filter: grayscale(50%); width: 100%; height: 200px; object-fit: cover;' : 'width: 100%; height: 200px; object-fit: cover;'">
+
 							</a>
 							<div class="card-body">
 								<h5 class="card-title" style="min-height: 50px; max-height: 50px; overflow: hidden">
@@ -49,18 +46,15 @@
 								</p>
 							</div>
 							<ul class="list-group list-group-flush">
-<<<<<<< HEAD
-								<li class="list-group-item"><a th:href="@{/user/{id}(id=${recipe.member.id})}"
-										th:text="${recipe.member.username}" class="good-link"
-										th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'color: grey' : 'black'"></a>
-								</li>
-=======
-								<li class="list-group-item" ><a th:href="@{/user/profile/{id}(id=${recipe.member.id})}" th:text="${recipe.member.username}" th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'color: grey' : 'black'"></a></li>
->>>>>>> 2ac6396d4c34b691ba90131eccb0dc040bec10ff
-								<li class="list-group-item">
-									<button type="button" class="button-style" th:id="${recipe.id}"
-										onclick="promptDelete(this.id)">Unsave</button>
-								</li>
+									<li class="list-group-item"><a
+											th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
+											th:text="${recipe.member.username}" class="good-link"
+											th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'color: grey' : 'black'"></a>
+									</li>
+									<li class="list-group-item">
+										<button type="button" class="button-style" th:id="${recipe.id}"
+											onclick="promptDelete(this.id)">Unsave</button>
+									</li>
 							</ul>
 						</div>
 					</div>
