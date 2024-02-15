@@ -66,9 +66,9 @@ public class Member extends User{
 		this.height = height;
 		this.weight = weight;
 		this.birthdate = birthdate;
-		this.age = calculateAge();
+		calculateAge();
 		this.gender = gender;
-		this.calorieIntake = calculateCalorieIntake();
+		calculateCalorieIntake();
 		this.setEmail(email);
 		shoppingList = new ArrayList<>();
 		savedRecipes = new ArrayList<>();
@@ -176,12 +176,12 @@ public class Member extends User{
 		this.reportsToMember = reportsToMember;
 	}
 	
-	public int calculateAge() {
+	public void calculateAge() {
 		LocalDate curDate = LocalDate.now();
-		return Period.between(birthdate, curDate).getYears();
+		this.age = Period.between(birthdate, curDate).getYears();
 	}
 	
-	public Double calculateCalorieIntake() {
+	public void calculateCalorieIntake() {
 		//Using Harris-Benedict formula to calculate Basal Metabolic Rate
 		Double BMR = 0.0;
 		if (gender.equals("Male")) {
@@ -190,7 +190,7 @@ public class Member extends User{
 		else {
 			BMR = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
 		}
-		return (Math.round(BMR * 10) / 10.0);
+		this.calorieIntake = (Math.round(BMR * 10) / 10.0);
 	}
 	
 	public Status getMemberStatus() {
