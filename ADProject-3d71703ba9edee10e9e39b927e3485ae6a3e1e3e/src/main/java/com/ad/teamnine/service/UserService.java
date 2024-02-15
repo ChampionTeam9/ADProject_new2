@@ -278,4 +278,7 @@ public class UserService {
 	public int getMemberCountAddedThisYear() {
 		return memberRepo.countMembersRegisteredThisYear();
 	}
+	public int getMemberAddedRecipesCount(Integer id) {
+		return memberRepo.countNonDeletedRecipesByMemberId(id);
+	}
 }

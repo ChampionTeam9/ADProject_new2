@@ -56,10 +56,10 @@
 						Review
 					</button>&nbsp;&nbsp;
 					<button type="button" th:id="${recipe.id}" th:if="${ifsave}"
-						onclick="window.location.href='/recipe/save/' + this.id">Save
+						onclick="window.location.href='/recipe/save/' + this.id"> Save 
 					</button>
 					<button type="button" th:id="${recipe.id}" th:unless="${ifsave}"
-						onclick="window.location.href='/recipe/unsubscribe/' + this.id">Unsave
+						onclick="window.location.href='/recipe/unsubscribeOnDetailPage/' + this.id">Unsave
 					</button>&nbsp;&nbsp;
 					<button type="button" th:id="${recipe.id}" th:unless="${isMine}"
 						onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>

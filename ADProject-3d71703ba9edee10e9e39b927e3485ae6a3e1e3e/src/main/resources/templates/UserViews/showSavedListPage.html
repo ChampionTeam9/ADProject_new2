@@ -16,6 +16,7 @@
 <body>
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
+		
 	</div>
 	<div class="container" style="width: 60%;">
 		<h2>Saved Recipes</h2>
@@ -46,15 +47,14 @@
 								</p>
 							</div>
 							<ul class="list-group list-group-flush">
-									<li class="list-group-item"><a
-											th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
-											th:text="${recipe.member.username}" class="good-link"
-											th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'color: grey' : 'black'"></a>
-									</li>
-									<li class="list-group-item">
-										<button type="button" class="button-style" th:id="${recipe.id}"
-											onclick="promptDelete(this.id)">Unsave</button>
-									</li>
+								<li class="list-group-item"><a th:href="@{/user/profile/{id}(id=${recipe.member.id})}"
+										th:text="${recipe.member.username}" class="good-link"
+										th:style="${recipe.status == T(com.ad.teamnine.model.Status).DELETED} ? 'color: grey' : 'black'"></a>
+								</li>
+								<li class="list-group-item">
+									<button type="button" class="button-style" th:id="${recipe.id}"
+										onclick="promptDelete(this.id)">Unsave</button>
+								</li>
 							</ul>
 						</div>
 					</div>

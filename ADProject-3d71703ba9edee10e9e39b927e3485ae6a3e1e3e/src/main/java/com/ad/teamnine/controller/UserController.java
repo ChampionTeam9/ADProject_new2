@@ -225,6 +225,12 @@ public class UserController {
 
 	// Show my profile for updating of personal information
 	@GetMapping("/myProfile")
+	public String viewMyProfile(HttpSession sessionObj, Model model) {
+		Integer id = (Integer) sessionObj.getAttribute("userId");
+		return "redirect:/user/profile/" + id;
+	}
+
+	@GetMapping("/editProfile")
 	public String viewMemberProfile(HttpSession sessionObj, Model model) {
 		Integer id = (Integer) sessionObj.getAttribute("userId");
 		Member member = userService.getMemberById(id);
@@ -271,6 +277,9 @@ public class UserController {
 		} else {
 			model.addAttribute("ifAdmin", false);
 		}
+		model.addAttribute("numberOfAdded", userService.getMemberAddedRecipesCount(member.getId()));
+		model.addAttribute("numberOfSaved", member.getSavedRecipes().size());
+		model.addAttribute("numberOfReviews", member.getReviews().size());
 		return "UserViews/userProfile";
 	}
 

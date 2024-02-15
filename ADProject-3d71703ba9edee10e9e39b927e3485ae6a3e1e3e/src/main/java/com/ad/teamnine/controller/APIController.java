@@ -116,8 +116,8 @@ public class APIController {
 	}
 
 	public void saveEntities(List<String[]> recipes) {
-		String[] imageFiles = {"download.jpg", "download2.jpg", "download3.jpg", "download4.jpg", "download5.jpg", 
-				"download6.jpg", "download7.jpg", "download8.jpg", "download9.jpg", "download10.jpg"};
+		String[] imageFiles = { "download.jpg", "download2.jpg", "download3.jpg", "download4.jpg", "download5.jpg",
+				"download6.jpg", "download7.jpg", "download8.jpg", "download9.jpg", "download10.jpg" };
 		for (int i = 1; i < recipes.size(); i++) {
 			String[] currRecipe = recipes.get(i);
 			System.out.println(i + ": " + currRecipe[0]);
@@ -146,7 +146,7 @@ public class APIController {
 				else
 					gender = "Female";
 				member = new Member(username, password, height, weight, birthdate, gender, null);
-				
+
 				Member savedMember = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}
@@ -201,7 +201,7 @@ public class APIController {
 			recipe.setNumberOfRating(numberOfRating);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 			recipe.setSubmittedDate(LocalDate.parse(currRecipe[4], formatter));
-			//set image
+			// set image
 			int imageIndex = i % imageFiles.length;
 			String imageName = imageFiles[imageIndex];
 			recipe.setImage(imageName);
@@ -341,13 +341,13 @@ public class APIController {
 
 		return new ResponseEntity<>(responseData, HttpStatus.OK);
 	}
+
 	@GetMapping("/getRecipeData")
-    public ResponseEntity<?> getRecipes(
-            @RequestParam(name = "start", defaultValue = "0") int start,
-            @RequestParam(name = "limit", defaultValue = "10") int limit) {
-        
-        //  getRecipes(start, limit) 来获取数据
-        List<Recipe> recipes = recipeService.getRecipes(start, limit);
-        return ResponseEntity.ok(recipeService.recipeTurnToDTO(recipes));
-    }
+	public ResponseEntity<?> getRecipes(@RequestParam(name = "start", defaultValue = "0") int start,
+			@RequestParam(name = "limit", defaultValue = "10") int limit) {
+
+		// getRecipes(start, limit) 来获取数据
+		List<Recipe> recipes = recipeService.getRecipes(start, limit);
+		return ResponseEntity.ok(recipeService.recipeTurnToDTO(recipes));
+	}
 }
