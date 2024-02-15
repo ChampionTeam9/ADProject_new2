@@ -1,13 +1,15 @@
 package com.ad.teamnine.service;
 
 import java.time.LocalDate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -18,10 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.Recipe;
+import com.ad.teamnine.model.RecipeDTO;
 import com.ad.teamnine.model.Status;
 import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.RecipeRepository;
@@ -231,16 +232,47 @@ public class RecipeService {
 	public List<Object[]> getRecipeCountByYear() {
 		return recipeRepo.countRecipesBeforeEachYear(LocalDate.now());
 	}
+
 	public int getRecipeCountAddedToday() {
 		return recipeRepo.countRecipesAddedToday();
 	}
+
 	public int getRecipeCountAddedThisYear() {
 		return recipeRepo.countRecipesAddedThisYear();
 	}
+
 	public Page<Recipe> findAllRecipesByPage(int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
 		Page<Recipe> recipePage = recipeRepo.findAllPublic(pageRequest);
 		return recipePage;
+	}
+
+	public List<Recipe> getRecipes(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Recipe> pageX = recipeRepo.findAll(pageable);
+		return pageX.getContent();
+
+	}
+
+	public List<RecipeDTO> recipeTurnToDTO(List<Recipe> recipes) {
+		List<RecipeDTO> recipeDTOs = new ArrayList<>();
+		for (Recipe recipe : recipes) {
+			RecipeDTO recipeDTO = new RecipeDTO();
+			recipeDTO.setId(recipe.getId());
+			recipeDTO.setName(recipe.getName());
+			recipeDTO.setDescription(recipe.getDescription());
+			recipeDTO.setImage(recipe.getImage());
+			recipeDTO.setNumberOfRating(recipe.getNumberOfRating());
+			recipeDTO.setRating(recipe.getRating());
+			recipeDTO.setNumberOfSaved(recipe.getNumberOfSaved());
+			recipeDTO.setPreparationTime(recipe.getPreparationTime());
+			recipeDTO.setSteps(recipe.getSteps());
+			recipeDTO.setSubmittedDate(recipe.getSubmittedDate());
+			recipeDTO.setTags(recipe.getTags());
+			recipeDTO.setServings(recipe.getServings());
+			recipeDTOs.add(recipeDTO);
+		}
+		return recipeDTOs;
 	}
 
 }
