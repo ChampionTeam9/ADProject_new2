@@ -24,6 +24,7 @@ public class MainController {
 			HttpServletRequest request) {
 		Page<Recipe> recipePage = recipeService.findAllRecipesByPage(pageNo, pageSize);
 		model.addAttribute("results", recipePage.getContent());
+		model.addAttribute("recipeRecommended",recipePage.getContent());//换成recommendation 
 		model.addAttribute("currentPage", recipePage.getNumber());
 		model.addAttribute("totalPages", recipePage.getTotalPages());
 		model.addAttribute("pageSize", pageSize);
