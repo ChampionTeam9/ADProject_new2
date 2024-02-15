@@ -205,6 +205,7 @@ public class UserController {
 		if (newMember.getEmail() == null || newMember.getEmail().isEmpty()) {
 			userService.saveMember(newMember);
 			httpSession.setAttribute("userId", newMember.getId());
+			httpSession.setAttribute("userType", "member");
 			return "redirect:/user/setPreference";
 		}
 		String code = EmailService.generateVerificationCode();
@@ -272,7 +273,9 @@ public class UserController {
 		}
 		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
 		model.addAttribute("recipes", publicRecipes);
-		if (sessionObj.getAttribute("userId") != null && sessionObj.getAttribute("userType").equals("admin")) {
+		Object userType = sessionObj.getAttribute("userType");
+		Object userId = sessionObj.getAttribute("userId");
+		if (userId != null && userType != null && userType.toString().equals("admin")) {
 			model.addAttribute("ifAdmin", true);
 		} else {
 			model.addAttribute("ifAdmin", false);
