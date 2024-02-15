@@ -25,14 +25,14 @@
 	<div class="container" style="width: 60%">
 		<h2>My Recipes</h2>
 	</div>
-	<div class="container" style="text-align: center;">
+	<div class="container" style="text-align: center; width: 60%">
 		<div style="text-align: right;">
 			<button type="button" class="button-style" onclick="window.location.href='/recipe/create'">Add Recipe</button>
 		</div>
 		<p style="text-align: center;" th:if="${#lists.isEmpty(recipes)}">No Recipes Created</p>
 		<div th:if="${not #lists.isEmpty(recipes)}">
 			<div class="row">
-				<div th:each="recipe : ${recipes}" class="col-md-3">
+				<div th:each="recipe : ${recipes}" class="col-md-4">
 					<div class="card mt-5" style="width: 18rem;">
 						<div class="card" style="width: 18rem;">
 							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">

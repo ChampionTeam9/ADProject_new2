@@ -20,7 +20,7 @@
 		display: none;
 		position: absolute;
 		top: 100%;
-		right: 25%;
+		right: 8%;
 		background-color: #fff;
 		border: 1px solid #ccc;
 		padding: 10px;
@@ -32,12 +32,17 @@
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
 	</div>
-	<div class="container" style="text-align: center; width: 80%;">
+	<div class="container" style="text-align: center; width: 60%;">
 		<form id="searchForm" action="/recipe/search" method="post">
 			<div style="align-items: center;">
 				<div style="position: relative;">
 					<input type="text" id="searchInput" name="query" placeholder="Enter your search query"
-						th:value="${query}" style="width: 60%;">
+						th:value="${query}" style="width: 69%;">
+					<select name="searchtype" style="width: 15%;">
+						<option value="name" th:selected="${searchtype == 'name'}">Name</option>
+						<option value="description" th:selected="${searchtype == 'description'}">Description</option>
+						<option value="tag" th:selected="${searchtype == 'tag'}">Tag</option>
+					</select>
 					<button id="toggleButton" type="button" class="button-style">Filter</button>
 					<div id="filterMenu" class="filter-menu" style="text-align: left;">
 						<input type="checkbox" id="filter1" name="filter1"><label for="filter1">&nbsp;&nbsp;Health Score
@@ -45,18 +50,13 @@
 						<input type="checkbox" id="filter2" name="filter2"><label for="filter2">&nbsp;&nbsp;Based on my
 							calorie intake</label>
 					</div>
-					<select name="searchtype" style="width: 8%;">
-						<option value="name" th:selected="${searchtype == 'name'}">Name</option>
-						<option value="description" th:selected="${searchtype == 'description'}">Description</option>
-						<option value="tag" th:selected="${searchtype == 'tag'}">Tag</option>
-					</select>
 					<button type="submit" class="button-style" style="margin-bottom: 10px;">Search</button>
 					<input type="hidden" id="pageNo" name="pageNo" />
 				</div>
 			</div>
 			<p th:if="${#lists.isEmpty(results)}">No Recipes Found</p>
 			<div class="row" th:if="${not #lists.isEmpty(results)}">
-				<div th:each="recipe : ${results}" class="col-md-3">
+				<div th:each="recipe : ${results}" class="col-md-4">
 					<div class="card mt-5" style="width: 18rem;">
 						<div class="card" style="width: 18rem;">
 							<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
@@ -104,7 +104,7 @@
 			<div style="text-align: center;" th:if="${not #lists.isEmpty(results)}">
 				<label for="pageSize" class="col-form-label">Recipes per page:</label>
 				<div>
-					<select name="pageSize" id="pageSize" style="width: 5%;">
+					<select name="pageSize" id="pageSize" style="width: 10%;">
 						<option th:each="size : ${#numbers.sequence(12, 36, 12)}" th:value="${size}" th:text="${size}"
 							th:selected="${size == pageSize}"></option>
 					</select>
