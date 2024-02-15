@@ -169,7 +169,8 @@ public class UserController {
 
 	// refresh tags on the website
 	@PostMapping("/refresh")
-	public String refreshTags(Model model, @RequestParam(value="tags", required = false) List<String> tags, HttpSession session) {
+	public String refreshTags(Model model, @RequestParam(value = "tags", required = false) List<String> tags,
+			HttpSession session) {
 		List<String> oldTags = (List<String>) session.getAttribute("tags");
 		System.out.println("refresh method called");
 		if (oldTags == null) {
@@ -250,6 +251,17 @@ public class UserController {
 			return "UserViews/memberDeletedPage";
 		}
 		model.addAttribute("member", member);
+		Object userIdObj = sessionObj.getAttribute("userId");
+		if (userIdObj != null) {
+			Integer userId = Integer.valueOf(userIdObj.toString());
+			if (userId.equals(member.getId())) {
+				model.addAttribute("isMe", true);
+			} else {
+				model.addAttribute("isMe", false);
+			}
+		} else {
+			model.addAttribute("isMe", false);
+		}
 		List<Recipe> publicRecipes = recipeService.getAllRecipesByMember(member, Status.PUBLIC);
 		model.addAttribute("recipes", publicRecipes);
 		if (sessionObj.getAttribute("userId") != null && sessionObj.getAttribute("userType").equals("admin")) {
@@ -270,7 +282,7 @@ public class UserController {
 		model.addAttribute("numberOfRecipeReports", reportService.getRecipeReportCount());
 
 		// Get data to plot number of recipes submitted per month in a certain year
-		int year =LocalDate.now().getYear();
+		int year = LocalDate.now().getYear();
 		List<Recipe> recipesByYear = recipeService.getAllRecipesByYear(year);
 		List<String> months = new ArrayList<>();
 		Collections.addAll(months, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
@@ -326,9 +338,8 @@ public class UserController {
 		if (yearsForRecipe.contains(String.valueOf(LocalDate.now().getYear()))) {
 			model.addAttribute("currentYear", String.valueOf(LocalDate.now().getYear()));
 		} else {
-			String latestYear = String.valueOf(yearsForRecipe.stream().mapToInt(Integer::parseInt)
-					.max()
-					.orElse(LocalDate.now().getYear()));
+			String latestYear = String.valueOf(
+					yearsForRecipe.stream().mapToInt(Integer::parseInt).max().orElse(LocalDate.now().getYear()));
 			model.addAttribute("currentYear", latestYear);
 		}
 

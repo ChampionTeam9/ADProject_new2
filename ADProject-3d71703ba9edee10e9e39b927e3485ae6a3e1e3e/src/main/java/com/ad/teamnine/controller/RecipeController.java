@@ -338,8 +338,8 @@ public class RecipeController {
 		List<Review> reviews = reviewService.getReviewsByRecipe(recipe);
 		model.addAttribute("reviews", reviews);
 		if (sessionObj.getAttribute("userId") != null) {
+			Integer userId = (int) sessionObj.getAttribute("userId");
 			if (sessionObj.getAttribute("userType").equals("member")) {
-				Integer userId = (int) sessionObj.getAttribute("userId");
 				Member member = userService.getMemberById(userId);
 				Boolean ifsave = !member.getSavedRecipes().contains(recipe);
 				model.addAttribute("ifsave", ifsave);
@@ -349,8 +349,14 @@ public class RecipeController {
 			} else {
 				model.addAttribute("ifAdmin", false);
 			}
+			if(userId.equals(recipe.getMember().getId())) {
+				model.addAttribute("isMine",true);
+			}else {
+				model.addAttribute("isMine",false);
+			}
 		} else {
 			model.addAttribute("ifsave", true);
+			model.addAttribute("isMine",false);
 		}
 
 		return "RecipeViews/recipeDetailPage";

@@ -33,8 +33,10 @@
 		<img src="/user.png" style="width: 100px; height: 100px; margin-bottom: 15px;">
 		<p th:text="${member.username}"></p>
 		<p>Member ID: <span th:if="${member != null}" th:text="${member.id}"></span></p>
-		<button type="button" class="button-style" th:id="${member.id}" th:unless="${ifAdmin}"
-			onclick="window.location.href='/report/reportMember/' + this.id">Report</button>
+		<div th:unless="${ifAdmin}">
+			<button th:unless="${isMe}" type="button" class="button-style" th:id="${member.id}"
+				onclick="window.location.href='/report/reportMember/' + this.id">Report</button>
+		</div>
 	</div>
 	<br />
 	<h4 style="text-align: center;">Recipes created by <span th:text="${member.username}"></span>:</h4>
@@ -51,7 +53,8 @@
 							</a>
 							<div class="card-body">
 								<h5 class="card-title" style="min-height: 50px; max-height: 50px; overflow: hidden">
-									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}" class="good-link"></a>
+									<a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"
+										class="good-link"></a>
 								</h5>
 								<p class="card-text text-truncate"
 									style="min-height: 25px; max-height: 25px; overflow: hidden"
