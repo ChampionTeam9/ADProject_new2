@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -342,4 +341,13 @@ public class APIController {
 
 		return new ResponseEntity<>(responseData, HttpStatus.OK);
 	}
+	@GetMapping("/getRecipeData")
+    public ResponseEntity<?> getRecipes(
+            @RequestParam(name = "start", defaultValue = "0") int start,
+            @RequestParam(name = "limit", defaultValue = "10") int limit) {
+        
+        //  getRecipes(start, limit) 来获取数据
+        List<Recipe> recipes = recipeService.getRecipes(start, limit);
+        return ResponseEntity.ok(recipeService.recipeTurnToDTO(recipes));
+    }
 }

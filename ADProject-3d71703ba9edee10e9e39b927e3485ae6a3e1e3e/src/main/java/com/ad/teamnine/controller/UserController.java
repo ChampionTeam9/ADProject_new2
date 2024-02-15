@@ -239,6 +239,8 @@ public class UserController {
 		if (bindingResult.hasErrors()) {
 			return "UserViews/showMyProfile";
 		}
+		member.calculateAge();
+		member.calculateCalorieIntake();
 		userService.saveMember(member);
 		return "redirect:/user/myProfile";
 	}

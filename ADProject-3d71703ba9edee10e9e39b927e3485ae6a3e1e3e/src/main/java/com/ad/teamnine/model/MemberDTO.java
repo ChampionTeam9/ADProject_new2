@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class MemberDTO {
     private String username;
+    
     public String getUsername() {
 		return username;
 	}
