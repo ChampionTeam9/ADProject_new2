@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.ad.teamnine.model.Ingredient;
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.RecipeDTO;
@@ -279,7 +280,12 @@ public class RecipeService {
 			recipeDTO.setSaturatedFat(recipe.getSaturatedFat());
 			recipeDTO.setSodium(recipe.getSodium());
 			recipeDTO.setUsername(recipe.getMember().getUsername());
-			
+			List<String> ingredients = new ArrayList<>();
+			for (Ingredient ingredient : recipe.getIngredients()) {
+				String foodText = ingredient.getFoodText();
+				ingredients.add(foodText);
+			}
+			recipeDTO.setIngredients(ingredients);
 			recipeDTOs.add(recipeDTO);
 		}
 		return recipeDTOs;
