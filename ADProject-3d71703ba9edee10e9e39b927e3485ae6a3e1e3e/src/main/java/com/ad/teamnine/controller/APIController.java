@@ -194,6 +194,14 @@ public class APIController {
 			double fat = Double.parseDouble(currRecipe[19]);
 			double saturatedFat = Double.parseDouble(currRecipe[23]);
 			List<String> steps = Arrays.asList(extractItems(currRecipe[8]));
+			// Uppercase the start of each step
+			for (int j = 0; j < steps.size(); j++) {
+				String currStep = steps.get(j);
+				String firstLetter = currStep.substring(0, 1).toUpperCase();
+		        String restOfString = currStep.substring(1);
+		        String step = firstLetter + restOfString;
+		        steps.set(j, step);
+			}
 			Recipe recipe = new Recipe(recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
