@@ -270,9 +270,20 @@ public class RecipeService {
 			recipeDTO.setSubmittedDate(recipe.getSubmittedDate());
 			recipeDTO.setTags(recipe.getTags());
 			recipeDTO.setServings(recipe.getServings());
+			recipeDTO.setCalories(recipe.getCalories());
+			recipeDTO.setCarbohydrate(recipe.getCarbohydrate());
+			recipeDTO.setFat(recipe.getFat());
+			recipeDTO.setHealthScore(recipe.getHealthScore());
+			recipeDTO.setProtein(recipe.getProtein());
+			recipeDTO.setSugar(recipe.getSugar());
+			recipeDTO.setSaturatedFat(recipe.getSaturatedFat());
+			recipeDTO.setSodium(recipe.getSodium());
+			recipeDTO.setUsername(recipe.getMember().getUsername());
+			
 			recipeDTOs.add(recipeDTO);
 		}
 		return recipeDTOs;
 	}
+	
 
 }
