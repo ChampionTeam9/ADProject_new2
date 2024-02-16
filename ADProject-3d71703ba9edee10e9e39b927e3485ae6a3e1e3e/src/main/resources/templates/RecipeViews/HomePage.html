@@ -251,7 +251,7 @@
 	<div style="text-align: center;" th:if="${not #lists.isEmpty(results)}">
 		<label for="pageSize" class="col-form-label">Recipes per page:</label>
 		<div>
-			<select name="pageSize" id="pageSize" style="width: 10%;">
+			<select name="pageSize" id="pageSize" style="width: 5%;">
 				<option th:each="size : ${#numbers.sequence(12, 36, 12)}" th:value="${size}" th:text="${size}"
 					th:selected="${size == pageSize}"></option>
 			</select>
