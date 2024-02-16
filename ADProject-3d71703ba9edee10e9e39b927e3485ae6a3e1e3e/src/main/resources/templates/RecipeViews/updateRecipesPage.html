@@ -131,11 +131,12 @@
 				<!-- Upload Picture 输入框 -->
 				<label for="pictureInput" style="font-weight: bold;">Upload Picture:</label>
 				<input type="file" id="pictureInput" name="pictureInput" accept="image/*" style="display: none;">
+				<input type="hidden" id="image" th:value="*{image}"/>
 			</div>
 			<div id="pictureInputErrorMessage" style="color: red;"></div>
 			<!-- 图片预览框 -->
 			<div id="picturePreview">
-				<img th:src="@{'/images/' + ${recipe.image}}" alt="Recipe Image">
+				<img th:src="@{'/images/' + ${recipe.image}}" alt="Recipe Image" style="width: 400px; height: 250px; object-fit: cover;">
 			</div>
 	        <br />
 	        <button type="button" onclick="selectFromFile()">Select Picture</button>
@@ -508,7 +509,9 @@
 			// Check if image uploaded
 	        var fileInput = document.getElementById('pictureInput');
 	        var pictureInputErrorMessage = document.getElementById('pictureInputErrorMessage');
-	        if (fileInput.files.length === 0) {
+	        var image = document.getElementById("image").value;
+	        console.log("image: " + image);
+	        if (fileInput.files.length === 0 && (image == null)) {
 				event.preventDefault();
 	            pictureInputErrorMessage.innerText = 'Please select a picture to upload.';
 	            console.log('Validation failed: no file selected');
