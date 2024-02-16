@@ -18,10 +18,10 @@
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
 	</div>
-	<div class="container" style="width: 80%;">
-		<h1>Member Reports</h1>
+	<div class="container" style="width: 60%;">
+		<h2>Member Reports</h2>
 	</div>
-	<div class="container" style="width: 80%;">
+	<div class="container" style="width: 60%;">
 		<p style="text-align: center;" th:if="${#lists.isEmpty(pendingReports)}">No Reports Currently</p>
 		<table class="table table-hover" th:if="${not #lists.isEmpty(pendingReports)}">
 			<thead>
