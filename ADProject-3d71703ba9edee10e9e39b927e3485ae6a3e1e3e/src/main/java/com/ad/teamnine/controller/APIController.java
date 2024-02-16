@@ -97,22 +97,30 @@ public class APIController {
 			return new ResponseEntity<Ingredient>(HttpStatus.BAD_REQUEST);
 		}
 		IngredientInfo.Nutrients nutrients = parsed.get(0).getNutrients();
-		double protein = getDefaultIfNull(nutrients.getPROCNT().getQuantity());
-		double calories = getDefaultIfNull(nutrients.getENERC_KCAL().getQuantity());
-		double carbohydrate = getDefaultIfNull(nutrients.getCHOCDF().getQuantity());
-		double sugar = getDefaultIfNull(nutrients.getSUGAR().getQuantity());
-		double sodium = getDefaultIfNull(nutrients.getNA().getQuantity());
-		double fat = getDefaultIfNull(nutrients.getFAT().getQuantity());
-		double saturatedFat = getDefaultIfNull(nutrients.getFASAT().getQuantity());
+		double protein = 0.0;
+		if (nutrients.getPROCNT() != null)
+			protein = nutrients.getPROCNT().getQuantity();
+		double calories = 0.0;
+		if (nutrients.getENERC_KCAL() != null)
+			calories = nutrients.getENERC_KCAL().getQuantity();
+		double carbohydrate = 0.0;
+		if (nutrients.getCHOCDF() != null)
+			carbohydrate = nutrients.getCHOCDF().getQuantity();
+		double sugar = 0.0;
+		if (nutrients.getSUGAR() != null)
+			sugar = nutrients.getSUGAR().getQuantity();
+		double sodium = 0.0;
+		if (nutrients.getNA() != null)
+			sodium = nutrients.getNA().getQuantity();
+		double fat = 0.0;
+		if (nutrients.getFAT() != null)
+			fat = nutrients.getFAT().getQuantity();
+		double saturatedFat = 0.0;
+		if (nutrients.getFASAT() != null)
+			saturatedFat = nutrients.getFASAT().getQuantity();
 		Ingredient ingredient = new Ingredient(foodText, protein, calories, carbohydrate, sugar, sodium, fat,
 				saturatedFat);
 		return new ResponseEntity<Ingredient>(ingredient, HttpStatus.OK);
-	}
-
-	private static double getDefaultIfNull(Double value) {
-		// If any of the nutrients is null as info not available on API, set default to
-		// zero
-		return value != null ? value : 0.0;
 	}
 
 	public void saveEntities(List<String[]> recipes) {
@@ -146,7 +154,13 @@ public class APIController {
 				else
 					gender = "Female";
 				member = new Member(username, password, height, weight, birthdate, gender, null);
-
+				LocalDate startDate2 = LocalDate.of(2000, 1, 1);
+				LocalDate endDate2 = LocalDate.of(2024, 2, 17);
+				long startEpochDay2 = startDate2.toEpochDay();
+				long endEpochDay2 = endDate2.toEpochDay();
+				long randomEpochDay2 = startEpochDay2 + (long) (Math.random() * (endEpochDay2 - startEpochDay2 + 1));
+				LocalDate registrationDate = LocalDate.ofEpochDay(randomEpochDay2);
+				member.setRegistrationDate(registrationDate);
 				Member savedMember = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}
