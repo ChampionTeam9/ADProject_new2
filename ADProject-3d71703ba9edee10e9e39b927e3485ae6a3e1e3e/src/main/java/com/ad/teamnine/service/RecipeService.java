@@ -24,6 +24,8 @@ import com.ad.teamnine.model.Ingredient;
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.Recipe;
 import com.ad.teamnine.model.RecipeDTO;
+import com.ad.teamnine.model.ShoppingListItem;
+import com.ad.teamnine.model.ShoppingListItemDTO;
 import com.ad.teamnine.model.Status;
 import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.RecipeRepository;
@@ -292,5 +294,16 @@ public class RecipeService {
 			recipeDTOs.add(recipeDTO);
 		}
 		return recipeDTOs;
+	}
+	public List<ShoppingListItemDTO> shoppingListTurnToDTO(List<ShoppingListItem> shoppinglist){
+		List<ShoppingListItemDTO> DTOs=new ArrayList<>();
+		for(ShoppingListItem item:shoppinglist) {
+			ShoppingListItemDTO DTO=new ShoppingListItemDTO();
+			DTO.setChecked(item.isChecked());
+			DTO.setId(item.getId());
+			DTO.setIngredientName(item.getIngredientName());
+			DTOs.add(DTO);
+		}
+		return DTOs;
 	}
 }
