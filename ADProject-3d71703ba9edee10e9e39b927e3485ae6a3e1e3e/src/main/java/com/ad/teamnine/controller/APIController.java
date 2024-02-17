@@ -52,6 +52,8 @@ public class APIController {
 	RecipeService recipeService;
 	@Autowired
 	ReviewService reviewService;
+	@Autowired
+	ShoppingListItemService shopser;;
 
 	Map<Integer, Integer> csvIdToDbIdRecipe = new HashMap<>();
 	Map<Integer, Integer> csvIdToDbIdMember = new HashMap<>();
@@ -388,5 +390,36 @@ public class APIController {
     public String getMemberUsername(@RequestParam Integer id) {
         
         return userService.getUsernameById(id);
+    }
+	@PostMapping("/getShoppingList")
+	public ResponseEntity<?> getShoppingList(@RequestBody Map<String, String> requestBody) {
+	    String username = requestBody.get("username");
+	    List<ShoppingListItem> shoppingList = userService.getMemberByUsername(username).getShoppingList();
+	    return ResponseEntity.ok(recipeService.shoppingListTurnToDTO(shoppingList));
+	}
+
+	@GetMapping("/test")
+    public List<ShoppingListItemDTO> test() {
+		List<ShoppingListItem> shoppingList = userService.getMemberByUsername("zhangsibo").getShoppingList();
+		for (ShoppingListItem item : shoppingList) {
+	        System.out.print(item.getIngredientName());
+		}
+		
+        return recipeService.shoppingListTurnToDTO(shoppingList);
+    }
+	@GetMapping("/test2")
+	public String test2() {
+		shopser.saveItemFromAndroid("zhangsibo", false, "milk");
+		return null;
+	}
+	@PostMapping("/updateIsChecked")
+    public String updateIsChecked(@RequestBody ShoppingListItemDTO request) {
+        boolean isChecked = request.isChecked();
+        int id = request.getId();
+        
+        shopser.updateItemFromAndroid(id, isChecked);
+        System.out.print(id);
+        System.out.print(isChecked);
+        return "Update successful"; 
     }
 }
