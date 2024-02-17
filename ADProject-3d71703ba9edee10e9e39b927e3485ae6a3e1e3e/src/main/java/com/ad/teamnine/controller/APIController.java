@@ -422,4 +422,12 @@ public class APIController {
         System.out.print(isChecked);
         return "Update successful"; 
     }
+	@PostMapping("/saveShoppingList")
+	public String saveShoppingList(@RequestBody ShoppingListItemDTO request) {
+		boolean isChecked=request.isChecked();
+		String username=request.getUsername();
+		String ingredientName=request.getIngredientName();
+		shopser.saveItemFromAndroid(username, isChecked, ingredientName);
+		return"save successful";
+	}
 }

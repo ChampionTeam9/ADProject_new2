@@ -9,12 +9,14 @@ public class ShoppingListItemDTO {
 	private String ingredientName;
 	@JsonProperty("isChecked")
 	private boolean isChecked;
+	private String username;
 	
 	public ShoppingListItemDTO() {}
 	
-	public ShoppingListItemDTO( String ingredientName,boolean isChecked) {
+	public ShoppingListItemDTO( String ingredientName,boolean isChecked,String username) {
 		this.ingredientName = ingredientName;
 		this.isChecked = isChecked;
+		this.setUsername(username);
 	}
 	
 	
@@ -38,4 +40,14 @@ public class ShoppingListItemDTO {
 	public void setChecked(boolean isChecked) {
 		this.isChecked = isChecked;
 	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	
 }
