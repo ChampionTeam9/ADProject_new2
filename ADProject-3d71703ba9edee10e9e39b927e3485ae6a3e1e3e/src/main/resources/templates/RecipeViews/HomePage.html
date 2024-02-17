@@ -65,7 +65,7 @@
 			<div class="carousel-inner">
 				<div class="carousel-item active" data-bs-interval="10000">
 					<div class="row">
-						<div th:each="recipe,iterStat:${recipeRecommended}" th:if="${iterStat.index < 3}"
+						<div th:each="recipe,iterStat:${recipeRecommended}" th:if="${iterStat.index >= 0 and iterStat.index < 3}"
 							class="col-md-4">
 							<div class="card mt-5" style="width: 18rem;">
 								<div class="card" style="width: 18rem;">

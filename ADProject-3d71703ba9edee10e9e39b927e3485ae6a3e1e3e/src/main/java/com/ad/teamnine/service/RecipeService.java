@@ -257,6 +257,7 @@ public class RecipeService {
 
 	public List<RecipeDTO> recipeTurnToDTO(List<Recipe> recipes) {
 		List<RecipeDTO> recipeDTOs = new ArrayList<>();
+		
 		for (Recipe recipe : recipes) {
 			RecipeDTO recipeDTO = new RecipeDTO();
 			recipeDTO.setId(recipe.getId());
@@ -280,16 +281,16 @@ public class RecipeService {
 			recipeDTO.setSaturatedFat(recipe.getSaturatedFat());
 			recipeDTO.setSodium(recipe.getSodium());
 			recipeDTO.setUsername(recipe.getMember().getUsername());
+
 			List<String> ingredients = new ArrayList<>();
 			for (Ingredient ingredient : recipe.getIngredients()) {
 				String foodText = ingredient.getFoodText();
 				ingredients.add(foodText);
 			}
 			recipeDTO.setIngredients(ingredients);
+
 			recipeDTOs.add(recipeDTO);
 		}
 		return recipeDTOs;
 	}
-	
-
 }

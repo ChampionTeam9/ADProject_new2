@@ -374,4 +374,19 @@ public class APIController {
         List<Recipe> recipes = recipeService.getRecipes(start, limit);
         return ResponseEntity.ok(recipeService.recipeTurnToDTO(recipes));
     }
+	
+	@GetMapping("/getReviewData")
+    public ResponseEntity<?> getReviews(
+            @RequestParam(name = "recipeid") int id) {
+        
+        //  getRecipes(start, limit) 来获取数据
+        List<Review> reviews = recipeService.getRecipeById(id).getReviews();
+        return ResponseEntity.ok(reviewService.reviewTurnToDTO(reviews));
+    }
+	
+	@GetMapping("/getMemberUsername")
+    public String getMemberUsername(@RequestParam Integer id) {
+        
+        return userService.getUsernameById(id);
+    }
 }

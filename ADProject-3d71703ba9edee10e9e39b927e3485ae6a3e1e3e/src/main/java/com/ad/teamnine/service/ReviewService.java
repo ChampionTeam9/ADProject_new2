@@ -1,5 +1,6 @@
 package com.ad.teamnine.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,20 @@ public class ReviewService {
 	
 	public List<Review> getReviewsByRecipe(Recipe recipe){
 		return recipeRepo.getReviewsByRecipe(recipe);
+	}
+
+	public List<ReviewDTO> reviewTurnToDTO(List<Review> reviews) {
+		List<ReviewDTO> rdlist = new ArrayList<>();
+		for(Review r :reviews) {
+			ReviewDTO rd = new ReviewDTO();
+			rd.setId(r.getId());
+			rd.setComment(r.getComment());
+			rd.setMemberId(r.getMember().getId());
+			rd.setRating(r.getRating());
+			rd.setReviewDate(r.getReviewDate());
+			rd.setRecipeId(r.getRecipe().getId());
+			rdlist.add(rd);
+		}
+		return rdlist;
 	}
 }
