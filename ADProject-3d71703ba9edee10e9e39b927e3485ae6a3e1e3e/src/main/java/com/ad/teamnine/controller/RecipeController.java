@@ -194,7 +194,8 @@ public class RecipeController {
 	@PostMapping("/create")
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
 			@RequestParam("timeUnit") String timeUnit, @RequestParam("pictureInput") MultipartFile pictureFile,
-			@RequestParam("ingredientIds") String ingredientIds, Model model, HttpSession sessionObj) {
+			@RequestParam("ingredientIds") String ingredientIds, Model model, HttpSession sessionObj, 
+			@RequestParam(name="id", required = false) Integer recipeId) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Binding error at recipe creation");
 			// Print out binding errors
@@ -255,17 +256,30 @@ public class RecipeController {
 		recipe.setMember(member);
 
 		recipeService.createRecipe(recipe);
-
-		List<Ingredient> ingredients = recipe.getIngredients();
+		
+		List<Ingredient> ingredients = new ArrayList<>();
+		if (recipeId != null)
+			// if editing existing recipe
+			ingredients = recipeService.getRecipeById(recipeId).getIngredients();
 		String[] ingredientsToAdd = ingredientIds.split(",");
 		for (int i = 0; i < ingredientsToAdd.length; i++) {
 			if (ingredientsToAdd[i].equals(""))
 				continue;
-			Ingredient ingredient = ingredientService.getIngredientById(Integer.parseInt(ingredientsToAdd[i]));
-			System.out.println("Ingredient: " + ingredient);
-			ingredient.getRecipes().add(recipe);
-			ingredientService.saveIngredient(ingredient);
-			ingredients.add(ingredient);
+			int ingredientId = Integer.parseInt(ingredientsToAdd[i]);
+		    // Check if the ingredient is already in the ingredients list (for edit recipe)
+		    boolean ingredientAlreadyAdded = false;
+		    for (Ingredient existingIngredient : ingredients) {
+		        if (existingIngredient.getId() == ingredientId) {
+		            ingredientAlreadyAdded = true;
+		            break;
+		        }
+		    }
+		    if (!ingredientAlreadyAdded) {
+		    	Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
+				ingredient.getRecipes().add(recipe);
+				ingredientService.saveIngredient(ingredient);
+				ingredients.add(ingredient);
+		    }
 		}
 		setRecipeNutrients(recipe);
 		recipe.setHealthScore(recipe.calculateHealthScore());
