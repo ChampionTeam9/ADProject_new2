@@ -37,12 +37,11 @@ public class ShoppingListItemService {
 		shoppingListItemRepo.delete(shoppingListItem);
 	}
 	
-	public void saveItemFromAndroid (String username, boolean isChecked, String itemName) {
+	public ShoppingListItem saveItemFromAndroid (String username, boolean isChecked, String itemName) {
 		Member member = memberRepo.findByUsername(username);
-//		List<ShoppingListItem> shoppingList = member.getShoppingList();
 		ShoppingListItem item = new ShoppingListItem(member, itemName);
 		item.setChecked(isChecked);
-		shoppingListItemRepo.save(item);
+		return shoppingListItemRepo.save(item);
 	}
 	
 	public void updateItemFromAndroid(Integer itemId, boolean isChecked) {

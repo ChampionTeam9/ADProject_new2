@@ -393,9 +393,23 @@ public class APIController {
     }
 	@PostMapping("/getShoppingList")
 	public ResponseEntity<?> getShoppingList(@RequestBody Map<String, String> requestBody) {
+		System.out.println("getShoppingList called by android");
 	    String username = requestBody.get("username");
 	    List<ShoppingListItem> shoppingList = userService.getMemberByUsername(username).getShoppingList();
 	    return ResponseEntity.ok(recipeService.shoppingListTurnToDTO(shoppingList));
+	}
+	
+	@PostMapping("/addToShoppingList")
+	public String addToShoppingList(@RequestBody Map<String, String> requestBody) {
+		System.out.println("addToShoppingList called by android");
+	    List<String> selectedItems = Arrays.asList((requestBody.get("selectedItems")).split(","));
+	    String username = requestBody.get("username");
+	    for (String item : selectedItems) {
+	    	System.out.println("item: " + item);
+	    	ShoppingListItem newItem = shopser.saveItemFromAndroid(username, false, item);
+	    	System.out.println("saved item: " + newItem.getIngredientName());
+	    }
+	    return "addedToShoppingList";
 	}
 
 	@GetMapping("/test")
