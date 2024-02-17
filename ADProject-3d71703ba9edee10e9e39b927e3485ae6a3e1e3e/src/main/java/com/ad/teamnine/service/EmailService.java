@@ -59,7 +59,43 @@ public class EmailService {
 			throw new RuntimeException(e);
 		}
 	}
+	public void MemberDeletedNotification(Member member) {
+		String recipientEmail = member.getEmail();
+		final String username = "zhangten0131@gmail.com"; // 发送邮件的邮箱地址
+		final String password = "c o s f uvao ofrk etnj"; // 邮箱密码或授权码
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+		Session session = Session.getInstance(props, new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
 
+		try {
+			// 创建 MimeMessage 对象
+			Message message = new MimeMessage(session);
+			// 设置发件人
+			message.setFrom(new InternetAddress(username));
+			// 设置收件人
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+			// 设置邮件主题
+			message.setSubject("Account Deleted！");
+			// 设置邮件内容
+			message.setText("Dear member " + member.getUsername() + ",\n"
+					+ "You Account has been deleted"+",\n"
+					+ "Please contact us if any questions!");
+
+			// 发送邮件
+			Transport.send(message);
+
+			System.out.println("Email sent successfully!");
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	public void MemberReportApprovedNotificationToMemberReported(MemberReport memberReport) {
 		String recipientEmail = memberReport.getMemberReported().getEmail();
 		final String username = "zhangten0131@gmail.com"; // 发送邮件的邮箱地址
@@ -124,7 +160,7 @@ public class EmailService {
 			message.setSubject("Your Recipe has been reported！");
 			// 设置邮件内容
 			message.setText(
-					"Dear member " + recipeReport.getMember().getUsername() + ",\n" + "Your recipe has been reported!\n"
+					"Dear member " + recipeReport.getRecipeReported().getMember().getUsername() + ",\n" + "Your recipe has been reported!\n"
 							+ "Reason:\"" + recipeReport.getReason() + "\",\n" + "Please login to check!");
 			Transport.send(message);
 
@@ -160,7 +196,7 @@ public class EmailService {
 			message.setSubject("Recipe Deleted");
 			// 设置邮件内容
 			message.setText(
-					"Dear member " + recipeReport.getMember().getUsername() + ",\n" + "Your recipe "+recipeReport.getRecipeReported()+" has been deleted!\n"
+					"Dear member " + recipeReport.getRecipeReported().getMember().getUsername() + ",\n" + "Your recipe \""+recipeReport.getRecipeReported().getName()+"\" has been deleted!\n"
 							+ "Please contact us if any question!");
 			Transport.send(message);
 
