@@ -97,27 +97,35 @@ public class APIController {
 			return new ResponseEntity<Ingredient>(HttpStatus.BAD_REQUEST);
 		}
 		IngredientInfo.Nutrients nutrients = parsed.get(0).getNutrients();
-		double protein = getDefaultIfNull(nutrients.getPROCNT().getQuantity());
-		double calories = getDefaultIfNull(nutrients.getENERC_KCAL().getQuantity());
-		double carbohydrate = getDefaultIfNull(nutrients.getCHOCDF().getQuantity());
-		double sugar = getDefaultIfNull(nutrients.getSUGAR().getQuantity());
-		double sodium = getDefaultIfNull(nutrients.getNA().getQuantity());
-		double fat = getDefaultIfNull(nutrients.getFAT().getQuantity());
-		double saturatedFat = getDefaultIfNull(nutrients.getFASAT().getQuantity());
+		double protein = 0.0;
+		if (nutrients.getPROCNT() != null)
+			protein = nutrients.getPROCNT().getQuantity();
+		double calories = 0.0;
+		if (nutrients.getENERC_KCAL() != null)
+			calories = nutrients.getENERC_KCAL().getQuantity();
+		double carbohydrate = 0.0;
+		if (nutrients.getCHOCDF() != null)
+			carbohydrate = nutrients.getCHOCDF().getQuantity();
+		double sugar = 0.0;
+		if (nutrients.getSUGAR() != null)
+			sugar = nutrients.getSUGAR().getQuantity();
+		double sodium = 0.0;
+		if (nutrients.getNA() != null)
+			sodium = nutrients.getNA().getQuantity();
+		double fat = 0.0;
+		if (nutrients.getFAT() != null)
+			fat = nutrients.getFAT().getQuantity();
+		double saturatedFat = 0.0;
+		if (nutrients.getFASAT() != null)
+			saturatedFat = nutrients.getFASAT().getQuantity();
 		Ingredient ingredient = new Ingredient(foodText, protein, calories, carbohydrate, sugar, sodium, fat,
 				saturatedFat);
 		return new ResponseEntity<Ingredient>(ingredient, HttpStatus.OK);
 	}
 
-	private static double getDefaultIfNull(Double value) {
-		// If any of the nutrients is null as info not available on API, set default to
-		// zero
-		return value != null ? value : 0.0;
-	}
-
 	public void saveEntities(List<String[]> recipes) {
-		String[] imageFiles = {"download.jpg", "download2.jpg", "download3.jpg", "download4.jpg", "download5.jpg", 
-				"download6.jpg", "download7.jpg", "download8.jpg", "download9.jpg", "download10.jpg"};
+		String[] imageFiles = { "download.jpg", "download2.jpg", "download3.jpg", "download4.jpg", "download5.jpg",
+				"download6.jpg", "download7.jpg", "download8.jpg", "download9.jpg", "download10.jpg" };
 		for (int i = 1; i < recipes.size(); i++) {
 			String[] currRecipe = recipes.get(i);
 			System.out.println(i + ": " + currRecipe[0]);
@@ -146,7 +154,13 @@ public class APIController {
 				else
 					gender = "Female";
 				member = new Member(username, password, height, weight, birthdate, gender, null);
-				
+				LocalDate startDate2 = LocalDate.of(2000, 1, 1);
+				LocalDate endDate2 = LocalDate.of(2024, 2, 17);
+				long startEpochDay2 = startDate2.toEpochDay();
+				long endEpochDay2 = endDate2.toEpochDay();
+				long randomEpochDay2 = startEpochDay2 + (long) (Math.random() * (endEpochDay2 - startEpochDay2 + 1));
+				LocalDate registrationDate = LocalDate.ofEpochDay(randomEpochDay2);
+				member.setRegistrationDate(registrationDate);
 				Member savedMember = userService.saveMember(member);
 				csvIdToDbIdMember.put(memberId, savedMember.getId());
 			}
@@ -194,6 +208,14 @@ public class APIController {
 			double fat = Double.parseDouble(currRecipe[19]);
 			double saturatedFat = Double.parseDouble(currRecipe[23]);
 			List<String> steps = Arrays.asList(extractItems(currRecipe[8]));
+			// Uppercase the start of each step
+			for (int j = 0; j < steps.size(); j++) {
+				String currStep = steps.get(j);
+				String firstLetter = currStep.substring(0, 1).toUpperCase();
+		        String restOfString = currStep.substring(1);
+		        String step = firstLetter + restOfString;
+		        steps.set(j, step);
+			}
 			Recipe recipe = new Recipe(recipeName, recipeDescription, recipeRating, preparationTime, servings,
 					numberOfSteps, member, calories, protein, carbohydrate, sugar, sodium, fat, saturatedFat, steps);
 			recipe.setTags(tagsList);
@@ -201,7 +223,7 @@ public class APIController {
 			recipe.setNumberOfRating(numberOfRating);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 			recipe.setSubmittedDate(LocalDate.parse(currRecipe[4], formatter));
-			//set image
+			// set image
 			int imageIndex = i % imageFiles.length;
 			String imageName = imageFiles[imageIndex];
 			recipe.setImage(imageName);
@@ -341,7 +363,9 @@ public class APIController {
 
 		return new ResponseEntity<>(responseData, HttpStatus.OK);
 	}
+
 	@GetMapping("/getRecipeData")
+
     public ResponseEntity<?> getRecipes(
             @RequestParam(name = "start", defaultValue = "0") int start,
             @RequestParam(name = "limit", defaultValue = "30") int limit) {

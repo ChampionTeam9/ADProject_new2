@@ -56,17 +56,19 @@
 						Review
 					</button>&nbsp;&nbsp;
 					<button type="button" th:id="${recipe.id}" th:if="${ifsave}"
-						onclick="window.location.href='/recipe/save/' + this.id">Save
+						onclick="window.location.href='/recipe/save/' + this.id"> Save 
 					</button>
 					<button type="button" th:id="${recipe.id}" th:unless="${ifsave}"
-						onclick="window.location.href='/recipe/unsubscribe/' + this.id">Unsave
+						onclick="window.location.href='/recipe/unsubscribeOnDetailPage/' + this.id">Unsave
 					</button>&nbsp;&nbsp;
-					<button type="button" th:id="${recipe.id}" th:unless="${ifAdmin}"
+					<button type="button" th:id="${recipe.id}" th:unless="${isMine}"
 						onclick="window.location.href='/report/reportRecipe/' + this.id">Report</button>
 				</td>
 			</tr>
 			<tr>
-				<td><p th:text="${recipe.description}"></p></td>
+				<td>
+					<p th:text="${recipe.description}"></p>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -177,7 +179,8 @@
 								<div class="user-profile" style="display: flex;">
 									<img src="/user.png" style="width: 40px; height: 40px; margin-right: 8px;">
 									<a th:href="@{/user/profile/{id}(id=${review.member.id})}" class="good-link">
-										<h5 class="card-title" th:text="${review.member.username}" style="font-weight: 700;">Name</h5>
+										<h5 class="card-title" th:text="${review.member.username}"
+											style="font-weight: 700;">Name</h5>
 									</a>
 								</div>
 								<div>

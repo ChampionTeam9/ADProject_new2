@@ -27,14 +27,14 @@ public class RecipeDTO {
 	private Double fat;
 	private Double saturatedFat;
 	private String username;
-	private List<String> ingredient;
+	private List<String> ingredients;
 	public RecipeDTO() {
 	}
 
 	public RecipeDTO(Integer id, String name, String description, String image, Double rating, Integer numberOfRating,
 			Integer numberOfSaved, LocalDate submittedDate, List<String> tags, Integer servings,
 			Integer preparationTime, List<String> steps, Integer healthScore, Double calories, Double protein,
-			Double carbohydrate, Double sugar, Double sodium, Double fat, Double saturatedFat,String username,List<String>ingredient) {
+			Double carbohydrate, Double sugar, Double sodium, Double fat, Double saturatedFat,String username,List<String>ingredients) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -56,15 +56,15 @@ public class RecipeDTO {
 		this.fat = fat;
 		this.saturatedFat = saturatedFat;
 		this.username=username;
-		this.ingredient=ingredient;
+		this.ingredients=ingredients;
 	}
 
-	public List<String> getIngredient() {
-		return ingredient;
+	public List<String> getIngredients() {
+		return ingredients;
 	}
 
-	public void setIngredient(List<String> ingredient) {
-		this.ingredient = ingredient;
+	public void setIngredients(List<String> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 	public Integer getId() {

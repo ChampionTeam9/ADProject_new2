@@ -281,12 +281,14 @@ public class RecipeService {
 			recipeDTO.setSaturatedFat(recipe.getSaturatedFat());
 			recipeDTO.setSodium(recipe.getSodium());
 			recipeDTO.setUsername(recipe.getMember().getUsername());
-//			List<Ingredient> ingredients =recipe.getIngredients();
-//			List<String> ingredientstext = new ArrayList<>();
-//					for(Ingredient i :ingredients) {
-//				ingredientstext.add(i.getFoodText());
-//			}
-//					recipeDTO.setIngredient(ingredientstext);
+
+			List<String> ingredients = new ArrayList<>();
+			for (Ingredient ingredient : recipe.getIngredients()) {
+				String foodText = ingredient.getFoodText();
+				ingredients.add(foodText);
+			}
+			recipeDTO.setIngredients(ingredients);
+
 			recipeDTOs.add(recipeDTO);
 		}
 		return recipeDTOs;

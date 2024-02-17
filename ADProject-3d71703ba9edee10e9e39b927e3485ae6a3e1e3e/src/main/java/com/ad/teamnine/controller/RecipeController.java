@@ -60,6 +60,14 @@ public class RecipeController {
 		return "redirect:/user/member/savedList";
 	}
 
+	@GetMapping("/unsubscribeOnDetailPage/{id}")
+	public String unsubscribeRecipeOnDetailPage(@PathVariable Integer id, HttpSession sessionObj) {
+		Recipe recipe = recipeService.getRecipeById(id);
+		Member member = userService.getMemberById((int) sessionObj.getAttribute("userId"));
+		recipeService.unsubscribeRecipe(recipe, member);
+		return "redirect:/recipe/detail/" + id;
+	}
+
 	@GetMapping("/review/{id}")
 	public String reviewRecipe(@PathVariable Integer id, HttpSession sessionObj, Model model) {
 		Recipe recipe = recipeService.getRecipeById(id);
@@ -74,6 +82,7 @@ public class RecipeController {
 			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
 		Page<Recipe> recipePage = recipeService.searchByTag(tag, pageNo, pageSize);
 		model.addAttribute("results", recipePage.getContent());
+		model.addAttribute("recipeRecommended", recipePage.getContent());//换成recommendation
 		model.addAttribute("currentPage", recipePage.getNumber());
 		model.addAttribute("totalPages", recipePage.getTotalPages());
 		model.addAttribute("pageSize", pageSize);
@@ -118,7 +127,7 @@ public class RecipeController {
 			Member member = userService.getMemberById((Integer) sessionObj.getAttribute("userId"));
 			Double calorieIntake = member.getCalorieIntake();
 			if (member.getCalorieIntake() == null) {
-				return "redirect:/user/myProfile";
+				return "redirect:/user/editProfile";
 			}
 			filteredResults = results.stream().filter(r -> r.getCalories() <= (calorieIntake / 3))
 					.collect(Collectors.toList());
@@ -140,7 +149,7 @@ public class RecipeController {
 		System.out.println("pageSize: " + pageSize);
 		System.out.println("currentPage: " + currentPage);
 		model.addAttribute("results", filteredResults.subList(startIndex, endIndex));
-
+		model.addAttribute("recipeRecommended",filteredResults.subList(startIndex, endIndex));// 换成recommendation
 		model.addAttribute("query", query);
 		model.addAttribute("searchtype", type);
 		return "/RecipeViews/HomePage";
@@ -157,6 +166,10 @@ public class RecipeController {
 		String ingredientName = (String) payload.get("ingredientName");
 		Ingredient ingredient = ingredientService.getIngredientByfoodText(ingredientName);
 		Map<String, Object> response = new HashMap<>();
+		if (ingredient != null && ingredient.getCalories() == null) {
+			ingredientService.deleteIngredient(ingredient);
+			ingredient = null;
+		}
 		if (ingredient == null) {
 			// Create ingredient
 			ResponseEntity<Ingredient> ingredientResponse = APIController.getNutritionInfo(ingredientName);
@@ -196,18 +209,18 @@ public class RecipeController {
 			int preparationTime = recipe.getPreparationTime();
 			recipe.setPreparationTime(preparationTime * 60);
 		}
-		
+
 		// Set the first letter of name and description as uppercase
 		String recipeName = recipe.getName().trim();
 		recipeName = recipeName.substring(0, 1).toUpperCase() + recipeName.substring(1);
 		recipe.setName(recipeName);
-		
+
 		String recipeDescription = recipe.getName().trim();
 		if (!recipeDescription.isEmpty()) {
 			recipeDescription = recipeDescription.substring(0, 1).toUpperCase() + recipeDescription.substring(1);
 			recipe.setDescription(recipeDescription);
 		}
-		
+
 		List<String> steps = recipe.getSteps();
 		List<String> newSteps = new ArrayList<>();
 		for (String step : steps) {
@@ -281,7 +294,7 @@ public class RecipeController {
 			saturatedFat += ingredient.getSaturatedFat();
 		}
 		recipe.setCalories(Math.round((calories / servings) * 10.0) / 10.0);
-		
+
 		// Calculate PDV of each macronutrient by using their reference intake
 		Double proteinPDV = (protein / servings) / 50 * 100;
 		proteinPDV = Math.round(proteinPDV * 10.0) / 10.0;
@@ -338,19 +351,26 @@ public class RecipeController {
 		List<Review> reviews = reviewService.getReviewsByRecipe(recipe);
 		model.addAttribute("reviews", reviews);
 		if (sessionObj.getAttribute("userId") != null) {
-			if (sessionObj.getAttribute("userType").equals("member")) {
-				Integer userId = (int) sessionObj.getAttribute("userId");
+			Integer userId = (int) sessionObj.getAttribute("userId");
+			Object userType = sessionObj.getAttribute("userType");
+			if (userType != null && userType.toString().equals("member")) {
 				Member member = userService.getMemberById(userId);
 				Boolean ifsave = !member.getSavedRecipes().contains(recipe);
 				model.addAttribute("ifsave", ifsave);
 			}
-			if (sessionObj.getAttribute("userType").equals("admin")) {
+			if (userType != null && userType.toString().equals("admin")) {
 				model.addAttribute("ifAdmin", true);
 			} else {
 				model.addAttribute("ifAdmin", false);
 			}
+			if (userId.equals(recipe.getMember().getId())) {
+				model.addAttribute("isMine", true);
+			} else {
+				model.addAttribute("isMine", false);
+			}
 		} else {
 			model.addAttribute("ifsave", true);
+			model.addAttribute("isMine", false);
 		}
 
 		return "RecipeViews/recipeDetailPage";

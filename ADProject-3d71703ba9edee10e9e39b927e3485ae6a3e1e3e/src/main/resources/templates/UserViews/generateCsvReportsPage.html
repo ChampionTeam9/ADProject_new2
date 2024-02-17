@@ -50,7 +50,7 @@
 	<div class="custom-container">
 		<div th:replace="fragments/navbar"></div>
 	</div>
-	<div class="container" style="width: 80%;">
+	<div class="container" style="width: 60%;">
 		<h2>Generate Csv Reports</h2>
 	</div>
 	<input type="hidden" th:value="${previousOrderBy}" id="preOrderBy">
@@ -74,7 +74,7 @@
 		</form>
 		<!--<a href="/csv/download" download="output.csv" id="downloadLink">Download CSV</a>-->
 	</div>
-	<div class="container" style="width: 80%;">
+	<div class="container" style="width: 60%;">
 		<p style="text-align: center;" th:if="${#lists.isEmpty(recipes)}">No Records Yet</p>
 		<table class="table table-hover" th:if="${not #lists.isEmpty(recipes)}">
 			<thead>
