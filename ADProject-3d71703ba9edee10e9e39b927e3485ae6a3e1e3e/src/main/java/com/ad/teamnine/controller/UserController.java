@@ -401,6 +401,7 @@ public class UserController {
 	@GetMapping("/admin/memberManage/delete/{id}")
 	public String deleteMember(@PathVariable("id") Integer memberId) {
 		userService.deleteMember(memberId);
+		emailService.MemberDeletedNotification(userService.getMemberById(memberId));
 		return "redirect:/user/admin/memberManage";
 	}
 
