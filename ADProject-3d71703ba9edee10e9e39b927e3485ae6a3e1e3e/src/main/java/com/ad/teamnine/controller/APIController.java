@@ -411,6 +411,16 @@ public class APIController {
 	    }
 	    return "addedToShoppingList";
 	}
+	
+	@PostMapping("/addItemToShoppingList")
+	public String addItemToShoppingList(@RequestBody Map<String, String> requestBody) {
+		System.out.println("addItemToShoppingList called by android");
+	    String itemToAdd = requestBody.get("newItem");
+	    String username = requestBody.get("username");
+	    ShoppingListItem newItem = shopser.saveItemFromAndroid(username, false, itemToAdd);
+	    System.out.println("saved item: " + newItem.getIngredientName());
+	    return "addedToShoppingList";
+	}
 
 	@GetMapping("/test")
     public List<ShoppingListItemDTO> test() {
