@@ -326,21 +326,7 @@ public class APIController {
 			if (member1 == null) {
 				return ResponseEntity.notFound().build();
 			}
-
-			Set<Recipe> recipes = new HashSet<>(member1.getSavedRecipes());
-
-			// 构建包含食谱信息的List
-			List<RecipeDTO> recipeDTOs = new ArrayList<>();
-			for (Recipe recipe : recipes) {
-				RecipeDTO recipeDTO = new RecipeDTO();
-				recipeDTO.setId(recipe.getId());
-				recipeDTO.setName(recipe.getName());
-				recipeDTO.setDescription(recipe.getDescription());
-				recipeDTOs.add(recipeDTO);
-			}
-
-			// 返回包含食谱信息的List给客户端
-			return ResponseEntity.ok().body(recipeDTOs);
+			return ResponseEntity.ok().body(recipeService.recipeTurnToDTO(member1.getSavedRecipes()));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("An error occurred while retrieving saved recipes.");
