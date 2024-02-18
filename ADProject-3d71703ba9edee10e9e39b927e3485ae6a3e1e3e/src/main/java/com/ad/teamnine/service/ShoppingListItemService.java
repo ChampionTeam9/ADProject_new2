@@ -19,20 +19,20 @@ import jakarta.transaction.Transactional;
 public class ShoppingListItemService {
 	@Autowired
 	ShoppingListItemRepository shoppingListItemRepo;
-	
+
 	@Autowired
 	MemberRepository memberRepo;
-	
+
 	public ShoppingListItem saveShoppingListItem(ShoppingListItem item) {
 		return shoppingListItemRepo.save(item);
 	}
-	
+
 	// get specific shoppingListItem by id
 	public ShoppingListItem getShoppingListItemById(Integer id) {
 		Optional<ShoppingListItem> shoppingListItem = shoppingListItemRepo.findById(id);
 		return shoppingListItem.orElse(null);
 	};
-	
+
 	// delete specific recipe by shoppingListItem
 	public void deleteShoppingListItem(ShoppingListItem shoppingListItem) {
 		shoppingListItemRepo.delete(shoppingListItem);
@@ -42,28 +42,28 @@ public class ShoppingListItemService {
 	public void deleteShoppingListItemById(int id) {
 		shoppingListItemRepo.deleteById(id);
 	}
-	
-	public ShoppingListItem saveItemFromAndroid (String username, boolean isChecked, String itemName) {
+
+	public ShoppingListItem saveItemFromAndroid(String username, boolean isChecked, String itemName) {
 		Member member = memberRepo.findByUsername(username);
 		ShoppingListItem item = new ShoppingListItem(member, itemName);
 		item.setChecked(isChecked);
 		return shoppingListItemRepo.save(item);
 	}
-	
+
 	public void updateItemFromAndroid(Integer itemId, boolean isChecked) {
 		ShoppingListItem item = shoppingListItemRepo.findById(itemId).get();
 		item.setChecked(isChecked);
 		shoppingListItemRepo.save(item);
 	}
-	
+
 	public void deleteItemFromAndroid(Integer itemId) {
 		shoppingListItemRepo.deleteById(itemId);
 	}
 
 	public void deleteAll() {
-		shoppingListItemRepo.deleteAll();}
+		shoppingListItemRepo.deleteAll();
+	}
 
-	
 	public ShoppingListItemDTO turnToShoppingListItemDTO(ShoppingListItem item) {
 		ShoppingListItemDTO itemDTO = new ShoppingListItemDTO();
 		itemDTO.setId(item.getId());
