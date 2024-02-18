@@ -82,7 +82,7 @@ public class RecipeController {
 			@RequestParam(defaultValue = "12") int pageSize, HttpServletRequest request) {
 		Page<Recipe> recipePage = recipeService.searchByTag(tag, pageNo, pageSize);
 		model.addAttribute("results", recipePage.getContent());
-		model.addAttribute("recipeRecommended", recipePage.getContent());//换成recommendation
+		model.addAttribute("recipeRecommended", recipePage.getContent());// 换成recommendation
 		model.addAttribute("currentPage", recipePage.getNumber());
 		model.addAttribute("totalPages", recipePage.getTotalPages());
 		model.addAttribute("pageSize", pageSize);
@@ -149,7 +149,7 @@ public class RecipeController {
 		System.out.println("pageSize: " + pageSize);
 		System.out.println("currentPage: " + currentPage);
 		model.addAttribute("results", filteredResults.subList(startIndex, endIndex));
-		model.addAttribute("recipeRecommended",filteredResults.subList(startIndex, endIndex));// 换成recommendation
+		model.addAttribute("recipeRecommended", filteredResults.subList(startIndex, endIndex));// 换成recommendation
 		model.addAttribute("query", query);
 		model.addAttribute("searchtype", type);
 		return "/RecipeViews/HomePage";
@@ -194,7 +194,8 @@ public class RecipeController {
 	@PostMapping("/create")
 	public String addRecipe(@ModelAttribute("recipe") @Valid Recipe recipe, BindingResult bindingResult,
 			@RequestParam("timeUnit") String timeUnit, @RequestParam("pictureInput") MultipartFile pictureFile,
-			@RequestParam("ingredientIds") String ingredientIds, Model model, HttpSession sessionObj) {
+			@RequestParam("ingredientIds") String ingredientIds, Model model, HttpSession sessionObj, 
+			@RequestParam(name="id", required = false) Integer recipeId) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Binding error at recipe creation");
 			// Print out binding errors
@@ -255,17 +256,30 @@ public class RecipeController {
 		recipe.setMember(member);
 
 		recipeService.createRecipe(recipe);
-
-		List<Ingredient> ingredients = recipe.getIngredients();
+		
+		List<Ingredient> ingredients = new ArrayList<>();
+		if (recipeId != null)
+			// if editing existing recipe
+			ingredients = recipeService.getRecipeById(recipeId).getIngredients();
 		String[] ingredientsToAdd = ingredientIds.split(",");
 		for (int i = 0; i < ingredientsToAdd.length; i++) {
 			if (ingredientsToAdd[i].equals(""))
 				continue;
-			Ingredient ingredient = ingredientService.getIngredientById(Integer.parseInt(ingredientsToAdd[i]));
-			System.out.println("Ingredient: " + ingredient);
-			ingredient.getRecipes().add(recipe);
-			ingredientService.saveIngredient(ingredient);
-			ingredients.add(ingredient);
+			int ingredientId = Integer.parseInt(ingredientsToAdd[i]);
+		    // Check if the ingredient is already in the ingredients list (for edit recipe)
+		    boolean ingredientAlreadyAdded = false;
+		    for (Ingredient existingIngredient : ingredients) {
+		        if (existingIngredient.getId() == ingredientId) {
+		            ingredientAlreadyAdded = true;
+		            break;
+		        }
+		    }
+		    if (!ingredientAlreadyAdded) {
+		    	Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
+				ingredient.getRecipes().add(recipe);
+				ingredientService.saveIngredient(ingredient);
+				ingredients.add(ingredient);
+		    }
 		}
 		setRecipeNutrients(recipe);
 		recipe.setHealthScore(recipe.calculateHealthScore());
@@ -342,6 +356,15 @@ public class RecipeController {
 		Recipe recipe = recipeService.getRecipeById(id);
 		if (recipe.getStatus() == Status.DELETED) {
 			return "RecipeViews/recipeDeletedPage";
+		}
+		if (recipe.getStatus() == Status.PRIVATE) {
+			if (sessionObj.getAttribute("userId") == null) {
+				return "RecipeViews/recipePrivatePage";
+			}
+			Integer userId = (int) sessionObj.getAttribute("userId");
+			if (!userId.equals(recipe.getMember().getId())) {
+				return "RecipeViews/recipePrivatePage";
+			}
 		}
 		model.addAttribute("recipe", recipe);
 		// get number of people who rated
