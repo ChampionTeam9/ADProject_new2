@@ -37,6 +37,11 @@ public class ShoppingListItemService {
 	public void deleteShoppingListItem(ShoppingListItem shoppingListItem) {
 		shoppingListItemRepo.delete(shoppingListItem);
 	}
+	
+	// delete specific recipe by Id
+	public void deleteShoppingListItemById(int id) {
+		shoppingListItemRepo.deleteById(id);
+	}
 
 	public ShoppingListItem saveItemFromAndroid(String username, boolean isChecked, String itemName) {
 		Member member = memberRepo.findByUsername(username);
