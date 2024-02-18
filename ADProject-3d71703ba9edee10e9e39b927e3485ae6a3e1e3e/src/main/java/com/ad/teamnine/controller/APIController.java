@@ -468,5 +468,13 @@ public class APIController {
 		shopser.deleteAll();
 		return "delete all successful";
 	}
-
+	@PostMapping("/clearSelectedItemsInDb")
+	public String clearSelectedItemsInDb(@RequestBody Map<String, String> requestBody) {
+		List<String> selectedItems = Arrays.asList((requestBody.get("itemsToClear")).split(","));
+		for (String itemId : selectedItems) {
+			int id = Integer.parseInt(itemId);
+			shopser.deleteShoppingListItemById(id);
+		}
+		return "clear selected items";
+	}
 }
