@@ -462,5 +462,10 @@ public class APIController {
 	    }
 	    return "delete successful";
 	}
+	@GetMapping("/deleteAll")
+	public String deleteAll() {
+		shopser.deleteAll();
+		return "delete all successful";
+	}
 
 }

@@ -53,4 +53,7 @@ public class ShoppingListItemService {
 	public void deleteItemFromAndroid(Integer itemId) {
 		shoppingListItemRepo.deleteById(itemId);
 	}
+	public void deleteAll() {
+		shoppingListItemRepo.deleteAll();
+	}
 }
