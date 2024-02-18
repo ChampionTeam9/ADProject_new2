@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -205,6 +206,7 @@ public class RecipeController {
 			}
 			return "/RecipeViews/createRecipesPage";
 		}
+		
 		// If preparation time entered in hours, convert to mins
 		if (timeUnit.equals("hours")) {
 			int preparationTime = recipe.getPreparationTime();
@@ -254,7 +256,7 @@ public class RecipeController {
 
 		Member member = userService.getMemberById((Integer) sessionObj.getAttribute("userId"));
 		recipe.setMember(member);
-
+		
 		recipeService.createRecipe(recipe);
 		
 		List<Ingredient> ingredients = new ArrayList<>();
@@ -262,10 +264,12 @@ public class RecipeController {
 			// if editing existing recipe
 			ingredients = recipeService.getRecipeById(recipeId).getIngredients();
 		String[] ingredientsToAdd = ingredientIds.split(",");
+		List<Integer> ingredientIdsList = new ArrayList<>();
 		for (int i = 0; i < ingredientsToAdd.length; i++) {
 			if (ingredientsToAdd[i].equals(""))
 				continue;
 			int ingredientId = Integer.parseInt(ingredientsToAdd[i]);
+			ingredientIdsList.add(ingredientId);
 		    // Check if the ingredient is already in the ingredients list (for edit recipe)
 		    boolean ingredientAlreadyAdded = false;
 		    for (Ingredient existingIngredient : ingredients) {
@@ -281,6 +285,17 @@ public class RecipeController {
 				ingredients.add(ingredient);
 		    }
 		}
+		// Remove ingredients not present in the ingredientIdsList (in case ingredient was deleted)
+		Iterator<Ingredient> iterator = ingredients.iterator();
+		while (iterator.hasNext()) {
+		    Ingredient existingIngredient = iterator.next();
+		    if (!ingredientIdsList.contains(existingIngredient.getId())) {
+		        iterator.remove();
+		        existingIngredient.getRecipes().remove(recipe);
+		        ingredientService.saveIngredient(existingIngredient);
+		    }
+		}
+		recipe.setIngredients(ingredients);
 		setRecipeNutrients(recipe);
 		recipe.setHealthScore(recipe.calculateHealthScore());
 		recipeService.createRecipe(recipe);
