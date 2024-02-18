@@ -430,4 +430,13 @@ public class APIController {
 		shopser.saveItemFromAndroid(username, isChecked, ingredientName);
 		return"save successful";
 	}
+	@PostMapping("/deleteShoppingList")
+	public String deleteShoppingList(@RequestBody List<Integer> itemIds) {
+	    for (Integer id : itemIds) {
+	        System.out.println("Deleting item with ID: " + id);
+	        shopser.deleteItemFromAndroid(id);
+	    }
+	    return "delete successful";
+	}
+
 }
