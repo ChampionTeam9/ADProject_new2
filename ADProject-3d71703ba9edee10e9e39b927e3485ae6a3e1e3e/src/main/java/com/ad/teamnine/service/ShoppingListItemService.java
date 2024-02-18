@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ad.teamnine.model.Member;
 import com.ad.teamnine.model.ShoppingListItem;
+import com.ad.teamnine.model.ShoppingListItemDTO;
 import com.ad.teamnine.repository.MemberRepository;
 import com.ad.teamnine.repository.ShoppingListItemRepository;
 
@@ -53,7 +54,17 @@ public class ShoppingListItemService {
 	public void deleteItemFromAndroid(Integer itemId) {
 		shoppingListItemRepo.deleteById(itemId);
 	}
+
 	public void deleteAll() {
-		shoppingListItemRepo.deleteAll();
+		shoppingListItemRepo.deleteAll();}
+
+	
+	public ShoppingListItemDTO turnToShoppingListItemDTO(ShoppingListItem item) {
+		ShoppingListItemDTO itemDTO = new ShoppingListItemDTO();
+		itemDTO.setId(item.getId());
+		itemDTO.setChecked(item.isChecked());
+		itemDTO.setIngredientName(item.getIngredientName());
+		return itemDTO;
+
 	}
 }
