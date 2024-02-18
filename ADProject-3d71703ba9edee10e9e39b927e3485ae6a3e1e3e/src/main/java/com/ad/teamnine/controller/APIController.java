@@ -447,4 +447,26 @@ public class APIController {
         System.out.print(isChecked);
         return "Update successful"; 
     }
+	@PostMapping("/saveShoppingList")
+	public String saveShoppingList(@RequestBody ShoppingListItemDTO request) {
+		boolean isChecked=request.isChecked();
+		String username=request.getUsername();
+		String ingredientName=request.getIngredientName();
+		shopser.saveItemFromAndroid(username, isChecked, ingredientName);
+		return"save successful";
+	}
+	@PostMapping("/deleteShoppingList")
+	public String deleteShoppingList(@RequestBody List<Integer> itemIds) {
+	    for (Integer id : itemIds) {
+	        System.out.println("Deleting item with ID: " + id);
+	        shopser.deleteItemFromAndroid(id);
+	    }
+	    return "delete successful";
+	}
+	@GetMapping("/deleteAll")
+	public String deleteAll() {
+		shopser.deleteAll();
+		return "delete all successful";
+	}
+
 }

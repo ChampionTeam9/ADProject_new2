@@ -54,6 +54,10 @@ public class ShoppingListItemService {
 	public void deleteItemFromAndroid(Integer itemId) {
 		shoppingListItemRepo.deleteById(itemId);
 	}
+
+	public void deleteAll() {
+		shoppingListItemRepo.deleteAll();}
+
 	
 	public ShoppingListItemDTO turnToShoppingListItemDTO(ShoppingListItem item) {
 		ShoppingListItemDTO itemDTO = new ShoppingListItemDTO();
@@ -61,5 +65,6 @@ public class ShoppingListItemService {
 		itemDTO.setChecked(item.isChecked());
 		itemDTO.setIngredientName(item.getIngredientName());
 		return itemDTO;
+
 	}
 }
